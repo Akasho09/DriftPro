@@ -55,4 +55,9 @@ psql -U postgres
 update package.json of db and user-app & run npm install in root again.
 - npx prisma generate
 
-###
+#### add recoil/store module
+- cd packages
+mkdir store
+npm init -y
+npx tsc --init
+- npm i recoil
