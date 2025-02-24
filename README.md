@@ -79,3 +79,31 @@ export const GET = handler;
 export const POST = handler;
 ```
 }
+
+
+
+
+## update schema.prisma
+model OnRampTransaction {
+  id        Int          @id @default(autoincrement())
+  status    OnRampStatus
+  token     String       @unique
+  provider  String
+  amount    Int
+  startTime DateTime
+  userId    Int
+  user      User         @relation(fields: [userId], references: [id])
+}
+
+## seed 
+- "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+}
+- npx prisma db seed
+
+
+## run multiple postgres containers 
+change ports
+docker run -d --name postgres1 -e POSTGRES_USER=user1 -e POSTGRES_PASSWORD=pass1 -p 5432:5432 postgres
+docker run -d --name postgres2 -e POSTGRES_USER=user2 -e POSTGRES_PASSWORD=pass2 -p 5433:5432 postgres
+

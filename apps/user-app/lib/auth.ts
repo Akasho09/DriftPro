@@ -46,7 +46,7 @@ export const authOptions = {
                     email: user.mobile
                 }
             } catch(e) {
-                console.error(e);
+                console.error("ERRORR R  : " , e);
             }
 
             return null

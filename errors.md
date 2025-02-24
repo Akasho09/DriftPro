@@ -32,11 +32,11 @@ export default {
 
 
 
+## Error: [next-auth]: useSession must be wrapped in a <SessionProvider /> #7690
+
+ wrap all the children of <body> with <NextAuthProvider> in layout.tsx.
 
 
 
-
-
-
-
-
+##  <Image src={user?.image || '/default-image.png'} alt="User Image" width={100} height={100} />
+ 
