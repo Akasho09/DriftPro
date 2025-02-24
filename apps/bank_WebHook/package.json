@@ -1,5 +1,5 @@
 {
-  "name": "@repo/db",
+  "name": "bank_webhook",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -9,11 +9,7 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "exports": {
-    "./client": "./index.ts"
-  },
   "dependencies": {
-    "@prisma/client": "^6.4.1",
-    "prisma": "^6.4.1"
+    "@types/express": "^5.0.0"
   }
 }

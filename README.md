@@ -1,5 +1,6 @@
 ## DRIFTPRO 
 Paytm.
+npx prisma studio
 
 ## ER Diagram
 ![alt text](image.png)
@@ -48,12 +49,13 @@ npx tsc --init
     "exclude": ["node_modules", "dist"]
   }
 - npx prisma init
-- docker run -e POSTGRES_PASSWORD=akash1234 -d -p 5432:5432 postgres
+- docker run -e POST    S_PASSWORD=akash1234 -d -p 5432:5432 postgres
 docker exec -it 699d79c42f12 bin/bash
 psql -U postgres
 - npx prisma migrate dev --name init 
 update package.json of db and user-app & run npm install in root again.
 - npx prisma generate
+- - npm install prisma @prisma/client
 
 #### add recoil/store module
 - cd packages
@@ -61,3 +63,19 @@ mkdir store
 npm init -y
 npx tsc --init
 - npm i recoil
+
+
+## add Next auth
+- npm install next-auth
+- app/api/auth/[...nextauth].route.ts= {
+```javascript
+import NextAuth from 'next-auth';
+
+import AuthOptions from '../../../../lib/auth';
+
+const handler = NextAuth(AuthOptions());
+
+export const GET = handler;
+export const POST = handler;
+```
+}

@@ -27,4 +27,16 @@ export default {
 }
 
 
-## 
+##  type error in autorize 
+                        return user as any /// this is a hack
+
+
+
+
+
+
+
+
+
+
+

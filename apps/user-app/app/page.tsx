@@ -1,8 +1,12 @@
-import { PrismaClient } from "@repo/db/client";
-const p1 = new PrismaClient();
+import { PrismaClient } from '@repo/db/client';
+const alask = new PrismaClient();
+import {Topbar} from '@repo/ui/topbar';
 
 export default function Home() {
   return (
-    <div className="text-3xl font-bold underline">user app</div>
+    <div className="">
+    <Topbar></Topbar>
+    user app
+    </div>
   );
 }
