@@ -1,20 +1,19 @@
 import express from 'express'
 import aksh from "@repo/db/client"
-
 const app = express()
 
-app.get("/hdfcwebhook" , (req,res)=>{
-    const paymentInfo = {
-        token : req.body.token ,
-        userId : req.body.userId,
-        amount : req.body.amount
-    }
-
+app.get("/hdfcwebhook" , async (req,res)=>{
+  
     try {
-        aksh.$transaction([
-            aksh.balance.update({
+        const paymentInfo = {
+            token : req.body.token ,
+            userId : req.body.userId,
+            amount : req.body.amount
+        }    
+        await  aksh.$transaction([
+           aksh.balance.update({
                 where: {
-                    id: Number(paymentInfo.userId)
+                    id : paymentInfo.userId
                 },
                 data : {
                     amount:{
@@ -41,5 +40,9 @@ app.get("/hdfcwebhook" , (req,res)=>{
             message: "Error while processing webhook"
         })
     }
+})
 
+
+app.listen(3004, ()=>{
+    console.log("Web Bank started ")
 })

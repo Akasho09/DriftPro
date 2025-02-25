@@ -20,7 +20,7 @@ enum OnRampStatus {
 
 
 model User {
-  id                Int                 @id @default(autoincrement())
+  id                String              @id @default(uuid())
   email             String?             @unique
   name              String?
   mobile            String              @unique
@@ -37,13 +37,13 @@ model OnRampTransaction {
   provider  String
   amount    Int
   startTime DateTime
-  userId    Int
+  userId    String
   user      User         @relation(fields: [userId], references: [id])
 }
 
 model Balance {
   id     Int  @id @default(autoincrement())
-  userId Int  @unique
+  userId String  @unique
   amount Int
   locked Int
   user   User @relation(fields: [userId], references: [id])

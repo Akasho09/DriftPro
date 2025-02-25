@@ -40,3 +40,17 @@ export default {
 
 ##  <Image src={user?.image || '/default-image.png'} alt="User Image" width={100} height={100} />
  
+
+                
+## userId : Number(userId),
+
+
+          
+##   window.location.href = redirectUrl || "";
+for redirecting to external url and reload whle page.
+
+
+ ## use esbuild to run bankHook
+   "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
+
+

@@ -12,8 +12,11 @@ export const DropDown = ({
     <div className={className}>
       <h1>{title}</h1>
 
-<select className="w-full" onSelect={onselect()}>
-{items.map((e,index)=>(
+<select className="w-full" onChange={(e:any)=>{
+  onselect(e.target.value)
+}}>
+{
+items.map((e,index)=>(
   <option value={e} key={index}>{e}</option>
 ))}
 </select>
