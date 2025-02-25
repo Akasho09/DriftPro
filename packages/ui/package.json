@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    "./drop-down": "./src/drop-down.tsx",
+    "./input-compo": "./src/input-compo.tsx",
     "./topbar": "./src/topbar.tsx",
     "./button": "./src/button.tsx",
     "./card": "./src/card.tsx",

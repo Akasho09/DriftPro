@@ -7,6 +7,7 @@ async function main() {
     update: {},
     create: {
       mobile: '9999999999',
+      // bcrypt this 
       hashedPassword: 'alice',
       name: 'alice',
       OnRampTransaction: {

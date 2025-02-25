@@ -1,5 +1,4 @@
-import {PrismaClient} from "@repo/db/client";
-const db = new PrismaClient()
+import db from "@repo/db/client"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt";
 import GoogleProvider from 'next-auth/providers/google';
