@@ -38,7 +38,7 @@ export default function AddMoney() {
           <Button className="w-full bg-blue-200 text-white py-2 rounded-md hover:bg-blue-700" onclick={async ()=>{
             await onRampTrans(amount,provider)
             window.location.href = redirectUrl || "";
-            
+            // update balance and payment
           }} >
             Add Money
           </Button>

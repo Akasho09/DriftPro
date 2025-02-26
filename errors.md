@@ -54,3 +54,5 @@ for redirecting to external url and reload whle page.
    "build": "npx esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js",
 
 
+## avoid tyopr error in index.js webhook import repo/db/cl
+"moduleResolution": "bundler",
