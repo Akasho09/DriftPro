@@ -2,7 +2,7 @@
 import { Card } from "@repo/ui/card"
 import { InputCompo } from "@repo/ui/input-compo"
 import { Button } from "@repo/ui/button"
-import SendMoney from "../../../lib/sendMoney"
+import {SendMoney} from "../../../lib/sendMoney"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
@@ -12,11 +12,13 @@ export default function Send() {
     const [to , setTo] = useState("")
     async function handle () {
         const response = await SendMoney(to, Number(amount));
-        alert(response); // Display transaction response
-        if (response === "Sucessully transfereed") {
+        console.log(response)
+        alert(response.message); // Display transaction response
+
+        // if (response === "Sucessully transfereed") {
             Router.push("/");
-        }
-    }
+        // }
+    }1
     return <div className="h-full w-full ">
         <Card title="Send Money " className="">
         <InputCompo label="Mobile of Reciever" inputtype="string" onchange={(e:string)=>{

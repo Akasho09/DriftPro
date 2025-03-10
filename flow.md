@@ -1,2 +1,2 @@
- npx create-turbo@latest
+npx create-turbo@latest
  

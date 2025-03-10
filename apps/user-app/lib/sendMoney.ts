@@ -1,70 +1,143 @@
-"use server"
+"use server";
+
 import { getServerSession } from "next-auth";
+import prisma from "@repo/db/client";
 import { authOptions } from "./auth";
-import aksh from "@repo/db/client";
 
-export default async function SendMoney(to:string , amountt : number){
-    const session = await getServerSession(authOptions)
-    if (!session || !session.user) {
-        return "Invalid user";
-    }
-    
-    const receiver = await aksh.user.findFirst({
-        where: {
-            mobile: to
-        },
-        select: {
-            id: true
+export async function SendMoney(to: string, amount: number) {
+    try {
+        // Fetch session details
+        const session = await getServerSession(authOptions);
+        console.log("Session:", session); // Debugging
+
+        // Validate session
+        if (!session || !session.user?.id) {
+            return { message: "User not authenticated" };
         }
-    });
 
-    if (!receiver) {
-        return "Invalid Mobile Number";
-    }
-    // Prevent sending money to yourself
-    if (session.user.id === receiver.id) {
-    return "Cannot send money to yourself";
-    }
-
-    const sender = await aksh.balance.findFirst({
-        where: {
-            userId : session.user.id
-        },
-        select:{
-            amount : true
+        const fromUserId = (session.user.id);
+        if (!fromUserId) {
+            return { message: "Invalid user ID" };
         }
-    })
-    if(!sender || sender?.amount<amountt) {
-        return "Insufficient Balance";
-    }
 
-    const t = await aksh.$transaction([
-         aksh.balance.updateMany({
-            where: {
-                userId : session.user.id,
-            },
-            data : {
-                amount : {
-                    decrement : Number(amountt)
-                }
+        // Find recipient user
+        const toUser = await prisma.user.findFirst({
+            where: { mobile: to },
+        });
+
+        if (!toUser) {
+            return { message: "Recipient not found" };
+        }
+
+        // Transaction to handle money transfer safely
+        await prisma.$transaction(async (tx) => {
+            // Lock sender's balance row
+            await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${fromUserId} FOR UPDATE`;
+
+            // Check sender's balance
+            const fromBalance = await tx.balance.findUnique({
+                where: { userId: fromUserId },
+            });
+
+            if (!fromBalance || fromBalance.amount < amount) {
+                throw new Error("Insufficient funds");
             }
-        }) , 
-        
-         aksh.balance.updateMany({
-            where : {
-                userId : receiver.id
-            }, 
-            data: {
-                amount : {
-                    increment : Number(amountt) 
-                }
-            }
-        })
-    ])
-    if(!t) return "Transaction failed: Insufficient balance.";
-    
-    return "Sucessully transfereed"
+
+            // Deduct money from sender
+            await tx.balance.update({
+                where: { userId: fromUserId },
+                data: { amount: { decrement: amount } },
+            });
+
+            // Add money to recipient
+            await tx.balance.update({
+                where: { userId: toUser.id },
+                data: { amount: { increment: amount } },
+            });
+
+            // Log the transaction
+            await tx.p2ptransactions.create({
+                data: {
+                    fromNum: session.user.mobile,
+                    toNum: toUser.mobile,
+                    amount,
+                    tTime: new Date(),
+                },
+            });
+        });
+
+        return { message: "Successfully transferred" };
+
+    } catch (error) {
+        console.error("SendMoney Error:", error);
+        return { message: "Transaction failed", error: error };
+    }
 }
+
+// "use server"
+// import { getServerSession } from "next-auth";
+// import { authOptions } from "./auth";
+// import aksh from "@repo/db/client";
+
+// export default async function SendMoney(to:string , amountt : number){
+//     const session = await getServerSession(authOptions)
+//     if (!session || !session.user) {
+//         return "Invalid user";
+//     }
+    
+//     const receiver = await aksh.user.findFirst({
+//         where: {
+//             mobile: to
+//         },
+//         select: {
+//             id: true
+//         }
+//     });
+
+//     if (!receiver) {
+//         return "Invalid Mobile Number";
+//     }
+//     // Prevent sending money to yourself
+//     if (session.user.id === receiver.id) {
+//     return "Cannot send money to yourself";
+//     }
+
+//     try {
+//       await aksh.$transaction(
+//         async (tx) => {
+//           // await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session?.user?.id} FOR UPDATE`;
+//         const senderbal = await tx.balance.findUnique({
+//             where: { userId : session.user.id }
+//         })
+//         if(!senderbal || senderbal?.amount<amountt) {
+//           return ("Insufficient Balance");
+//       }
+//           await tx.balance.update({
+//             where: { userId: session.user.id },
+//             data: { amount: { decrement: Number(amountt) } },
+//           });
+    
+//           await tx.balance.update({
+//             where: { userId: receiver.id },
+//             data: { amount: { increment: Number(amountt) } },
+//           });
+
+//           await tx.p2ptransactions.create({
+//             data: {
+//               fromNum : session.user.id,
+//               toNum : receiver.id ,
+//               amount : amountt ,
+//               tTime : new Date()
+//             }
+//           })
+//         }
+//       );
+//       return "Successfully transferred";
+//     } catch (e) {
+//       console.error("Transaction failed:", e);
+//       return "Transaction failed: " + e;
+//     }
+//     }    
 /*
 
 import { getServerSession } from "next-auth";

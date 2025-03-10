@@ -56,3 +56,6 @@ for redirecting to external url and reload whle page.
 
 ## avoid tyopr error in index.js webhook import repo/db/cl
 "moduleResolution": "bundler",
+
+## Fix 
+          await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session?.user?.id} FOR UPDATE`;

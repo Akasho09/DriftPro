@@ -27,8 +27,19 @@ model User {
   hashedPassword         String
   OnRampTransaction OnRampTransaction[]
   Balance Balance[]
+  sentTranactions p2ptransactions[] @relation(name: "sentTranactions")
+  toTranactions p2ptransactions[] @relation(name: "toTranactions")
 }
 
+model p2ptransactions {
+  id Int @id @default(autoincrement())
+  fromNum String
+  toNum String
+  from User @relation(name : "sentTranactions" ,fields: [fromNum] , references: [mobile]) 
+  to User @relation(name : "toTranactions" ,fields: [toNum] , references: [mobile])
+  tTime DateTime
+  amount Int 
+}
 
 model OnRampTransaction {
   id        Int          @id @default(autoincrement())

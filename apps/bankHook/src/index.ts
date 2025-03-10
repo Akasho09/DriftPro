@@ -9,7 +9,7 @@ interface PaymentInfo {
   token: string;
 }
 
-app.post("/hdfcwebhook", async (req, res) => {
+app.get("/hdfcwebhook", async (req, res) => {
   try {
     const paymentInfo: PaymentInfo = {
       token: req.body.token,
