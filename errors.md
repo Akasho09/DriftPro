@@ -64,4 +64,4 @@ for redirecting to external url and reload whle page.
        {user?.mobile || "akash"}
            
            sol : 
-                        mobile : existingUser.mobile
+        mobile : existingUser.mobile

@@ -20,7 +20,7 @@ export default function Send() {
         console.log(response)
         alert(response); // Display transaction response
   
-        if (response === "Sucessully transfereed") {
+        if (response == "Sucessully transfereed") {
             Router.push("/");
         }
     }

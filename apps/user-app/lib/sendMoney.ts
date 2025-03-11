@@ -14,56 +14,53 @@
              mobile: to
          },
          select: {
-             id: true
+             id: true , 
+             mobile : true
          }
      });
  
      if (!receiver) {
          return "Invalid Mobile Number";
      }
-     // Prevent sending money to yourself
+
      if (session.user.id === receiver.id) {
      return "Cannot send money to yourself";
      }
  
-     const sender = await aksh.balance.findFirst({
-         where: {
-             userId : session.user.id
-         },
-         select:{
-             amount : true
-         }
-     })
-     if(!sender || sender?.amount<amountt) {
-         return "Insufficient Balance";
-     }
-     const t = await aksh.$transaction([
-       aksh.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session.user.id} FOR UPDATE` ,
-          aksh.balance.updateMany({
-             where: {
-                 userId : session.user.id,
-             },
-             data : {
-                 amount : {
-                     decrement : Number(amountt)
-                 }
-             }
-         }) , 
-         
-          aksh.balance.updateMany({
-             where : {
-                 userId : receiver.id
-             }, 
-             data: {
-                 amount : {
-                     increment : Number(amountt) 
-                 }
-             }
-         })
-     ])
-     if(!t) return "Transaction failed";
-     
+
+     const t = await aksh.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session.user.id} FOR UPDATE`;
+  
+      const senderBalance = await tx.balance.findFirst({
+          where: { userId: session.user.id },
+          select: { amount: true }
+      });
+  
+      if (!senderBalance || senderBalance.amount < amountt) {
+          return "Transaction failed: Insufficient balance.";
+      }
+  
+      await tx.balance.updateMany({
+          where: { userId: session.user.id },
+          data: { amount: { decrement: Number(amountt) } }
+      });
+  
+      await tx.balance.updateMany({
+          where: { userId: receiver.id },
+          data: { amount: { increment: Number(amountt) } }
+      });
+  
+      await tx.p2ptransactions.create({
+        data: {
+            fromNum: String(session.user.id),
+            toNum: String(receiver.id),
+            amount : amountt,
+            tTime: new Date(),
+        },
+    });
      return "Sucessully transfereed"
+  });
+  return "Sucessully transfereed"
  }
 
 // "use server"

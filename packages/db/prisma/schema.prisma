@@ -35,10 +35,10 @@ model p2ptransactions {
   id Int @id @default(autoincrement())
   fromNum String
   toNum String
-  from User @relation(name : "sentTranactions" ,fields: [fromNum] , references: [mobile]) 
-  to User @relation(name : "toTranactions" ,fields: [toNum] , references: [mobile])
   tTime DateTime? @default(now())
   amount Int 
+  from User @relation(name : "sentTranactions" ,fields: [fromNum] , references: [id]) 
+  to User @relation(name : "toTranactions" ,fields: [toNum] , references: [id])
 }
 
 model OnRampTransaction {
