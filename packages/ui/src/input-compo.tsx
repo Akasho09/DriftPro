@@ -1,3 +1,5 @@
+import { chownSync } from "fs";
+
 export const InputCompo = ({ 
   children,
   inputtype,
@@ -9,7 +11,7 @@ export const InputCompo = ({
   inputtype: string; 
   label?: string; 
   className?: string; 
-  onchange : Function
+  onchange: (value: any) => void;
 }) => {
   return (
     <div className={`flex flex-col space-y-2 ${className}`}>
@@ -17,7 +19,8 @@ export const InputCompo = ({
       <input 
         type={inputtype} 
         className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-        onChange={(e:any)=>{
+        onChange={(e)=>{
+          console.log("h1")
           onchange(e.target.value)
         }}
       />

@@ -26,7 +26,7 @@ export const authOptions = {
                 if (hashedPasswordValidation) {
                     return {
                         id: existingUser.id.toString(),
-                        email: existingUser.mobile
+                        email : existingUser.mobile
                     }
                 }
                 return null;

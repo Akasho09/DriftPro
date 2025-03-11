@@ -59,3 +59,9 @@ for redirecting to external url and reload whle page.
 
 ## Fix 
           await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session?.user?.id} FOR UPDATE`;
+
+## Fix 
+       {user?.mobile || "akash"}
+           
+           sol : 
+                        mobile : existingUser.mobile

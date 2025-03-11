@@ -37,7 +37,7 @@ model p2ptransactions {
   toNum String
   from User @relation(name : "sentTranactions" ,fields: [fromNum] , references: [mobile]) 
   to User @relation(name : "toTranactions" ,fields: [toNum] , references: [mobile])
-  tTime DateTime
+  tTime DateTime? @default(now())
   amount Int 
 }
 

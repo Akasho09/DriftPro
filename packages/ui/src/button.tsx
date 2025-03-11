@@ -13,6 +13,8 @@ export const Button = ({ children, className, onclick }: ButtonProps) => {
     <button
       className={className}
       onClick={()=>{
+        console.log("b1")
+
         onclick()
       }}
     >
