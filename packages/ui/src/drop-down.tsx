@@ -4,20 +4,20 @@ export const DropDown = ({
   title , 
   items , 
   className ,
-  onselect
+  onSelect
 }: { 
-  children?: React.ReactNode , title : string , items : string[] , className : string , onselect : Function
+  children?: React.ReactNode , title : string , items : string[] , className : string , onSelect : (e:string)=>void
 }) => {
   return (
     <div className={className}>
       <h1>{title}</h1>
 
-<select className="w-full" onChange={(e:any)=>{
-  onselect(e.target.value)
+<select className="w-full" onChange={(e)=>{
+  onSelect(e.target.value)
 }}>
 {
 items.map((e,index)=>(
-  <option value={e} key={index}>{e}</option>
+  <option value={e} key={index}>{e} </option>
 ))}
 </select>
       {children}

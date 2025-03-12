@@ -3,7 +3,7 @@
  import { authOptions } from "./auth";
  import aksh from "@repo/db/client";
  
- export default async function SendMoney(to:string , amountt : number){
+ export default async function SendMoney(to:string , amountt : number): Promise<string>{
      const session = await getServerSession(authOptions)
      if (!session || !session.user) {
          return "Invalid user";
