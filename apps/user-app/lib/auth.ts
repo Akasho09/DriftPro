@@ -36,7 +36,8 @@ export const authOptions = {
                 const user = await db.user.create({
                     data: {
                         mobile: credentials.phone,
-                        hashedPassword: hashedhashedPassword
+                        hashedPassword: hashedhashedPassword,
+                        
                     }
                 });
                 await db.balance.create({

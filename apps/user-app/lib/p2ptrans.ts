@@ -12,7 +12,7 @@ export default async function ts() {
                 {fromNum: String(session.user.email)} ,
                 {toNum : String(session.user.email)}
             ]
-        }
+        } 
     })
     console.log("data  : " , data)
     return data ;

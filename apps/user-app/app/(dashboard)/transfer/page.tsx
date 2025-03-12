@@ -1,6 +1,7 @@
 import AddMoney from "../../../components/addMoney";
 import Balance from "../../../components/Balance";
 import ReTr from "../../../components/RecentTrans";
+import B from "../../../components/sendTrans";
 export default function A() {
   return (
     <div className="flex items-center h-screen w-full">

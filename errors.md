@@ -60,8 +60,33 @@ for redirecting to external url and reload whle page.
 ## Fix 
           await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session?.user?.id} FOR UPDATE`;
 
+  sol : 
+            fromNum: String(session.user.email),
+            use Number  ->  amount : Number(amountt),
+
+
+
 ## Fix 
        {user?.mobile || "akash"}
-           
            sol : 
-        mobile : existingUser.mobile
+>  .email
+        
+
+
+## async/await is not yet supported in Client Components, only Server Components. This error is often caused by accidentally adding 'use client' to a module that was originally written for the server.
+    const [email,setemail] = useState("0");
+    const [data,setData] = useState([{
+        id: 1 ,
+        amount: 1 ,
+        fromNum: "string" ,
+        toNum: "string" ,
+        tTime: "Date"
+    }])
+    useEffect(()=>{
+        getSession().then((e)=>{
+            setemail(e?.user?.email || "0")
+            ts().then(()=>{
+
+            })
+        })
+    },[])

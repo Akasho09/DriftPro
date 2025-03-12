@@ -49,18 +49,19 @@
           where: { userId: receiver.id },
           data: { amount: { increment: Number(amountt) } }
       });
-  
+
+
       await tx.p2ptransactions.create({
         data: {
-            fromNum: String(session.user.id),
-            toNum: String(receiver.id),
-            amount : amountt,
+            fromNum: String(session.user.email),
+            toNum: String(receiver.mobile),
+            amount : Number(amountt),
             tTime: new Date(),
         },
     });
      return "Sucessully transfereed"
   });
-  return "Sucessully transfereed"
+  return t
  }
 
 // "use server"

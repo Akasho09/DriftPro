@@ -24,12 +24,12 @@ export default async function Balance() {
             </div>
             <div className="flex justify-between">
 
-            <h3>Total Loacked Balance </h3>
+            <h3>Total Locked Balance </h3>
             <h3>{data?.locked}</h3>
             </div>
             <div className="flex justify-between">
             <h3>Total Balance</h3>
-            <h3>100</h3>
+            <h3>{(data?.amount || 0 ) + (data?.locked || 0)}</h3>
             </div></div>
         </Card>
   );
