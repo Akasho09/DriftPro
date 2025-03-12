@@ -22,7 +22,7 @@ export default async function B() {
                             ) : (
                                 <div className="text-green-600 font-semibold">Received From: {d.fromNum}</div>
                             )}
-                            <h2 className="text-lg font-bold">Amount: ₹{d.amount}</h2>
+                            <h2 className="text-lg font-bold">Amount: ₹{(d.amount/100)?.toFixed(2)}</h2>
                             <div className="text-gray-600">
                                 Time: {d.tTime ? new Date(d.tTime).toLocaleString() : "N/A"}
                             </div>

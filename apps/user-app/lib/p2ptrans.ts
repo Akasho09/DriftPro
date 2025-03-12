@@ -14,6 +14,5 @@ export default async function ts() {
             ]
         } 
     })
-    console.log("data  : " , data)
     return data ;
 }

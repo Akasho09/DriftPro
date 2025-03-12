@@ -25,7 +25,7 @@ export default async function Balance() {
         <div className="flex justify-between items-center py-2">
           <h3 className="text-gray-600 font-medium">Unlocked Balance</h3>
           <h3 className="text-green-600 font-semibold text-lg">
-            ₹{data?.amount?.toFixed(2)}
+            ₹{(data?.amount/100)?.toFixed(2)}
           </h3>
         </div>
         <div className="flex justify-between items-center py-2">
@@ -37,7 +37,7 @@ export default async function Balance() {
         <div className="flex justify-between items-center py-2 font-semibold">
           <h3 className="text-gray-800 text-lg">Total Balance</h3>
           <h3 className="text-blue-600 text-xl">
-            ₹{((data?.amount || 0) + (data?.locked || 0)).toFixed(2)}
+            ₹{(((data?.amount)/100 || 0) + (data?.locked || 0)).toFixed(2)}
           </h3>
         </div>
       </div>

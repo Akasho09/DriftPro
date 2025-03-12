@@ -14,7 +14,7 @@ export default function Send() {
     async function handle(to: string, amount: number) {
         console.log("Sending to:", to, "Amount:", amount);
 
-        if (!to || isNaN(amount) || amount <= 0) {
+        if (!to || isNaN(amount) || amount < 100) {
             alert("Invalid input: Please enter a valid mobile number and amount.");
             return;
         }
@@ -39,8 +39,8 @@ export default function Send() {
                 />
                 <InputCompo 
                     label="Amount" 
-                    inputtype="number" 
-                    onChange={(e) => setAmount(Number(e))} 
+                    inputtype="text" 
+                    onChange={(e) => setAmount(parseFloat(String(e))*100)} 
                     className="w-full border border-gray-300 rounded-md p-2"
                 />
                 <Button 
