@@ -12,7 +12,7 @@ export function AppbarClient() {
   }
 
   return (
-    <div>
+    <div className="">
       <Topbar
         onSignin={signIn}
         onSignout={async () => {
