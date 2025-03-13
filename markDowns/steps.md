@@ -120,3 +120,14 @@ docker run -d --name postgres2 -e POSTGRES_USER=user2 -e POSTGRES_PASSWORD=pass2
 
 
 ## add locks in db when sending money 
+
+
+
+## CI / CD
+
+
+### CD
+- docker build -t userapp -f docker/Dockerfile.user-app .
+- generate dockerhub token
+in secrets of current repo in github
+MAKE secrets for username and passtoken of dhub.
