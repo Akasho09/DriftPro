@@ -18,7 +18,7 @@ export default function AddMoney() {
 
   return (
     <Card title="Transfer Page" className="w-[400px] p-6 rounded-2xl shadow-lg border border-gray-300">
-      <div className="space-y-6 pt-8 p-4 border rounded-lg shadow-lg bg-white">
+      <div className="space-y-6 pt-8 p-4 border rounded-lg shadow-lg bg-gray-100">
         {/* Amount Input */}
         <InputCompo
           label="Amount"

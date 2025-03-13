@@ -6,7 +6,7 @@ export default function () {
         <Send></Send>
         <div className="flex">
         <div className="w-2/3"></div>
-        <B></B>
+        <div className="w-full"><B></B></div>
         </div>
     </div> 
 }

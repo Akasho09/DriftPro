@@ -8,7 +8,7 @@ export default async function B() {
     const data = await ts();
 
     return (
-        <Card title="Recent Transactions" className="w-full p-6 shadow-md rounded-xl bg-white m-4">
+        <Card title="Send/Recieve Transactions" className=" p-4 shadow-md rounded-xl ">
             {!session?.user?.email ? (
                 <p className="text-red-500 font-semibold text-lg">Login First</p>
             ) : !data || data.length === 0 ? (
@@ -16,7 +16,7 @@ export default async function B() {
             ) : (
                 <div className="space-y-4">
                     {data.map((d, i) => (
-                        <div key={i} className="p-4 border border-gray-300 rounded-md shadow-sm bg-gray-100">
+                        <div key={i} className="p-6 border border-gray-300 rounded-md shadow-sm bg-gray-100">
                             {d.fromNum === session.user.email ? (
                                 <div className="text-blue-600 font-semibold">Sent To: {d.toNum}</div>
                             ) : (

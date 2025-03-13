@@ -21,7 +21,7 @@ export default async function Balance() {
     </h4>
   ) : (
     <Card title="Balance" className="p-6 shadow-md rounded-xl">
-      <div className="divide-y divide-gray-300 space-y-4 bg-white p-4 border rounded-lg shadow-lg">
+      <div className="divide-y divide-gray-300 space-y-4 bg-gray-100 p-4 border rounded-lg shadow-lg">
         <div className="flex justify-between items-center py-2">
           <h3 className="text-gray-600 font-medium">Unlocked Balance</h3>
           <h3 className="text-green-600 font-semibold text-lg">

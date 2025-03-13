@@ -29,8 +29,8 @@ export default function Send() {
     }
 
     return (
-        <Card title="Send Money" className="p-6 shadow-md rounded-xl bg-white m-4">
-            <div className="space-y-4">
+        <Card title="Send Money" className="p-6 shadow-md rounded-xl m-4">
+            <div className="space-y-6 pt-8 p-4 border rounded-lg shadow-lg bg-gray-100">
                 <InputCompo 
                     label="Mobile of Receiver" 
                     inputtype="text" 
