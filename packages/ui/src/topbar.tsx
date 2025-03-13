@@ -1,37 +1,54 @@
 interface AppbarProps {
   user?: {
-      name?: string | null,
-      image?: string | null,
-      email? : string  | null
-  },
-  onSignin: ()=> void,
-  onSignout: ()=> void
+    name?: string | null;
+    image?: string | null;
+    email?: string | null;
+  };
+  onSignin: () => void;
+  onSignout: () => void;
 }
-import Image from "next/image"
 
-export const Topbar = ( { user,onSignin,onSignout } : AppbarProps ) => {
+import Image from "next/image";
+
+export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
   return (
-<div className="flex items-center justify-between p-4 bg-gray-900 text-white shadow-md">
-      <div className="text-lg font-semibold tracking-wide">DriftPro</div>
+    <div className="flex items-center justify-between px-6 py-3 bg-gray-800 text-white shadow-lg">
+      {/* Brand Name */}
+      <div className="text-xl font-bold tracking-wide text-blue-400">
+        DriftPro
+      </div>
 
-      <div className="flex items-center gap-4 justify-end">
-        <div className="w-6 h-6 border border-gray-300 rounded-full flex items-center justify-center overflow-hidden">
+      {/* User Section */}
+      <div className="flex items-center gap-5">
+        {/* Profile Picture */}
+        <div className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center overflow-hidden">
           {!user?.image ? (
-            <h6 className="text-lg">🌸</h6>
+            <span className="text-lg">🌸</span>
           ) : (
             <Image
               src={user.image}
-              alt="User Image"
+              alt="User Avatar"
               width={40}
               height={40}
               className="rounded-full object-cover"
             />
           )}
         </div>
-        <h4 className="text-sm text-gray-300 font">Hello , <span className="font-semibold">{user?.email || "Guest"}</span></h4>
+
+        {/* User Info */}
+        <div>
+          <h4 className="text-sm text-gray-300">
+            Hello,{" "}
+            <span className="font-semibold text-white">
+              {user?.email || "Guest"}
+            </span>
+          </h4>
+        </div>
+
+        {/* Login/Logout Button */}
         <button
           onClick={() => (user ? onSignout() : onSignin())}
-          className="px-4 py-1 text-sm bg-slate-200 hover:bg-blue-500 transition-all rounded-lg text-black"
+          className="px-5 py-1.5 text-sm font-medium bg-blue-500 hover:bg-blue-600 transition-all rounded-lg text-white shadow-md"
         >
           {user ? "Logout" : "Login"}
         </button>
