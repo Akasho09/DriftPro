@@ -15,7 +15,7 @@ export default async function B() {
                 <p className="text-gray-500">No transactions found.</p>
             ) : (
                 <div className="space-y-4">
-                    {data.map((d, i) => (
+                    {data.map((d : any, i : any) => (
                         <div key={i} className="p-4 border border-gray-300 rounded-md shadow-sm bg-gray-100">
                             {d.fromNum === session.user.email ? (
                                 <div className="text-blue-600 font-semibold">Sent To: {d.toNum}</div>
