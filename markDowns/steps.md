@@ -131,3 +131,46 @@ docker run -d --name postgres2 -e POSTGRES_USER=user2 -e POSTGRES_PASSWORD=pass2
 - generate dockerhub token
 in secrets of current repo in github
 MAKE secrets for username and passtoken of dhub.
+
+
+- for deploy on ec2 
+
+### COMPLETE THIS 
+
+
+-  sudo nano /etc/nginx/nginx.conf
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+events {
+    # Event directives... 
+}
+
+http {
+    server {
+        server_name drpo.akash.com;
+
+        location / {
+            proxy_pass http://localhost:3005;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+
+
+                # Basic Authentication
+                auth_basic "Restricted Content";
+                auth_basic_user_file /etc/nginx/.htpasswd;
+        }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/userapp.100xdevs.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/userapp.100xdevs.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+    }
+}
+- sudo nginx -s reload
+- sudo certbot --nginx
+- now buy drpo.akash.com

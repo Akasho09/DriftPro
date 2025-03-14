@@ -37,7 +37,7 @@ jobs:
     #     username: ${{ secrets.SSH_USERNAME }}
     #     key: ${{ secrets.SSH_KEY }}
     #     script: |
-    #       sudo docker pull 100xdevs/web-app:latest
-    #       sudo docker stop web-app || true
-    #       sudo docker rm web-app || true
-    #       sudo docker run -d --name web-app -p 3005:3000 100xdevs/web-app:latest
+    #       sudo docker pull akasho9/driftpro:latest
+    #       sudo docker stop driftpro || true
+    #       sudo docker rm driftpro || true
+    #       sudo docker run -d --name web-app -p 3005:3000 akasho9/driftpro:latest
