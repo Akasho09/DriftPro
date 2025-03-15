@@ -1,17 +1,16 @@
 import db from "@repo/db/client"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt";
-import GoogleProvider from 'next-auth/providers/google';
 
 export const authOptions = {
     providers: [
       CredentialsProvider({
           name: 'Credentials',
           credentials: {
-            phone: { label: "Phone mobile", type: "text", placeholder: "1231231231", required: true },
+            phone: { label: "Phone mobile", type: "text", placeholder: "+91 9103######", required: true },
             hashedPassword: { label: "hashedPassword", type: "hashedPassword", required: true }
           },
-          // TODO: User credentials type from next-aut
+          // TODO: User credentials type from next-autH
           async authorize(credentials: any) {
             // Do zod validation, OTP validation here
             const hashedhashedPassword = await bcrypt.hash(credentials.hashedPassword, 10);
@@ -56,13 +55,13 @@ export const authOptions = {
             }
 
             return null
-          },
+          }
         }),
-        GoogleProvider({        
-            clientId: process.env.clientId || "",
-            clientSecret: process.env.clientSecret || ""
-        }
-    )
+        // GoogleProvider({        
+        //     clientId: process.env.clientId || "",
+        //     clientSecret: process.env.clientSecret || ""
+    //     }
+    // )
     ],
     secret: process.env.JWT_SECRET || "secret",
     callbacks: {
