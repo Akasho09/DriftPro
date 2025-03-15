@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "./auth";
 export default async function onRampTrans(amount: number , provider: string) {
     const s = await getServerSession(authOptions);
-    const userId = s?.user.id 
+    const userId = s?.user?.id ?? "anonymous"
     const token = Math.random().toString()
     try {
         await aksh.onRampTransaction.create({
@@ -13,7 +13,7 @@ export default async function onRampTrans(amount: number , provider: string) {
                 provider,
                 amount : Number(amount)*100,
                 startTime : new Date(),
-                userId : (userId),
+                userId,
                 token
             }
         })

@@ -5,7 +5,7 @@
  
  export default async function SendMoney(to:string , amountt : number): Promise<string>{
      const session = await getServerSession(authOptions)
-     if (!session || !session.user) {
+     if (!session || !session.user || !session.user.id) {
          return "Invalid user";
      }
      

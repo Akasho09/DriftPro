@@ -5,6 +5,7 @@ import { authOptions } from "./auth";
 
 export default async function ts() {
     const session = await getServerSession(authOptions)
+    if(!session) return null ;
     console.log(session.user.email)
     const data = await aksh.p2ptransactions.findMany({
         where:{

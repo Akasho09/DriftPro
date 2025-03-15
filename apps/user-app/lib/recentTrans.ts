@@ -10,7 +10,7 @@ export default async function search() {
             startTime: 'desc', // Order by createdAt in descending order (most recent first)
           },
         where:{
-            userId : (session.user.id)
+            userId : (session?.user.id)
         }, select:{
             provider: true,
             amount:true,
