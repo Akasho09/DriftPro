@@ -90,3 +90,7 @@ for redirecting to external url and reload whle page.
             })
         })
     },[])
+
+
+## render deploy errors
+redirect to http://localhost:3000/api/auth/callback/credentials 
