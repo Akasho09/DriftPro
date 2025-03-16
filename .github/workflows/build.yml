@@ -1,26 +1,37 @@
-name: what happens on PR 
+name: PR Handle
 
 on:
   pull_request:
     branches:
-      - master
       - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-      
-      - name: Install Dependencies
+          cache: 'npm'
+
+      - name: Install Backend Dependencies
+        working-directory: backend
         run: npm install
 
-      - name : Prisma setup
-        run : npm run db:generate
-        
-      - name: Run Build
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build Backend
+        working-directory: backend
+        run:
+          npx prisma generate
+
+      - name: Build Frontend
+        working-directory: frontend
         run: npm run build
