@@ -1,15 +1,21 @@
 import express from 'express';
 import aksh from "@repo/db/client";
+import cors from 'cors' 
 
 const app = express();
 app.use(express.json());
+app.use(cors())
 
 // Define payment info interface
 interface PaymentInfo {
   token: string;
 }
 
-app.get("/hdfcwebhook", async (req, res) => {
+// app.get("/hdfcwebhook" ,async (req,res)=>{
+//   res.send("HDFC PAGE Auto Verifiing payment")
+// })
+
+app.post("/hdfcwebhook", async (req, res) => {
   try {
     const paymentInfo: PaymentInfo = {
       token: req.body.token,
@@ -72,6 +78,7 @@ app.get("/hdfcwebhook", async (req, res) => {
 
     // Send response based on transaction result
     if (result.success) {
+      // res.redirect("http://localhost:3000")
       res.json({
         message: result.message,
       });

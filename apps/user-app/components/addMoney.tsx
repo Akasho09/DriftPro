@@ -5,6 +5,8 @@ import { DropDown } from "@repo/ui/drop-down";
 import { Button } from "@repo/ui/button";
 import onRampTrans from "../lib/onRampTransaction";
 import { useState } from "react";
+import axios from 'axios' 
+import { useRouter } from "next/navigation";
 
 const Banks = [
   { name: "HDFC Bank", redirectUrl: "http://localhost:3004/hdfcwebhook" },
@@ -15,11 +17,10 @@ export default function AddMoney() {
   const [amount, setAmount] = useState<number>(0);
   const [provider, setProvider] = useState<string>(Banks[0]?.name || "");
   const [redirectUrl, setRedirectUrl] = useState<string>(Banks[0]?.redirectUrl || "");
-
+  const router = useRouter()
   return (
     <Card title="Transfer Page" className="w-[400px] p-6 rounded-2xl shadow-lg border border-gray-300">
       <div className="space-y-6 pt-8 p-4 border rounded-lg shadow-lg bg-gray-100">
-        {/* Amount Input */}
         <InputCompo
           label="Amount"
           inputtype="number"
@@ -27,7 +28,6 @@ export default function AddMoney() {
           onChange={(e) => setAmount(Number(e))}
         />
 
-        {/* Bank Dropdown with Visible Icon */}
         <div className="relative w-full">
           <DropDown
             title="Select Bank"
@@ -49,14 +49,18 @@ export default function AddMoney() {
               alert("Please enter a valid amount.");
               return;
             }
-
-            await onRampTrans(amount, provider);
-
-            if (redirectUrl) {
-              window.location.href = redirectUrl;
-            } else {
-              alert("Invalid bank selection.");
+            const d = await onRampTrans(amount, provider);
+            
+            try {
+              await axios.post("http://localhost:3004/hdfcwebhook", {
+                  token : `${d.token}`
+              });
+            } catch (error) {
+              console.error("Error processing transaction:", error);
+              alert("Transaction failed. Please try again.");
             }
+            alert("Money Added Sucessfully");
+            router.refresh();
           }}
         >
           Add Money

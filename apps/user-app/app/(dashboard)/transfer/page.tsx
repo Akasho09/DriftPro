@@ -7,7 +7,7 @@ export default function A() {
         <div className="w-1/2 flex items-center justify-center"><AddMoney></AddMoney></div>
         <div className="w-1/2 pr-4">
         <Balance></Balance>
-        <ReTr ></ReTr>
+        <ReTr n={0}></ReTr>
         </div>
     </div>
   );

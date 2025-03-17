@@ -18,7 +18,8 @@ export default async function onRampTrans(amount: number , provider: string) {
             }
         })
         return {
-             message: "Done"
+             message: "Done",
+             token : token
         }
     } catch(e){
         return {

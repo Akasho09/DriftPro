@@ -11,3 +11,6 @@ npx prisma studio
 
 ## Its not what it is 
  https://driftpro.onrender.com
+
+      
+ ##   <ReTr n={0}></ReTr> how ???

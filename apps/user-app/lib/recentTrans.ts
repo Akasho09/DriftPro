@@ -5,7 +5,6 @@ import { authOptions } from "./auth"
 export default async function search() {
     const session = await getServerSession(authOptions)
     const data = await aksh.onRampTransaction.findMany({
-        take : 4,
         orderBy: {
             startTime: 'desc', // Order by createdAt in descending order (most recent first)
           },

@@ -5,8 +5,8 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "db:generate" : "cd packages/db && npx prisma generate && cd ../.." ,
-    "start-user-app" : "cd apps/user-app && npm run start",
+    "db:generate": "cd packages/db && npx prisma generate && cd ../..",
+    "start-user-app": "cd apps/user-app && npm run start",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },
@@ -24,6 +24,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "axios": "^1.8.3",
     "next-auth": "^4.24.11"
   }
 }
