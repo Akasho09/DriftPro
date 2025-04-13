@@ -17,5 +17,11 @@ export default async function search() {
             status : true
         }
     })
-    return data 
+
+    const upData =  data.map((d)=>({
+        ...d ,
+        amount : d.amount/100
+    }
+    ))
+    return upData
 }

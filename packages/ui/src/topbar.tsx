@@ -12,7 +12,7 @@ import Image from "next/image";
 
 export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
   return (
-    <div className="flex items-center justify-between px-6 py-3 bg-gray-800 text-white shadow-lg">
+    <div className="flex items-center justify-between px-6 py-4 bg-gray-800 text-white shadow-lg border rounded-lg m-4 ">
       <div className="text-xl font-bold tracking-wide text-blue-400">
         DriftPro
       </div>

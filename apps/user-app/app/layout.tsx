@@ -27,10 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Providers>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div className="min-w-screen min-h-screen bg-[#ebe6e6]">
-       <div className="fixed top-0 right-0 left-0"><AppbarClient></AppbarClient></div> 
-        <div className="mt-16">{children}</div>
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-[#ebe6e6]`}>
+        <div className="min-w-screen min-h-screen">
+       <div className="fixed top-0 right-0 left-0 ]"><AppbarClient></AppbarClient></div> 
+        <div className="mt-24">{children}</div>
         </div>
       </body>
       </Providers>

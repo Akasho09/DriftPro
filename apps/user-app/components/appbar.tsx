@@ -12,7 +12,6 @@ export function AppbarClient() {
   }
 
   return (
-    <div className="">
       <Topbar
         onSignin={signIn}
         onSignout={async () => {
@@ -21,6 +20,5 @@ export function AppbarClient() {
         }}
         user={session?.user}
       />
-    </div>
   );
 }

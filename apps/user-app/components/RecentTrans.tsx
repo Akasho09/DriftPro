@@ -19,7 +19,7 @@ export default async function ReTr({ n }: { n: number }) {
             <div className="space-y-4">
                 {data.slice(0,n).map((d, index) => (
                     <div key={index} className="p-3 border-b rounded-lg bg-gray-50 shadow-sm">
-                        <div className="text-lg font-semibold">Amount: ₹{(d.amount / 100).toFixed(2)}</div>
+                        <div className="text-lg font-semibold">Amount: ₹{d.amount.toFixed(2)}</div>
                         <div className="text-gray-700">Provider: {d.provider}</div>
                         <div className="text-sm text-gray-500">
                             Time: {new Date(d.startTime).toLocaleTimeString()}

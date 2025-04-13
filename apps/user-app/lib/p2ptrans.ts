@@ -8,12 +8,19 @@ export default async function ts() {
     if(!session) return null ;
     console.log(session.user.email)
     const data = await aksh.p2ptransactions.findMany({
+        orderBy : {
+            tTime : 'desc'
+        } ,
         where:{
             OR:[
-                {fromNum: String(session.user.email)} ,
+              {fromNum: String(session.user.email)} ,
                 {toNum : String(session.user.email)}
             ]
-        } 
+        }
     })
-    return data ;
+    const updatedData = data.map((txn) => ({
+        ...txn,
+        amount: txn.amount / 100,     
+    }));
+    return updatedData ;
 }
