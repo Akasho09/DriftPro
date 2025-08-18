@@ -26,7 +26,7 @@ export default async function SendMoney(
     return "Cannot send money to yourself";
   }
 
-  const result = await aksh.$transaction(async (tx): Promise<string> => {
+  const result = await aksh.$transaction(async (tx : any): Promise<string> => {
     // row-level lock on sender
     await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session.user.id} FOR UPDATE`;
 
