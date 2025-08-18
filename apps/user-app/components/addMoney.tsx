@@ -9,7 +9,7 @@ import axios from 'axios'
 import { useRouter } from "next/navigation";
 
 const Banks = [
-  { name: "HDFC Bank", redirectUrl: "http://localhost:3004/hdfcwebhook" },
+  { name: "HDFC Bank", redirectUrl: "https://bank-bre4.onrender.com/hdfcwebhook" },
   { name: "Axis Bank", redirectUrl: "https://www.axisbank.com/" },
 ];
 
