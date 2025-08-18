@@ -3,6 +3,17 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import type { NextAuthOptions, DefaultSession } from "next-auth";
+
+/* ------------------------- Extend NextAuth Types ------------------------- */
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      phone?: string;
+    } & DefaultSession["user"];
+  }
+}
 
 /* ------------------------- Zod Schemas ------------------------- */
 const phoneSchema = z.string().regex(/^[6-9]\d{9}$/, {
@@ -19,17 +30,13 @@ const strongPasswordSchema = z
 
 const credentialsSchema = z.object({
   phone: phoneSchema,
-  hashedPassword: strongPasswordSchema,
+  password: strongPasswordSchema, // ✅ renamed (plain password from UI)
 });
-
-type CredentialsType = z.infer<typeof credentialsSchema>;
 
 /* ------------------------- Helper Function ------------------------- */
 async function handleCredentialsAuth(credentials: any) {
   try {
-    if (!credentials) {
-      return null; // fail silently, NextAuth handles error
-    }
+    if (!credentials) return null;
 
     // ✅ Validate input
     const parsed = credentialsSchema.safeParse(credentials);
@@ -37,60 +44,53 @@ async function handleCredentialsAuth(credentials: any) {
       const errorMessages = Object.values(
         parsed.error.flatten().fieldErrors
       ).flat();
-      return Promise.reject(new Error(errorMessages.join(", ")));
+      throw new Error(errorMessages.join(", "));
     }
 
-    // ✅ Hash password
-    const hashedPassword = await bcrypt.hash(credentials.hashedPassword, 10);
+    const { phone, password } = parsed.data;
 
     // ✅ Check if user exists
-    const existingUser = await db.user.findFirst({
-      where: { mobile: credentials.phone },
-    });
+    const existingUser = await db.user.findFirst({ where: { mobile: phone } });
 
     if (existingUser) {
       const isPasswordValid = await bcrypt.compare(
-        credentials.hashedPassword,
+        password,
         existingUser.hashedPassword
       );
-      if (!isPasswordValid) {
-        return Promise.reject(new Error("Invalid phone or password."));
-      }
+      if (!isPasswordValid) throw new Error("Invalid phone or password.");
 
       return {
         id: existingUser.id.toString(),
-        email: existingUser.mobile,
+        phone: existingUser.mobile,
       };
     }
 
     // ✅ Create new user if not found
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await db.user.create({
       data: {
-        mobile: credentials.phone,
+        mobile: phone,
         hashedPassword,
       },
     });
 
     await db.balance.create({
-      data: {
-        amount: 100,
-        userId: newUser.id,
-        locked: 0,
-      },
+      data: { amount: 100, userId: newUser.id, locked: 0 },
     });
 
     return {
       id: newUser.id.toString(),
-      email: newUser.mobile,
+      phone: newUser.mobile,
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Auth Error:", error);
     return Promise.reject(new Error("Authentication failed. Please try again."));
   }
 }
 
 /* ------------------------- NextAuth Options ------------------------- */
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -99,13 +99,8 @@ export const authOptions = {
           label: "Phone",
           type: "text",
           placeholder: "1231231231",
-          required: true,
         },
-        hashedPassword: {
-          label: "Password",
-          type: "password",
-          required: true,
-        },
+        password: { label: "Password", type: "password" }, // ✅ fixed
       },
       async authorize(credentials) {
         try {
@@ -116,48 +111,51 @@ export const authOptions = {
         }
       },
     }),
+
     GoogleProvider({
-      clientId: process.env.clientId || "",
-      clientSecret: process.env.clientSecret || "",
+      clientId: process.env.clientId ?? "",
+      clientSecret: process.env.clientSecret ?? "",
     }),
   ],
 
-  secret: process.env.JWT_SECRET || "secret",
+  secret: process.env.JWT_SECRET ?? "secret",
 
   callbacks: {
-    async session({ token, session }: any) {
+    async session({ token, session }) {
       if (token?.sub) {
         session.user.id = token.sub;
       }
       return session;
     },
 
-    async signIn({ user }: any) {
+    async signIn({ user }) {
       try {
         console.log("Google/Other User:", user);
 
-        // Example user creation (test/demo)
-        const dummyUser: CredentialsType = {
-          phone: user.email,
-          hashedPassword: user.name,
-        };
+        // Hash a safe password (fallback if using Google login)
+        const fallbackPassword = await bcrypt.hash(
+          user.name || "Default@123",
+          10
+        );
 
-        await db.user.create({
-          data: {
-            mobile: "9103597816",
-            hashedPassword: "malikAaksh@1023",
+        await db.user.upsert({
+          where: { mobile: user.email ?? "unknown" },
+          update: {},
+          create: {
+            mobile: user.email ?? "unknown",
+            hashedPassword: fallbackPassword,
           },
         });
 
         return true;
       } catch (error) {
         console.error("SignIn Error:", error);
-        return false; // ❌ prevent login if DB insertion fails
+        return false;
       }
     },
   },
 
   pages: {
-    error: "/auth/error", // custom error page
+    error: "/auth/error",
   },
 };

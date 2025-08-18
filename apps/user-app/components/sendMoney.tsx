@@ -6,7 +6,7 @@ import SendMoney from "../lib/sendMoney";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Send() {
+export default function SendM() {
     const router = useRouter();
     const [amount, setAmount] = useState<number>(0);
     const [to, setTo] = useState<string>("");
