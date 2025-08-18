@@ -11,9 +11,9 @@ interface PaymentInfo {
   token: string;
 }
 
-// app.get("/hdfcwebhook" ,async (req,res)=>{
-//   res.send("HDFC PAGE Auto Verifiing payment")
-// })
+app.get("/hdfcwebhook" ,async (req,res)=>{
+  res.send("HDFC PAGE Auto Verifiing payment")
+})
 
 app.post("/hdfcwebhook", async (req, res) => {
   try {
