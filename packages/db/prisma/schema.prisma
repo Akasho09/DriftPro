@@ -24,7 +24,7 @@ model User {
   email             String?             @unique
   name              String?
   mobile            String              @unique
-  hashedPassword         String
+  hashedPassword    String
   OnRampTransaction OnRampTransaction[]
   Balance Balance[]
   sentTranactions p2ptransactions[] @relation(name: "sentTranactions")
@@ -59,4 +59,3 @@ model Balance {
   locked Int
   user   User @relation(fields: [userId], references: [id])
 }
-

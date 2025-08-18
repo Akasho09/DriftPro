@@ -1,52 +1,39 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+
+const prisma = new PrismaClient();
 
 async function main() {
-  const alice = await prisma.user.upsert({
-    where: { mobile: '9999999999' },
+  // Pre-hash passwords
+  const alicePassword = await bcrypt.hash('Akash@123', 10);
+
+  await prisma.user.upsert({
+    where: { mobile: '9797979797' },
     update: {},
     create: {
-      mobile: '9999999999',
-      // bcrypt this 
-      hashedPassword: 'alice',
-      name: 'alice',
+      mobile: '9797979797',
+      hashedPassword: alicePassword,
+      name: 'akash',
+      email : "akash09@gmail.com",
       OnRampTransaction: {
         create: {
           startTime: new Date(),
-          status: "Success",
+          status: 'Success',
           amount: 20000,
-          token: "122",
-          provider: "HDFC Bank",
+          token: '124',
+          provider: 'HDFC Bank',
         },
       },
     },
-  })
-  const bob = await prisma.user.upsert({
-    where: { mobile: '9999999998' },
-    update: {},
-    create: {
-      mobile: '9999999998',
-      hashedPassword: 'bob',
-      name: 'bob',
-      OnRampTransaction: {
-        create: {
-          startTime: new Date(),
-          status: "Failure",
-          amount: 2000,
-          token: "123",
-          provider: "HDFC Bank",
-        },
-      },
-    },
-  })
-  console.log({ alice, bob })
+  });
 }
+
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
