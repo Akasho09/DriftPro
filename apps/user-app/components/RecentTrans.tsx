@@ -13,10 +13,7 @@ interface ReTrProps {
 }
 
 export default async function ReTr({ n }: ReTrProps) {
-  const data: Transaction[] = await search();
-
-  // if n=0 → show 4, else → show all
-  const limit = n === 0 ? 4 : data.length;
+  const data = await search(); // type: Transaction[] | null
 
   if (!data || data.length === 0) {
     return (
@@ -26,10 +23,13 @@ export default async function ReTr({ n }: ReTrProps) {
     );
   }
 
+  // if n=0 → show 4, else → show all
+  const limit = n === 0 ? 4 : data.length;
+
   return (
     <Card title="Add Money Transactions" className="p-6 shadow-md rounded-xl">
       <div className="space-y-4">
-        {data.slice(0, limit).map((d : Transaction, index : number) => (
+        {data.slice(0, limit).map((d: Transaction, index: number) => (
           <div key={index} className="p-3 border-b rounded-lg bg-gray-50 shadow-sm">
             <div className="text-lg font-semibold">Amount: ₹{d.amount.toFixed(2)}</div>
             <div className="text-gray-700">Provider: {d.provider}</div>

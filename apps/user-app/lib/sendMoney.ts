@@ -1,68 +1,69 @@
-"use server"
- import { getServerSession } from "next-auth";
- import { authOptions } from "./auth";
- import aksh from "@repo/db/client";
- 
- export default async function SendMoney(to:string , amountt : number): Promise<string>{
-     const session = await getServerSession(authOptions)
-     if (!session || !session.user || !session.user.id) {
-         return "Invalid user";
-     }
-     
-     const receiver = await aksh.user.findFirst({
-         where: {
-             mobile: to
-         },
-         select: {
-             id: true , 
-             mobile : true
-         }
-     });
- 
-     if (!receiver) {
-         return "Invalid Mobile Number";
-     }
+"use server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth";
+import aksh from "@repo/db/client";
 
-     if (session.user.id === receiver.id) {
-     return "Cannot send money to yourself";
-     }
- 
+export default async function SendMoney(
+  to: string,
+  amountt: number
+): Promise<string> {
+  const session = await getServerSession(authOptions);
 
-     const t = await aksh.$transaction(async (tx) => {
-      await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session.user.id} FOR UPDATE`;
-  
-      const senderBalance = await tx.balance.findFirst({
-          where: { userId: session.user.id },
-          select: { amount: true }
-      });
-  
-      if (!senderBalance || senderBalance.amount < amountt) {
-          return "Transaction failed: Insufficient balance.";
-      }
-  
-      await tx.balance.updateMany({
-          where: { userId: session.user.id },
-          data: { amount: { decrement: Number(amountt) } }
-      });
-  
-      await tx.balance.updateMany({
-          where: { userId: receiver.id },
-          data: { amount: { increment: Number(amountt) } }
-      });
+  if (!session?.user?.id) {
+    return "Invalid user";
+  }
 
-
-      await tx.p2ptransactions.create({
-        data: {
-            fromNum: String(session.user.email),
-            toNum: String(receiver.mobile),
-            amount : Number(amountt),
-            tTime: new Date(),
-        },
-    });
-     return "Sucessully transfereed"
+  const receiver = await aksh.user.findFirst({
+    where: { mobile: to },
+    select: { id: true, mobile: true },
   });
-  return t
- }
+
+  if (!receiver) {
+    return "Invalid Mobile Number";
+  }
+
+  if (session.user.id === receiver.id) {
+    return "Cannot send money to yourself";
+  }
+
+  const result = await aksh.$transaction(async (tx): Promise<string> => {
+    // row-level lock on sender
+    await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session.user.id} FOR UPDATE`;
+
+    const senderBalance = await tx.balance.findFirst({
+      where: { userId: session.user.id },
+      select: { amount: true },
+    });
+
+    if (!senderBalance || senderBalance.amount < amountt) {
+      return "Transaction failed: Insufficient balance.";
+    }
+
+    await tx.balance.updateMany({
+      where: { userId: session.user.id },
+      data: { amount: { decrement: amountt } },
+    });
+
+    await tx.balance.updateMany({
+      where: { userId: receiver.id },
+      data: { amount: { increment: amountt } },
+    });
+
+    await tx.p2ptransactions.create({
+      data: {
+        fromNum: String(session.user.email),
+        toNum: String(receiver.mobile),
+        amount: amountt,
+        tTime: new Date(),
+      },
+    });
+
+    return "Successfully transferred";
+  });
+
+  return result;
+}
+
 
 // "use server"
 // import { getServerSession } from "next-auth";
