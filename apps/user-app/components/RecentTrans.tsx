@@ -29,7 +29,7 @@ export default async function ReTr({ n }: ReTrProps) {
   return (
     <Card title="Add Money Transactions" className="p-6 shadow-md rounded-xl">
       <div className="space-y-4">
-        {data.slice(0, limit).map((d, index) => (
+        {data.slice(0, limit).map((d : Transaction, index : number) => (
           <div key={index} className="p-3 border-b rounded-lg bg-gray-50 shadow-sm">
             <div className="text-lg font-semibold">Amount: ₹{d.amount.toFixed(2)}</div>
             <div className="text-gray-700">Provider: {d.provider}</div>
