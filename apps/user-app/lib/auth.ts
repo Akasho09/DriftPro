@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthOptions, DefaultSession } from "next-auth";
+import GitHubProvider from "next-auth/providers/github";
 
 /* ------------------------- Extend NextAuth Types ------------------------- */
 declare module "next-auth" {
@@ -32,6 +33,80 @@ const credentialsSchema = z.object({
   phone: phoneSchema,
   password: strongPasswordSchema, // ✅ renamed (plain password from UI)
 });
+
+/* ------------------------- NextAuth Options ------------------------- */
+export const authOptions: NextAuthOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        phone: {
+          label: "Phone",
+          type: "text",
+          placeholder: "9103597816",
+        },
+        password: { label: "Password", type: "password" }, // ✅ fixed
+      },
+      async authorize(credentials) {
+        try {
+          return await handleCredentialsAuth(credentials);
+        } catch (err) {
+          console.error("Authorize error:", err);
+          return null;
+        }
+      },
+    }),
+
+    GoogleProvider({
+      clientId: process.env.clientId ?? "",
+      clientSecret: process.env.clientSecret ?? "",
+    }),
+
+    GitHubProvider({
+      clientId: process.env.githubId ?? "",
+      clientSecret: process.env.githubSecret ?? "",
+    }),
+  ],
+
+  
+
+  secret: process.env.JWT_SECRET ?? "secret",
+
+  callbacks: {
+    
+    async session({ session }) {
+
+    const existingUser = await db.user.findFirst({ where: { email : session.user.email } });
+
+     if(existingUser){ 
+        session.user.id = existingUser?.id;
+        return session ;
+    }
+
+    const newUser = await db.user.create({
+      data: {
+        mobile: session.user.email || "",
+        email : session.user.email , 
+        hashedPassword : session.user?.email || ""
+      },
+    });
+
+    await db.balance.create({
+      data: { amount: 100, userId: newUser.id, locked: 0 },
+    });
+      
+      session.user.id = newUser?.id;
+      return session;
+    },
+
+  },
+
+  pages: {
+    error: "/auth/error",
+    signIn: "/auth/signup"
+  },
+};
+
 
 /* ------------------------- Helper Function ------------------------- */
 async function handleCredentialsAuth(credentials: any) {
@@ -83,79 +158,8 @@ async function handleCredentialsAuth(credentials: any) {
       id: newUser.id.toString(),
       phone: newUser.mobile,
     };
+
   } catch (error) {
-    console.error("Auth Error:", error);
     return Promise.reject(new Error("Authentication failed. Please try again."));
   }
 }
-
-/* ------------------------- NextAuth Options ------------------------- */
-export const authOptions: NextAuthOptions = {
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        phone: {
-          label: "Phone",
-          type: "text",
-          placeholder: "1231231231",
-        },
-        password: { label: "Password", type: "password" }, // ✅ fixed
-      },
-      async authorize(credentials) {
-        try {
-          return await handleCredentialsAuth(credentials);
-        } catch (err) {
-          console.error("Authorize error:", err);
-          return null;
-        }
-      },
-    }),
-
-    GoogleProvider({
-      clientId: process.env.clientId ?? "",
-      clientSecret: process.env.clientSecret ?? "",
-    }),
-  ],
-
-  secret: process.env.JWT_SECRET ?? "secret",
-
-  callbacks: {
-    async session({ token, session }) {
-      if (token?.sub) {
-        session.user.id = token.sub;
-      }
-      return session;
-    },
-
-    async signIn({ user }) {
-      try {
-        console.log("Google/Other User:", user);
-
-        // Hash a safe password (fallback if using Google login)
-        const fallbackPassword = await bcrypt.hash(
-          user.name || "Default@123",
-          10
-        );
-
-        await db.user.upsert({
-          where: { mobile: user.email ?? "unknown" },
-          update: {},
-          create: {
-            mobile: user.email ?? "unknown",
-            hashedPassword: fallbackPassword,
-          },
-        });
-
-        return true;
-      } catch (error) {
-        console.error("SignIn Error:", error);
-        return false;
-      }
-    },
-  },
-
-  pages: {
-    error: "/auth/error",
-  },
-};

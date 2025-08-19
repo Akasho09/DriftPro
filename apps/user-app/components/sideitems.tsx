@@ -15,7 +15,7 @@ export const SidebarItem = ({ href, title, icon }: { href: string; title: string
                 active:scale-95`}
             onClick={() => router.push(href)}
         >
-            <div className="text-lg">{icon}</div>
+        <div className="text-lg">{icon}</div>
             <span>{title}</span>
         </div>
     );
