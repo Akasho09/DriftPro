@@ -48,11 +48,28 @@ export default function AddMoney() {
   };
 
   return (
-    <>
+    <div className="flex justify-center items-center w-full ">
+
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg text-center space-y-3 w-[300px]">
+            <div className="text-xl font-semibold text-gray-800">⏳ Processing</div>
+            <p className="text-gray-700 text-sm">
+              ⏳ Verifying payment from the { provider } of amount <span className="font-semibold">₹{amount}</span>  .
+            </p>
+            <p className="text-gray-600 text-sm mt-1">
+              Please wait while the request is completed. <br />
+              ⚠️ Do not press back or refresh.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Page Content */}
       <Card
         title="💰 Add Money to Wallet"
-        className="h-1/2 w-full max-w-md p-0 overflow-hidden border-0 shadow-xl rounded-2xl"
+        className="w-full max-w-md p-0 overflow-hidden border-0 shadow-xl rounded-2xl"
       >
         <div className="space-y-6 pt-6 p-4 border rounded-xl bg-gray-50 ">
           {/* Amount Input */}
@@ -88,23 +105,8 @@ export default function AddMoney() {
             {loading ? "Processing..." : "Add Money"}
           </Button>
         </div>
-      </Card>
 
-      {/* Loading Overlay */}
-      {loading && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg text-center space-y-3 w-[300px]">
-            <div className="text-xl font-semibold text-gray-800">⏳ Processing</div>
-            <p className="text-gray-700 text-sm">
-              ⏳ Verifying payment from the { provider } of amount <span className="font-semibold">₹{amount}</span>  .
-            </p>
-            <p className="text-gray-600 text-sm mt-1">
-              Please wait while the request is completed. <br />
-              ⚠️ Do not press back or refresh.
-            </p>
-          </div>
-        </div>
-      )}
-    </>
+      </Card>
+    </div>
   );
 }

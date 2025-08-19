@@ -8,10 +8,9 @@ export default function A() {
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
         
         {/* Left Section - Add Money */}
-        <div className="flex justify-center ">
+       <div className=" rounded-2xl shadow-lg border border-gray-200 p-6">
           <AddMoney />
         </div>
-
         {/* Right Section - Balance + Recent Transactions */}
         <div className="space-y-6">
           <Balance />
