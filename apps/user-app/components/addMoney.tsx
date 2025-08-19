@@ -36,13 +36,8 @@ export default function AddMoney() {
         token: `${d.token}`,
       });
 
-      // Simulate 3s wait for UX
-      setTimeout(() => {
-        alert("✅ Money added successfully!");
         setLoading(false);
-        router.refresh();
-      }, 3000);
-
+        alert("✅ Money added successfully!");
         router.refresh();
 
     } catch (error) {
@@ -57,7 +52,7 @@ export default function AddMoney() {
       {/* Page Content */}
       <Card
         title="💰 Add Money to Wallet"
-        className="h-1/2 w-[420px] p-6 rounded-2xl shadow-xl border border-gray-200 hover:shadow-2xl transition"
+        className="h-1/2 w-full max-w-md p-0 overflow-hidden border-0 shadow-xl rounded-2xl"
       >
         <div className="space-y-6 pt-6 p-4 border rounded-xl bg-gray-50 ">
           {/* Amount Input */}

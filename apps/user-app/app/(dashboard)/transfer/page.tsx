@@ -8,7 +8,7 @@ export default function A() {
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
         
         {/* Left Section - Add Money */}
-        <div className="flex justify-center bg-[#ebe6e6]">
+        <div className="flex justify-center ">
           <AddMoney />
         </div>
 
