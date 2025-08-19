@@ -13,10 +13,32 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
 });
 
+
 export const metadata: Metadata = {
-  title: "D-Wallet",
+  title: "D Coins",
   description: "Simple wallet app",
+  openGraph: {
+    title: "D-Wallet",
+    description: "Well its Faster then the one you use.",
+    url: "https://driftpro.vercel.app", // replace with your site URL
+    images: [
+      {
+        url: "/openG.png", // path to your OG image in public folder
+        width: 1200,
+        height: 630,
+        alt: "D-Wallet App Preview",
+      },
+    ],
+    siteName: "D-Wallet",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "D-Wallet",
+    description: "Simple wallet app",
+    images: ["/images/opengraph.png"],
+  },
 };
+
 
 
 export default function RootLayout({
