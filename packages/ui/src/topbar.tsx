@@ -29,14 +29,14 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
       <div className="flex items-center gap-4 md:gap-6">
         {/* Avatar Link */}
         <Link
-          href={user?.image ? user?.image : "/api/auth/signin"}
+          href={user?.image ? user?.image : ""}
           className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center overflow-hidden bg-gray-200 hover:scale-105 transition-transform"
         >
           {!user?.image ? (
             <span className="text-lg">🌸</span>
           ) : (
             <Image
-              src={user.image || ""}
+              src={user.image || "/dashboard"}
               alt="User Avatar"
               width={40}
               height={40}
@@ -50,7 +50,7 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
           <h4 className="text-sm text-gray-700">
             Hello,{" "}
             <span className="font-semibold text-gray-900">
-              {(user?.email)?.split("@")[0] || "Guest"}  
+              { user?.email || "Beta User"}  
             </span>
           </h4>
         </div>

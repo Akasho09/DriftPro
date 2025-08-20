@@ -1,11 +1,3 @@
-// import { getServerSession } from "next-auth";
-
-// export const GET = async () => {
-//     const session = await getServerSession();
-//     return session?.user || { message: "You are not logged in" };
-// }
-
-
 import { getServerSession } from "next-auth"
 import { NextResponse } from "next/server";
 import {authOptions} from "../../../lib/auth";

@@ -1,8 +1,8 @@
 import { Card } from "@repo/ui/card";
-import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
 import { FaWallet, FaLock, FaCoins } from "react-icons/fa";
+import getBal from "../lib/getBal";
 
 export default async function Balance() {
   const session = await getServerSession(authOptions);
@@ -15,16 +15,8 @@ export default async function Balance() {
     );
   }
 
-  const data = await aksh.balance.findFirst({
-    where: {
-      userId: session.user.id,
-    },
-    select: {
-      amount: true,
-      locked: true,
-    },
-  });
-
+  const data = await getBal();
+  
   if (!data) {
     return (
       <h4 className="text-red-500 text-center text-lg font-semibold mt-4">
@@ -40,35 +32,35 @@ export default async function Balance() {
   return (
     <Card
       title="💳 Wallet Balance"
-      className="p-6 shadow-lg rounded-2xl bg-white border border-gray-200"
+      className="md:p-14 p-8 shadow-2xl rounded-3xl  text-white border-0"
     >
-      <div className="divide-y divide-gray-200 space-y-4 bg-gray-50 p-4 rounded-lg">
+      <div className="space-y-4 p-4 rounded-xl bg-white/10 backdrop-blur-md">
         {/* Unlocked */}
-        <div className="flex justify-between items-center py-2">
-          <span className="flex items-center gap-2 text-gray-600 font-medium">
-            <FaWallet className="text-green-500" /> Unlocked Balance
+        <div className="flex justify-between items-center py-3 px-4 rounded-xl bg-green-300/20">
+          <span className="flex items-center gap-4 text-green-900 font-semibold ">
+            <FaWallet className="text-green-400" /> Unlocked Balance
           </span>
-          <span className="text-green-600 font-semibold text-lg">
+          <span className="text-black font-bold text-lg">
             ₹{unlocked.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
           </span>
         </div>
 
         {/* Locked */}
-        <div className="flex justify-between items-center py-2">
-          <span className="flex items-center gap-2 text-gray-600 font-medium">
-            <FaLock className="text-orange-500" /> Locked Balance
+        <div className="flex justify-between items-center py-3 px-4 rounded-xl bg-orange-300/20">
+          <span className="flex items-center gap-2 text-orange-900 font-semibold">
+            <FaLock className="text-orange-400" /> Locked Balance
           </span>
-          <span className="text-orange-500 font-semibold text-lg">
+          <span className="text-black font-bold text-lg">
             ₹{locked.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
           </span>
         </div>
 
         {/* Total */}
-        <div className="flex justify-between items-center py-2 font-semibold">
-          <span className="flex items-center gap-2 text-gray-800 text-lg">
-            <FaCoins className="text-blue-500" /> Total Balance
+        <div className="flex justify-between items-center py-3 px-4 rounded-xl bg-blue-300/20">
+          <span className="flex items-center gap-2 text-blue-800 font-semibold">
+            <FaCoins className="text-blue-400" /> Total Balance
           </span>
-          <span className="text-blue-600 text-xl">
+          <span className="text-black font-bold text-xl">
             ₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
           </span>
         </div>

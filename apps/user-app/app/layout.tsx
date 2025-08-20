@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "D-Wallet",
     description: "Simple wallet app",
-    images: ["/images/opengraph.png"],
+    images: ["openG.png"],
   },
 };
 

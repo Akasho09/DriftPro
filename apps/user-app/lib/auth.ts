@@ -11,7 +11,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      phone?: string;
+      email?: string;
     } & DefaultSession["user"];
   }
 }
@@ -47,14 +47,14 @@ export const authOptions: NextAuthOptions = {
         },
         password: { label: "Password", type: "password" }, // ✅ fixed
       },
-      async authorize(credentials) {
+      async authorize( credentials ) {
         try {
           return await handleCredentialsAuth(credentials);
         } catch (err) {
           console.error("Authorize error:", err);
           return null;
         }
-      },
+      }
     }),
 
     GoogleProvider({
@@ -72,34 +72,52 @@ export const authOptions: NextAuthOptions = {
 
   secret: process.env.JWT_SECRET ?? "secret",
 
-  callbacks: {
-    
-    async session({ session }) {
+callbacks: {
+  async jwt({ token, user }) {
+    // `user` is only present on login (authorize)
+    if (user) {
+      token.id = user.id; // store id in JWT
+      token.email = user.email;
+    }
+    return token;
+  },
 
-    const existingUser = await db.user.findFirst({ where: { email : session.user.email } });
-
-     if(existingUser){ 
-        session.user.id = existingUser?.id;
-        return session ;
+  async session({ session, token }) {
+    // Expose id and phone from token
+    if (token.id) {
+      session.user.id = token.sub || "";
+      session.user.email = token.email || "";
     }
 
-    const newUser = await db.user.create({
-      data: {
-        mobile: session.user.email || "",
-        email : session.user.email , 
-        hashedPassword : session.user?.email || ""
-      },
-    });
+    // Optional: handle OAuth users
+    if (!token.id && session.user.email) {
+      const existingUser = await db.user.findFirst({
+        where: { email: session.user.email },
+      });
 
-    await db.balance.create({
-      data: { amount: 100, userId: newUser.id, locked: 0 },
-    });
-      
-      session.user.id = newUser?.id;
-      return session;
-    },
+      if (existingUser) {
+        session.user.id = existingUser.id.toString();
+      } else {
+        const newUser = await db.user.create({
+          data: {
+            email: session.user.email,
+            hashedPassword: "", // OAuth users don’t have password
+            mobile: session.user.email,
+          },
+        });
 
+        await db.balance.create({
+          data: { amount: 100, userId: newUser.id, locked: 0 },
+        });
+
+        session.user.id = newUser.id.toString();
+      }
+    }
+
+    return session;
   },
+},
+
 
   pages: {
     error: "/auth/error",
@@ -109,12 +127,13 @@ export const authOptions: NextAuthOptions = {
 
 
 /* ------------------------- Helper Function ------------------------- */
-async function handleCredentialsAuth(credentials: any) {
+async function handleCredentialsAuth( credentials: any) {
   try {
     if (!credentials) return null;
 
     // ✅ Validate input
     const parsed = credentialsSchema.safeParse(credentials);
+
     if (!parsed.success) {
       const errorMessages = Object.values(
         parsed.error.flatten().fieldErrors
@@ -122,10 +141,11 @@ async function handleCredentialsAuth(credentials: any) {
       throw new Error(errorMessages.join(", "));
     }
 
-    const { phone, password } = parsed.data;
+    const { phone , password } = parsed.data;
 
     // ✅ Check if user exists
     const existingUser = await db.user.findFirst({ where: { mobile: phone } });
+
 
     if (existingUser) {
       const isPasswordValid = await bcrypt.compare(
@@ -146,19 +166,21 @@ async function handleCredentialsAuth(credentials: any) {
     const newUser = await db.user.create({
       data: {
         mobile: phone,
+        email : phone ,
         hashedPassword,
       },
     });
 
+
     await db.balance.create({
-      data: { amount: 100, userId: newUser.id, locked: 0 },
+      data: { amount: 100, userId : newUser.id, locked: 0 },
     });
+
 
     return {
       id: newUser.id.toString(),
-      phone: newUser.mobile,
+      email : phone
     };
-
   } catch (error) {
     return Promise.reject(new Error("Authentication failed. Please try again."));
   }

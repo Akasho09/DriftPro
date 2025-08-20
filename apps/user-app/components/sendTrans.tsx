@@ -16,10 +16,12 @@ export default async function B() {
   const data = await ts();
 
   return (
+    <div className="w-full flex justify-center items-center ">
+
     <Card
       title="📑 Send/Recieve Transactions"
       subtitle="View your recent send & receive history"
-      className="p-6 shadow-md rounded-xl bg-white"
+      className="w-full max-w-md p-0 overflow-hidden border-0 shadow-xl rounded-2xl"
     >
       {!session?.user?.email ? (
         <p className="text-red-500 font-semibold text-lg">⚠️ Login First</p>
@@ -68,5 +70,7 @@ export default async function B() {
         </div>
       )}
     </Card>
+    </div>
+
   );
 }

@@ -28,7 +28,7 @@ export default function SendM() {
 
   return (
     
-    <div className="flex justify-center items-center w-full pt-4 ">
+    <div className="flex justify-center items-center w-full pt-4 from-orange-300 via-pink-500 to-red-200">
     {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg text-center space-y-3 w-[300px]">
@@ -98,41 +98,3 @@ export default function SendM() {
   );
 }
 
-
-// "use client"
-// import { Card } from "@repo/ui/card"
-// import { InputCompo } from "@repo/ui/input-compo"
-// import { Button } from "@repo/ui/button"
-// import SendMoney from "../lib/sendMoney"
-// import { useState } from "react"
-// import { useRouter } from "next/navigation"
-// export default function Send() {
-//     const Router = useRouter()
-//     const [amount,setAmount] = useState(0)
-//     const [to , setTo] = useState("")
-//     async function handle (to : string,amount: number) {
-//         console.log("to,amount")
-//         if (!to || isNaN(amount) || amount <= 0) {
-//             alert("Invalid input: Please enter a valid mobile number and amount.");
-//             return;
-//         }
-//         const response = await SendMoney(to,amount);
-//         console.log(response)
-//         alert(response); // Display transaction response
-  
-//         if (response == "Sucessully transfereed") {
-//             Router.push("/");
-//         }
-//     }
-//     return  <Card title="Send Money " className="">
-//         <InputCompo label="Mobile of Reciever" inputtype="text" onChange={(e)=>{
-//             setTo(String(e))
-//         }}></InputCompo>
-//         <InputCompo label="Amount" inputtype="number" onChange={(e)=>{
-//             setAmount(Number(e))
-//         }}></InputCompo>
-//         <Button onClick={async ()=>{
-//             handle(to,amount)
-//         }} className="mt-4 w-full bg-blue-200 text-white py-2 rounded-md hover:bg-blue-700" >Send</Button>
-//     </Card>
-// }

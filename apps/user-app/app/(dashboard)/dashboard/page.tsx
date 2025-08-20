@@ -66,7 +66,7 @@ export default function Dashboard() {
       {/* Services Section */}
       <div className="w-full max-w-5xl mb-12">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          Popular Services
+          Popular Services  <span className="text-red-500"> ( to be implemented )</span>
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[

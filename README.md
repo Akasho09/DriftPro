@@ -9,14 +9,22 @@ A secure desktop payment application designed to provide seamless transaction ha
 ---
 
 ## 🚀 Features
-- 💳 **Secure Transactions** – ACID-compliant handling of financial data with PostgreSQL + Prisma ORM.  
+- 💳 **Secure Transactions** – ACID-compliant handling of financial data with PostgreSQL + Prisma ORM. 
+- 🔐 **OAuth Authentication** – Users can securely log in via Google or GitHub using NextAuth.js.
+- 💸 **Wallet System** –
+    - Add Money: Funds are credited after verification from a simulated/hard-coded bank webhook.
+    - Send Money: Users can pseudo-transfer money to other registered users within the system.
+- ⚡ **GitHub CI/CD** – Automatically builds, tests, and deploys the app on push or pull request:
+    - Runs linting, tests, and build checks.
+    - Deploys the Dockerized monorepo to your hosting environment (AWS).
+    - Ensures that only passing commits are deployed, keeping production safe.
 - ⚡ **Seamless Experience** – Built with Next.js for both frontend and backend logic.  
 - 🛠 **Auxiliary Backend** – Express.js microservice for specialized operations.  
 - 🏗 **Monorepo Architecture** – Turborepo for modular development and scalability.  
 - 🎨 **Intuitive UI** – Tailwind CSS for a clean and responsive interface.  
 - 🐳 **Dockerized** – Consistent deployment across environments.  
-- 📜 **Transaction Pipelines** – Authentication, validation, and logging workflows integrated.  
-
+- 📜 **Transaction Pipelines** – Authentication, validation, and logging workflows integrated. 
+ 
 ---
 
 ## 🏗 Tech Stack
@@ -73,12 +81,22 @@ docker-compose up --build
 
 
 ### 🔐 Security
+- OAuth via NextAuth.js – Users can log in securely using Google or GitHub accounts.
 
 - Implements ACID-compliant transactions using PostgreSQL.
 
 - Sensitive data is encrypted at rest and in transit.
 
 - Prisma ensures safe and validated database queries.
+
+### 💸 Wallet Transactions
+
+- Add Money – Funds are added to the wallet after verification from the bankHook service, simulating a bank webhook verification.
+
+- Send Money – Users can transfer money to other registered users internally (pseudo-transactions).
+
+- Transaction Logs – All wallet operations are logged and auditable.
+
 
 ### 📈 Roadmap
 

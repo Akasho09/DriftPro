@@ -9,7 +9,7 @@ export default function SignUpPage() {
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  // const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -17,10 +17,10 @@ export default function SignUpPage() {
     e.preventDefault();
     setError(null);
 
-    if (password !== confirm) {
-      setError("Passwords do not match");
-      return;
-    }
+    // if (password !== confirm) {
+    //   setError("Passwords do not match");
+    //   return;
+    // }
 
     try {
       setLoading(true);
@@ -91,7 +91,7 @@ export default function SignUpPage() {
           </div>
 
           {/* Confirm Password */}
-          <div>
+          {/* <div>
             <label className="block text-gray-700 font-medium mb-1">
               Confirm Password
             </label>
@@ -103,7 +103,7 @@ export default function SignUpPage() {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
               required
             />
-          </div>
+          </div> */}
 
           <button
             type="submit"
