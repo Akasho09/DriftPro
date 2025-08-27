@@ -5,7 +5,9 @@ import { authOptions } from "./auth";
 export default async function onRampTrans(amount: number , provider: string) {
     const s = await getServerSession(authOptions);
     const userId = s?.user?.id ?? "anonymous"
+    
     const token = Math.random().toString()
+
     try {
         await aksh.onRampTransaction.create({
             data:{

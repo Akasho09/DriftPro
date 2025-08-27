@@ -73,19 +73,17 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.JWT_SECRET ?? "secret",
 
 callbacks: {
-  async jwt({ token, user }) {
-    // `user` is only present on login (authorize)
-    if (user) {
+
+  async session({ session, token , user }) {
+
+     if (user) {
       token.id = user.id; // store id in JWT
       token.email = user.email;
     }
-    return token;
-  },
 
-  async session({ session, token }) {
     // Expose id and phone from token
     if (token.id) {
-      session.user.id = token.sub || "";
+      session.user.id = token.id || "";
       session.user.email = token.email || "";
     }
 
@@ -93,15 +91,15 @@ callbacks: {
     if (!token.id && session.user.email) {
       const existingUser = await db.user.findFirst({
         where: { email: session.user.email },
-      });
+    });
 
-      if (existingUser) {
+    if (existingUser) {
         session.user.id = existingUser.id.toString();
       } else {
         const newUser = await db.user.create({
           data: {
             email: session.user.email,
-            hashedPassword: "", // OAuth users don’t have password
+            hashedPassword: session.user.email, // OAuth users don’t have password
             mobile: session.user.email,
           },
         });
@@ -113,9 +111,10 @@ callbacks: {
         session.user.id = newUser.id.toString();
       }
     }
-
     return session;
   },
+
+
 },
 
 
@@ -129,6 +128,7 @@ callbacks: {
 /* ------------------------- Helper Function ------------------------- */
 async function handleCredentialsAuth( credentials: any) {
   try {
+
     if (!credentials) return null;
 
     // ✅ Validate input

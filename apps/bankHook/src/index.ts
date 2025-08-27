@@ -34,6 +34,7 @@ app.post("/hdfcwebhook", async (req, res) => {
 
     const result = await aksh.$transaction(async (tx) => {
       // Check transaction status first
+
       const transaction = await tx.onRampTransaction.findFirst({
         where: {
           token: paymentInfo.token,
@@ -45,10 +46,12 @@ app.post("/hdfcwebhook", async (req, res) => {
         },
       });
 
+
       // Handle invalid transaction
       if (!transaction) {
         return { success: false, message: "Invalid Transaction" };
       }
+
 
       // Handle already processed transaction
       if (transaction.status === "Success") {

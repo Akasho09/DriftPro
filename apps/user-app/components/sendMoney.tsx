@@ -16,7 +16,7 @@ export default function SendM() {
   async function handleSend() {
     setLoading(true)
     if (!to || isNaN(amount) || amount < 1) {
-      alert("⚠️ Enter a valid mobile number & amount (min ₹1).");
+      alert("⚠️ Enter a valid mobile number or UPI id & amount (min ₹1).");
       return;
     }
 
@@ -57,7 +57,7 @@ export default function SendM() {
         {/* Form Body */}
         <div className="p-6 space-y-6 bg-gray-50">
           <InputCompo
-            label="Receiver's Mobile Number"
+            label="Receiver's Mobile Number / UPI id"
             inputtype="tel"
             onChange={(e) => setTo(String(e))}
             className="w-full"
