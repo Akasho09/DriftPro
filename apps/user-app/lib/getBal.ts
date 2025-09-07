@@ -9,7 +9,6 @@ import type { Session } from "next-auth";
 export default async function getBal() {
   const session: Session | null = await getServerSession(authOptions);
 
-  console.log("ak ", session)
   if (!session?.user.id) return null;
 
   const data = await aksh.balance.findFirst({
@@ -22,7 +21,6 @@ export default async function getBal() {
     },
   });
 
-  console.log("ak ", data)
 
   return data;
 }

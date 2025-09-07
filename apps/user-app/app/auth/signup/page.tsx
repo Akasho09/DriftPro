@@ -29,10 +29,12 @@ export default function SignUpPage() {
         redirect: false,
         phone,
         password,
+        action : "signup"
       });
 
       if (res?.error) {
         setError(res.error);
+        alert(res?.error)
       } else {
         router.push("/dashboard");
       }

@@ -20,27 +20,31 @@ export default function SignInForm() {
 
     try {
       setLoading(true);
+
       const res = await signIn("credentials", {
         redirect: false,
         phone,
         password,
         callbackUrl,
+        action : "signin"
       });
 
       if (res?.error) {
-        setError(res.error);
+        setError(res.error); // set the exact error returned from the server
+        alert(res.error);   // show it immediately to the user
       } else {
-        router.push(callbackUrl);
+        router.push(callbackUrl); // navigate to the callback URL on success
       }
-    } catch (err) {
+    } catch (err: any) {
       setError("Something went wrong. Try again.");
+      alert(err.message || err); // show fallback error message
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Sign In
@@ -53,7 +57,6 @@ export default function SignInForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Phone */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
               Phone Number
@@ -68,7 +71,6 @@ export default function SignInForm() {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
               Password
@@ -92,14 +94,12 @@ export default function SignInForm() {
           </button>
         </form>
 
-        {/* Divider */}
         <div className="my-6 flex items-center">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="mx-3 text-gray-500 text-sm">OR</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        {/* Google */}
         <button
           onClick={() => signIn("google", { callbackUrl })}
           className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
@@ -112,7 +112,6 @@ export default function SignInForm() {
           <span className="text-gray-700">Continue with Google</span>
         </button>
 
-        {/* GitHub */}
         <button
           onClick={() => signIn("github", { callbackUrl })}
           className="w-full flex items-center justify-center gap-2 py-3 bg-gray-800 text-white rounded-lg hover:bg-black transition-all mt-3"
@@ -125,7 +124,6 @@ export default function SignInForm() {
           <span>Continue with GitHub</span>
         </button>
 
-        {/* Footer */}
         <p className="mt-6 text-sm text-center text-gray-600">
           Don’t have an account?{" "}
           <a

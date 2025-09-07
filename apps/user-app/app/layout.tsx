@@ -50,7 +50,7 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
       <body className={`${geistSans.variable} ${geistMono.variable} bg-[#ebe6e6]`}>
-       <AppbarClient></AppbarClient>
+       <AppbarClient/>
         <div className="min-w-screen min-h-screen">
         <div className="mx-16">{children}</div>
         </div>

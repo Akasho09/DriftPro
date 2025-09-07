@@ -7,6 +7,7 @@ import getBal from "../lib/getBal";
 export default async function Balance() {
   const session = await getServerSession(authOptions);
 
+
   if (!session?.user?.id) {
     return (
       <h4 className="text-red-500 text-center text-lg font-semibold mt-4">

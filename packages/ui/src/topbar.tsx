@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { use } from "react";
 
 interface AppbarProps {
   user?: {
@@ -50,13 +51,13 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
           <h4 className="text-sm text-gray-700">
             Hello,{" "}
             <span className="font-semibold text-gray-900">
-              { user?.email || "Beta User"}  
+      { user?.email ? user.email : user?.name ? user.name : "Beta User" }
             </span>
           </h4>
         </div>
 
         {/* Auth Button */}
-        <button
+        <button 
           onClick={() => (user ? onSignout() : onSignin())}
           className="px-4 py-1.5 text-sm font-medium 
             bg-gradient-to-r from-blue-500 to-indigo-600 
