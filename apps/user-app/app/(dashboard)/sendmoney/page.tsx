@@ -14,17 +14,17 @@ export default function WalletDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
         {/* Left Column */}
         <div className="space-y-8">
-          {/* Send Money Section */}
-          <Send />
-
-          {/* Recent Transactions */}
-          <B />
+          <div className="bg-white shadow-md rounded-xl p-6 gap-4">
+          <div className="mb-4"><Send /></div>
+          <div><B /></div>
         </div>
 
-        {/* Right Column */}
+        </div>
+
         <div className="space-y-8">
-          {/* Contact List */}
-          <ContactList  />
+          <div className="bg-white shadow-md rounded-xl p-6">
+            <ContactList />
+          </div>
         </div>
       </div>
     </div>

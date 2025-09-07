@@ -1,4 +1,5 @@
 "use client";
+
 import { Card } from "@repo/ui/card";
 import { InputCompo } from "@repo/ui/input-compo";
 import { DropDown } from "@repo/ui/drop-down";
@@ -8,6 +9,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+// List of supported banks
 const Banks = [
   { name: "HDFC Bank", redirectUrl: "https://bank-bre4.onrender.com" },
   { name: "Axis Bank", redirectUrl: "https://www.axisbank.com/" },
@@ -32,13 +34,14 @@ export default function AddMoney() {
     try {
       const d = await onRampTrans(amount, provider);
 
+      // Notify the backend after the transaction token is received
       await axios.post('https://bank-bre4.onrender.com/hdfcwebhook', {
         token: `${d.token}`,
       });
 
-        setLoading(false);
-        alert("✅ Money added successfully!");
-        router.refresh();
+      setLoading(false);
+      alert("✅ Money added successfully!");
+      router.refresh();
 
     } catch (error) {
       console.error("Error processing transaction:", error);
@@ -48,15 +51,15 @@ export default function AddMoney() {
   };
 
   return (
-    <div className="flex justify-center items-center w-full ">
-
+    <div className="flex justify-center items-center w-full min-h-[80vh] p-4 ">
+      
       {/* Loading Overlay */}
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg text-center space-y-3 w-[300px]">
             <div className="text-xl font-semibold text-gray-800">⏳ Processing</div>
             <p className="text-gray-700 text-sm">
-              ⏳ Verifying payment from the { provider } of amount <span className="font-semibold">₹{amount}</span>  .
+              ⏳ Verifying payment from <span className="font-medium">{provider}</span> of amount <span className="font-semibold">₹{amount}</span>.
             </p>
             <p className="text-gray-600 text-sm mt-1">
               Please wait while the request is completed. <br />
@@ -66,12 +69,13 @@ export default function AddMoney() {
         </div>
       )}
 
-      {/* Page Content */}
+      {/* Main Card */}
       <Card
         title="💰 Add Money to Wallet"
         className="w-full max-w-md p-0 overflow-hidden border-0 shadow-xl rounded-2xl"
       >
         <div className="space-y-6 pt-6 p-4 border rounded-xl bg-gray-50 ">
+          
           {/* Amount Input */}
           <InputCompo
             label="Enter Amount (₹)"
@@ -80,7 +84,7 @@ export default function AddMoney() {
             onChange={(e) => setAmount(Number(e))}
           />
 
-          {/* Bank Selection */}
+          {/* Bank Selection Dropdown */}
           <DropDown
             title="Select Bank"
             items={Banks.map((b) => b.name)}
@@ -101,11 +105,12 @@ export default function AddMoney() {
           <Button
             className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-lg shadow-md hover:scale-[1.02] hover:from-blue-600 hover:to-indigo-700 transition-all"
             onClick={handleAddMoney}
+            disabled={loading}
           >
             {loading ? "Processing..." : "Add Money"}
           </Button>
-        </div>
 
+        </div>
       </Card>
     </div>
   );

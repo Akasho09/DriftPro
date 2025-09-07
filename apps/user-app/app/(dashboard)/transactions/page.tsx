@@ -1,24 +1,24 @@
 import RecentT from "../../../components/sendTrans";
 import Balance from "../../../components/Balance";
 import ReTr from "../../../components/RecentTrans";
-import { Card } from "@repo/ui/card";
 
 export default function TransactionsPage() {
   return (
-    <div className="w-full pt-24">
-    <Card
-      title="Recent Transactions"
-      className="w-full shadow-md rounded-xl m-4 bg-white"
-    >
-      <div className="divide-y divide-gray-300">
-        <div className="py-4">
+    <div className="min-h-screen w-full pt-28 px-4 flex flex-col items-center ">
+      {/* Grid for RecentT and Recent Transactions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl shadow-md rounded-xl bg-white p-4">
+        <div>
           <RecentT />
         </div>
-        <div className="py-4">
+        <div>
           <ReTr n={1} />
         </div>
       </div>
-    </Card></div>
-    
+
+      {/* Balance Section */}
+      <div className="mt-8 w-full max-w-4xl">
+        <Balance />
+      </div>
+    </div>
   );
 }

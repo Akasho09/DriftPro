@@ -2,17 +2,26 @@ import AddMoney from "../../../components/addMoney";
 import Balance from "../../../components/Balance";
 import ReTr from "../../../components/RecentTrans";
 
-export default function A() {
+export default function WalletPage() {
   return (
-    <div className="min-h-screen w-full pt-36 pb-10 px-16 flex items-start justify-center">
-      <div className="flex flex-col gap-8">
+    <div className="mt-24 container mx-auto px-4 py-8">
+      <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
         
-        <div className="flex gap-8">
+        {/* Add Money Section */}
+        <div className="w-full">
           <AddMoney />
-          <div className="w-full"><Balance /></div>
         </div>
 
-          <ReTr n={0} />
+        {/* Balance Section */}
+        <div className="w-full">
+          <Balance />
+        </div>
+        
+        {/* Recent Transactions spans full width on small screens and two columns on larger */}
+        <div className="md:col-span-2 w-full">
+          <ReTr n={1} />
+        </div>
+        
       </div>
     </div>
   );
