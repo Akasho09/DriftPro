@@ -1,64 +1,74 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect, FormEvent } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function SignInForm() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  // ✅ Redirect authenticated users
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      router.push("/");
+    }
+  }, [session, status, router]);
+
+  // ✅ Handle form submit
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     try {
-      setLoading(true);
-
       const res = await signIn("credentials", {
         redirect: false,
         phone,
         password,
         callbackUrl,
-        action : "signin"
+        action: "signin",
       });
 
       if (res?.error) {
-        setError(res.error); // set the exact error returned from the server
-        alert(res.error);   // show it immediately to the user
+        setError(res.error);
       } else {
-        router.push(callbackUrl); // navigate to the callback URL on success
+        router.push(callbackUrl);
       }
-    } catch (err: any) {
-      setError("Something went wrong. Try again.");
-      alert(err.message || err); // show fallback error message
+    } catch (err) {
+      console.error("Sign-in error:", err);
+      setError("Something went wrong. Please try again later.");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-3xl p-10 shadow-2xl border border-pink-200">
+        <h1 className="text-3xl font-extrabold text-center text-green-700 mb-6">
           Sign In
         </h1>
 
         {error && (
-          <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-lg">
+          <div className="mb-4 p-3 text-sm text-pink-700 bg-pink-100 rounded-lg text-center">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* 📱 Phone Number */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
+            <label className="block text-green-700 font-medium mb-1">
               Phone Number
             </label>
             <input
@@ -66,13 +76,14 @@ export default function SignInForm() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="9103597816"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full px-4 py-2 border border-green-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:outline-none transition"
               required
             />
           </div>
 
+          {/* 🔑 Password */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
+            <label className="block text-green-700 font-medium mb-1">
               Password
             </label>
             <input
@@ -80,43 +91,51 @@ export default function SignInForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="********"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="w-full px-4 py-2 border border-green-300 rounded-xl focus:ring-2 focus:ring-pink-300 focus:outline-none transition"
               required
             />
           </div>
 
+          {/* 🔘 Sign In Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all"
+            className={`w-full py-3 rounded-xl text-white font-semibold transition-all duration-300 ${
+              loading
+                ? "bg-green-300 cursor-not-allowed"
+                : "bg-green-500 hover:bg-pink-400 shadow-md hover:shadow-lg"
+            }`}
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
+        {/* Divider */}
         <div className="my-6 flex items-center">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="mx-3 text-gray-500 text-sm">OR</span>
-          <div className="flex-grow border-t border-gray-300"></div>
+          <div className="flex-grow border-t border-green-200"></div>
+          <span className="mx-3 text-green-400 text-sm">OR</span>
+          <div className="flex-grow border-t border-green-200"></div>
         </div>
 
+        {/* 🌐 Google Sign-In */}
         <button
           onClick={() => signIn("google", { callbackUrl })}
-          className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+          className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-green-300 rounded-xl hover:bg-green-50 transition"
         >
-          <img
+          <Image
             src="https://www.svgrepo.com/show/355037/google.svg"
             alt="Google"
             className="w-5 h-5"
           />
-          <span className="text-gray-700">Continue with Google</span>
+          <span className="text-green-700">Continue with Google</span>
         </button>
 
+        {/* 💻 GitHub Sign-In */}
         <button
           onClick={() => signIn("github", { callbackUrl })}
-          className="w-full flex items-center justify-center gap-2 py-3 bg-gray-800 text-white rounded-lg hover:bg-black transition-all mt-3"
+          className="w-full flex items-center justify-center gap-2 py-3 mt-3 bg-green-700 text-white rounded-xl hover:bg-pink-400 transition"
         >
-          <img
+          <Image
             src="https://www.svgrepo.com/show/475654/github-color.svg"
             alt="GitHub"
             className="w-5 h-5 bg-white rounded-full"
@@ -124,14 +143,14 @@ export default function SignInForm() {
           <span>Continue with GitHub</span>
         </button>
 
-        <p className="mt-6 text-sm text-center text-gray-600">
+        <p className="mt-6 text-sm text-center text-green-600">
           Don’t have an account?{" "}
-          <a
+          <Link
             href="/auth/signup"
-            className="text-blue-600 hover:underline font-medium"
+            className="text-pink-500 hover:underline font-medium"
           >
             Sign Up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

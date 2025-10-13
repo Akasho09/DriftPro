@@ -20,7 +20,33 @@ export default async function getBal() {
       locked: true,
     },
   });
-
-
   return data;
+}
+
+
+export async function getContacts () {
+  const session: Session | null = await getServerSession(authOptions);
+
+  try {
+    const users = await aksh.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        mobile: true
+      },
+      where: {
+        NOT: {
+          mobile: session?.user.mobile,
+        },
+      },
+      orderBy: {
+        name: "asc", 
+      },
+    });
+
+    return users;
+  } catch (error) {
+    console.error("❌ Error fetching contacts:", error);
+    return [];
+  }
 }

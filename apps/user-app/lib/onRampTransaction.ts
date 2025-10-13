@@ -2,6 +2,8 @@
 import aksh from "@repo/db/client"
 import { getServerSession } from "next-auth"
 import { authOptions } from "./auth";
+import redis from "./redis";
+
 export default async function onRampTrans(amount: number , provider: string) {
     const s = await getServerSession(authOptions);
     const userId = s?.user?.id ?? "anonymous"
@@ -19,6 +21,7 @@ export default async function onRampTrans(amount: number , provider: string) {
                 token
             }
         })
+        await redis.del(`${s?.user.id}Addmoney`)
         return {
              message: "Done",
              token : token

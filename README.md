@@ -1,16 +1,20 @@
 # DriftPro – Paytm for Desktop
 
 ## ER Diagram
-![alt text](image.png)
+![alt text](Archi.png)
 
 
 A secure desktop payment application designed to provide seamless transaction handling with a modern tech stack. DriftPro combines the reliability of PostgreSQL with Prisma ORM and the flexibility of Next.js in a monorepo architecture powered by Turborepo.
 
 ---
-
+    
 ## 🚀 Features
 - 💳 **Secure Transactions** – ACID-compliant handling of financial data with PostgreSQL + Prisma ORM. 
 - 🔐 **OAuth Authentication** – Users can securely log in via Google or GitHub using NextAuth.js.
+    ### 1. Google OAuth
+    - Allows users to log in using their Google accounts.
+    ### 2. GitHub OAuth
+    - Allows users to log in using their GitHub accounts.
 - 💸 **Wallet System** –
     - Add Money: Funds are credited after verification from a simulated/hard-coded bank webhook.
     - Send Money: Users can pseudo-transfer money to other registered users within the system.
@@ -38,7 +42,7 @@ A secure desktop payment application designed to provide seamless transaction ha
 ---
 
 ## 📂 Monorepo Structure
-
+```yml
 driftpro/
 ├── apps/
 │   ├── user-app/        # Next.js frontend + backend logic
@@ -50,7 +54,7 @@ driftpro/
 ├── prisma/                 # Prisma schema & migrations
 ├── docker/                 # Docker setup & orchestration
 └── turbo.json              # Turborepo configuration
-
+```
 
 ---
 

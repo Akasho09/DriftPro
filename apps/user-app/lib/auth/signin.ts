@@ -12,7 +12,7 @@ export async function signin({ phone, password }: SigninParams) {
     throw new Error("User not found");
   }
 
-  const isValid = await bcrypt.compare(password, user.hashedPassword);
+  const isValid = await bcrypt.compare(password, user.hashedPassword || "");
   if (!isValid) {
     throw new Error("Invalid Password");
   }
@@ -20,5 +20,6 @@ export async function signin({ phone, password }: SigninParams) {
   return {
     id: user.id.toString(),
     email: user.email,
+    mobile : user.mobile
   };
 }

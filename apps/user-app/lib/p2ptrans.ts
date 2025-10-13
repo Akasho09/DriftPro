@@ -4,21 +4,22 @@ import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import type { Session } from "next-auth";
+import redis from "./redis";
 
-/* -------------------- Types -------------------- */
-type Transaction = {
-  id: number;
-  fromNum: string;
-  toNum: string;
+export interface Transaction {
   amount: number;
+  id: number;
+  senderId: string;
+  receiverId: string;
+  recMobile?: string | null ,
+  sendMobile? : string | null ,
   tTime: Date | null;
-};
+}
 
-/* -------------------- Function -------------------- */
 export default async function ts(): Promise<Transaction[] | null> {
-  const session: Session | null = await getServerSession(authOptions);
 
-  if (!session?.user?.email) return null;
+  const session: Session | null = await getServerSession(authOptions);
+  if (!session?.user) return null;
 
   const data = await aksh.p2ptransactions.findMany({
     orderBy: {
@@ -26,16 +27,16 @@ export default async function ts(): Promise<Transaction[] | null> {
     },
     where: {
       OR: [
-        { fromNum: session.user.email },
-        { toNum: session.user.email },
+        { senderId: session.user.id },
+        { receiverId: session.user.id },
       ],
     },
   });
 
   const updatedData: Transaction[] = data.map((txn : Transaction) => ({
     ...txn,
-    amount: txn.amount / 100, // ✅ Normalize amount
+    amount: txn.amount / 100, 
   }));
-
+  await redis.set(`${session.user.id}sendMoney` , JSON.stringify(updatedData) , "EX" , 300)
   return updatedData;
 }

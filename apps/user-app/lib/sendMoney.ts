@@ -2,9 +2,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import aksh from "@repo/db/client";
+import redis from "./redis";
 
 export default async function SendMoney(
-  to: string,
+  toNum: string,
   amountt: number
 ): Promise<string> {
   const session = await getServerSession(authOptions);
@@ -14,9 +15,16 @@ export default async function SendMoney(
   }
 
   const receiver = await aksh.user.findFirst({
-    where: { mobile: to },
+    where: { mobile : toNum },
+    select: { id: true },
+  });
+    
+  const sender = await aksh.user.findFirst({
+    where : {id : session.user.id } ,
     select: { id: true, mobile: true },
   });
+  
+  if(!sender) return "Login First";
 
   if (!receiver) {
     return "Invalid Mobile Number";
@@ -35,9 +43,7 @@ export default async function SendMoney(
       select: { amount: true },
     });
 
-    if (!senderBalance || senderBalance.amount < amountt) {
-      return "Transaction failed: Insufficient balance.";
-    }
+    if (!senderBalance || senderBalance.amount < amountt) return "Transaction failed: Insufficient balance.";
 
     await tx.balance.updateMany({
       where: { userId: session.user.id },
@@ -51,13 +57,18 @@ export default async function SendMoney(
 
     await tx.p2ptransactions.create({
       data: {
-        fromNum: String(session.user.email),
-        toNum: String(receiver.mobile),
+        senderId : String(sender?.id),
+        receiverId: String(receiver.id),
+        recMobile :  toNum , 
+        sendMobile :  sender?.mobile || "MOBILE_UNKNOWN", 
         amount: amountt,
         tTime: new Date(),
       },
     });
-
+    const key1 = `${receiver.id}sendMoney`
+    const key2 = `${session.user.id}sendMoney`
+    await redis.del(key1)
+    await redis.del(key2)
     return "Successfully transferred";
   });
 

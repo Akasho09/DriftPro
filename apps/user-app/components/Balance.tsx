@@ -1,71 +1,85 @@
+import React from "react";
 import { Card } from "@repo/ui/card";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
 import { FaWallet, FaLock, FaCoins } from "react-icons/fa";
 import getBal from "../lib/getBal";
+import clsx from "clsx";
 
-export default async function Balance() {
+interface BalanceData {
+  amount: number;
+  locked: number;
+}
+
+type CardVariant = "default" | "outlined" | "gradient" | "fancy";
+
+export default async function Balance(): Promise<React.ReactElement> {
   const session = await getServerSession(authOptions);
-
 
   if (!session?.user?.id) {
     return (
-      <h4 className="text-red-500 text-center text-lg font-semibold mt-4">
-        Please login to view your balance.
-      </h4>
+      <p className="text-red-500 text-center font-medium">
+        Login to view balance
+      </p>
     );
   }
 
-  const data = await getBal();
-  
+  const data: BalanceData | null = await getBal();
   if (!data) {
     return (
-      <h4 className="text-red-500 text-center text-lg font-semibold mt-4">
-        Balance Not Found
-      </h4>
+      <p className="text-red-500 text-center font-medium">
+        Balance not found
+      </p>
     );
   }
 
-  const unlocked = (data.amount / 100) || 0;
+  const unlocked = data.amount / 100 || 0;
   const locked = data.locked || 0;
   const total = unlocked + locked;
 
+  const items = [
+    {
+      label: "Unlocked",
+      value: unlocked,
+      icon: <FaWallet />,
+      variant : "default",
+      iconColor: "text-green-500",
+      description: "This is your unlocked balance, ready to use",
+    },
+    {
+      label: "Locked",
+      value: locked,
+      icon: <FaLock />,
+      variant: "outlined",
+      iconColor: "text-pink-500",
+      description: "Locked funds are not currently accessible",
+    },
+    {
+      label: "Total",
+      value: total,
+      icon: <FaCoins />,
+      variant: "default",
+      iconColor: "text-black",
+      description: "Your total balance including unlocked and locked funds",
+    },
+  ];
+
   return (
-    <Card
-      title="💳 Wallet Balance"
-      className="md:p-14 p-8 shadow-2xl rounded-3xl  text-white border-0"
-    >
-      <div className="space-y-4 p-4 rounded-xl bg-white/10 backdrop-blur-md">
-        {/* Unlocked */}
-        <div className="flex justify-between items-center py-3 px-4 rounded-xl bg-green-300/20">
-          <span className="flex items-center gap-4 text-green-900 font-semibold ">
-            <FaWallet className="text-green-400" /> Unlocked Balance
-          </span>
-          <span className="text-black font-bold text-lg">
-            ₹{unlocked.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-          </span>
-        </div>
-
-        {/* Locked */}
-        <div className="flex justify-between items-center py-3 px-4 rounded-xl bg-orange-300/20">
-          <span className="flex items-center gap-2 text-orange-900 font-semibold">
-            <FaLock className="text-orange-400" /> Locked Balance
-          </span>
-          <span className="text-black font-bold text-lg">
-            ₹{locked.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-          </span>
-        </div>
-
-        {/* Total */}
-        <div className="flex justify-between items-center py-3 px-4 rounded-xl bg-blue-300/20">
-          <span className="flex items-center gap-2 text-blue-800 font-semibold">
-            <FaCoins className="text-blue-400" /> Total Balance
-          </span>
-          <span className="text-black font-bold text-xl">
-            ₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-          </span>
-        </div>
+    <div className="flex justify-center w-full p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl">
+        {items.map((item) => (
+          <Card
+            key={item.label}
+            title={item.label}
+            icon={<span className={clsx("text-xl", item.iconColor)}>{item.icon}</span>}
+            subtitle={`₹${item.value.toFixed(2)}`}
+            variant={item.variant as CardVariant}
+            className="w-full cursor-pointer transform transition-all duration-300 hover:scale-[1.03] bg-white/90 border border-green-200"
+          >
+            <p className="mt-2 text-sm text-black/70">{item.description}</p>
+          </Card>
+        ))}
       </div>
-    </Card>
+    </div>
   );
 }

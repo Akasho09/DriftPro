@@ -4,8 +4,8 @@ import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import type { Session } from "next-auth";
+import redis from "./redis";
 
-/* -------------------- Types -------------------- */
 type Transaction = {
   amount: number;
   provider: string;
@@ -13,7 +13,6 @@ type Transaction = {
   status: "Success" | "Failure" | "Processing";
 };
 
-/* -------------------- Function -------------------- */
 export default async function search(): Promise<Transaction[] | null> {
   const session: Session | null = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
@@ -37,6 +36,6 @@ export default async function search(): Promise<Transaction[] | null> {
     ...d,
     amount: d.amount / 100, // normalize
   }));
-
+  await redis.set(`${session.user.id}addMoney` , JSON.stringify(upData) , "EX" , 300)
   return upData;
 }

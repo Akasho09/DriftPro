@@ -6,7 +6,7 @@ export default function Layout({
   children: React.ReactNode;
 }): React.ReactElement {
   return (
-    <div className="flex ">
+    <div  className="flex items-center">
       {children}
     </div>
   );

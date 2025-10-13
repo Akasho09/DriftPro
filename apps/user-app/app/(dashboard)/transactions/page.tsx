@@ -1,24 +1,24 @@
-import RecentT from "../../../components/sendTrans";
+import { Suspense } from "react";
 import Balance from "../../../components/Balance";
-import ReTr from "../../../components/RecentTrans";
+import AddMoneyTransactions from "../../../components/RecentTrans";
+import SendReceiveTransactions from "../../../components/sendTrans";
 
-export default function TransactionsPage() {
+export default function DashboardPage() {
   return (
-    <div className="min-h-screen w-full pt-28 px-4 flex flex-col items-center ">
-      {/* Grid for RecentT and Recent Transactions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl shadow-md rounded-xl bg-white p-4">
-        <div>
-          <RecentT />
-        </div>
-        <div>
-          <ReTr n={1} />
-        </div>
-      </div>
-
-      {/* Balance Section */}
-      <div className="mt-8 w-full max-w-4xl">
+    <div className="min-h-screen w-full pt-28 px-4 flex flex-col items-center">
+      <section className="w-full max-w-4xl mb-8">
         <Balance />
-      </div>
+      </section>
+
+      <section className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 items-start">
+        <Suspense fallback={<div className="p-6 text-gray-500">Loading Add Money Transactions...</div>}>
+          <AddMoneyTransactions n={4} />
+        </Suspense>
+
+        <Suspense fallback={<div className="p-6 text-gray-500">Loading Send/Receive Transactions...</div>}>
+          <SendReceiveTransactions />
+        </Suspense>
+      </section>
     </div>
   );
 }

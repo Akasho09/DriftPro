@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Providers } from "./provider";
 import "./globals.css";
 import { AppbarClient } from "../components/appbar";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -13,17 +14,16 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
 });
 
-
 export const metadata: Metadata = {
   title: "D Coins",
   description: "Simple wallet app",
   openGraph: {
     title: "D-Wallet",
-    description: "Well its Faster then the one you use.",
-    url: "https://driftpro.vercel.app", // replace with your site URL
+    description: "Well it's faster than the one you use.",
+    url: "https://driftpro.vercel.app",
     images: [
       {
-        url: "/openG.png", // path to your OG image in public folder
+        url: "/openG.png",
         width: 1200,
         height: 630,
         alt: "D-Wallet App Preview",
@@ -39,8 +39,6 @@ export const metadata: Metadata = {
   },
 };
 
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -49,12 +47,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Providers>
-      <body className={`${geistSans.variable} ${geistMono.variable} bg-[#ebe6e6]`}>
-       <AppbarClient/>
-        <div className="min-w-screen min-h-screen">
-        <div className="mx-16">{children}</div>
-        </div>
-      </body>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} bg-[#ebe6e6] min-h-screen`}
+        >
+          <AppbarClient />
+          <div><Toaster/></div>
+
+          <main className="max-w-6xl mx-auto pt-12 px-4 w-full">
+            {children}
+          </main>
+        </body>
       </Providers>
     </html>
   );

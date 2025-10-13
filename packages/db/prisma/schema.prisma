@@ -18,27 +18,40 @@ enum OnRampStatus {
   Processing
 }
 
+enum Provider {
+  local 
+  google
+  github
+}
+
 
 model User {
   id                String              @id @default(uuid())
   email             String?             @unique
   name              String?
-  mobile            String              @unique
-  hashedPassword    String
+  mobile            String?             @unique
+  isMobileVerified Boolean @default(false)
+  hashedPassword    String?
+  provider          Provider?
+  providerAccountId String?            
+
   OnRampTransaction OnRampTransaction[]
   Balance Balance[]
   sentTranactions p2ptransactions[] @relation(name: "sentTranactions")
+
   toTranactions p2ptransactions[] @relation(name: "toTranactions")
 }
 
 model p2ptransactions {
   id Int @id @default(autoincrement())
-  fromNum String
-  toNum String
+  senderId   String
+  receiverId String
+  recMobile String?
+  sendMobile String?
   tTime DateTime? @default(now())
   amount Int 
-  from User @relation(name : "sentTranactions" ,fields: [fromNum] , references: [mobile]) 
-  to User @relation(name : "toTranactions" ,fields: [toNum] , references: [mobile])
+  from User @relation(name : "sentTranactions" ,fields: [senderId] , references: [id]) 
+  to User @relation(name : "toTranactions" ,fields: [receiverId] , references: [id])
 }
 
 model OnRampTransaction {

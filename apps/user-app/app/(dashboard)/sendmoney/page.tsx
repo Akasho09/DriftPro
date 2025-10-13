@@ -1,32 +1,21 @@
-import Send from "../../../components/sendMoney";
-import B from "../../../components/sendTrans";
-import ContactList from "../../../components/ContactList";
+// NO "use client" here! This is a Server Component.
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../../lib/auth";
+import { redirect } from "next/navigation";
+import { WalletClient } from "../../../components/SendPage";
 
-export default function WalletDashboard() {
-  return (
-    <div className="min-h-screen w-full pt-28 px-6 flex flex-col items-center">
-      {/* Page Title */}
-      <h1 className="text-4xl font-extrabold text-gray-800 mb-10 flex items-center gap-2">
-        💳 Wallet Dashboard
-      </h1>
+export default async function SendMoneyPage() {
+  const session = await getServerSession(authOptions);
 
-      {/* Layout Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
-        {/* Left Column */}
-        <div className="space-y-8">
-          <div className="bg-white shadow-md rounded-xl p-6 gap-4">
-          <div className="mb-4"><Send /></div>
-          <div><B /></div>
-        </div>
+  // Server-side authentication and redirection is handled here.
+  if (!session?.user) {
+    redirect("/auth/signup");
+  }
+  if (!session.user.mobile) {
+    // You might want to pass a query param here to show an alert/toast on the client:
+    redirect("/auth/signup?missing_mobile=true");
+  }
 
-        </div>
-
-        <div className="space-y-8">
-          <div className="bg-white shadow-md rounded-xl p-6">
-            <ContactList />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  // Render the Client Component, passing no props needed since it handles its own UI.
+  return <WalletClient />;
 }

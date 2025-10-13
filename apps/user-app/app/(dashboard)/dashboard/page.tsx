@@ -1,121 +1,226 @@
 "use client";
-
 import Link from "next/link";
-import Image from "next/image";
 import { Card } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
+import { Loader } from "@repo/ui/loader";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+// Hook for fade-up reveal
+function useReveal(delay = 0) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              node.classList.add("opacity-100", "translate-y-0");
+              node.classList.remove("opacity-0", "translate-y-8");
+            }, delay);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return ref;
+}
+
+const POPULAR_SERVICES = [
+  { name: "📱 Mobile Recharge", href: "/recharge" },
+  { name: "⚡ Electricity Bill", href: "/electricity" },
+  { name: "💧 Water Bill", href: "/water" },
+  { name: "🎟️ Movie Tickets", href: "/movies" },
+  { name: "✈️ Flight Booking", href: "/flights" },
+  { name: "🚕 Cab Booking", href: "/cabs" },
+  { name: "🍔 Food Order", href: "/food" },
+  { name: "🛍️ Shopping", href: "/shopping" },
+];
 
 export default function Dashboard() {
+  const [loadingLink, setLoadingLink] = useState<string | null>(null);
+  const router = useRouter();
+
+  const headerRef = useReveal();
+  const offerRef = useReveal(100);
+  const coreRef = useReveal(200);
+  const servicesRef = useReveal(300);
+  const bottomRef = useReveal(400);
+
+  const handleNavigation = useCallback(
+    (href: string) => {
+      setLoadingLink(href);
+      setTimeout(() => router.push(href), 400);
+    },
+    [router]
+  );
+
+  const getButtonContent = (href: string) =>
+    loadingLink === href ? <Loader size="sm" /> : "Go →";
+
   return (
-    <div className="min-h-screen w-full flex flex-col items-center pt-28 pb-4">
-      {/* Page Title */}
-      <h1 className="text-4xl font-bold text-gray-800 mb-10">Dashboard</h1>
-
-      {/* Advertisement Banner */}
-      <Card
-        title="🔥 Exclusive Offer"
-        subtitle="Get 10% cashback on your first UPI transaction this month!"
-        className="w-full max-w-5xl mb-12 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white relative overflow-hidden"
-        variant="gradient"
-        footer={
-          <Link
-            href="/offers"
-            className="inline-block px-5 py-2 bg-white text-purple-600 font-semibold rounded-lg shadow hover:bg-gray-100 transition"
-          >
-            Claim Now
-          </Link>
-        }
+    <div className="min-h-screen w-full flex flex-col items-center justify-start pt-24 pb-16 px-4 sm:px-8">
+      
+      {/* Header */}
+      <header
+        ref={headerRef}
+        className="text-center mb-12 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
-        <div className="hidden md:block absolute right-6 top-1/2 -translate-y-1/2">
-          <Image
-            src="https://images.unsplash.com/photo-1599050751795-6cdaafbc2319?q=80&w=3628&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="Offer Banner"
-            width={220}
-            height={150}
-            className="rounded-xl shadow-lg"
-          />
-        </div>
-      </Card>
-      {/* Action Banners */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl mb-12">
-        <Card
-          title="💸 Send Money"
-          subtitle="Send money instantly to anyone using phone number."
-          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-          variant="gradient"
-          footer={<Link href="/sendmoney">Go →</Link>}
-        />
+        <h1 className="text-5xl font-extrabold text-stone-800 mb-4 tracking-tight">
+          Your <span className="text-emerald-600">Unified</span> Dashboard
+        </h1>
+        <p className="text-xl text-stone-500">
+          Manage your essential services with clarity.
+        </p>
+      </header>
 
+      {/* Offer Banner */}
+      <div
+        ref={offerRef}
+        className="relative w-full max-w-5xl mb-16 opacity-0 translate-y-8 transition-all duration-700 ease-out"
+      >
         <Card
-          title="💰 Add Money"
-          subtitle="Add funds to your wallet securely using UPI or Card."
-          className="bg-gradient-to-r from-green-500 to-green-600 text-white"
+          title="🎉 Special Offer: Enjoy 10% Cashback!"
+          subtitle="Get 10% cashback on your first UPI transaction this month (up to ₹500). Limited time only."
+          className="bg-gradient-to-br from-emerald-500 to-indigo-500 text-white shadow-lg rounded-2xl p-8"
           variant="gradient"
-          footer={<Link href="/transfer">Go →</Link>}
-        />
-
-        <Card
-          title="📊 Wallet & History"
-          subtitle="View wallet balance and check transaction history anytime."
-          className="bg-gradient-to-r from-purple-500 to-purple-600 text-white"
-          variant="gradient"
-          footer={<Link href="/transactions">Go →</Link>}
+          footer={
+            <Link
+              href="/offers"
+              className="inline-block px-6 py-3 bg-stone-700 text-stone-100 font-bold rounded-full text-lg shadow-md hover:bg-emerald-600 transition transform hover:scale-[1.02] active:scale-95 duration-200"
+            >
+              Claim Your Cashback Now
+            </Link>
+          }
         />
       </div>
 
-      {/* Services Section */}
-      <div className="w-full max-w-5xl mb-12">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          Popular Services  <span className="text-red-500"> ( to be implemented )</span>
+      {/* Core Actions */}
+      <div
+        ref={coreRef}
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mb-20 opacity-0 translate-y-8 transition-all duration-700 ease-out"
+      >
+        <Card
+          title="💸 Send Money"
+          subtitle="Send funds instantly to anyone using their phone number or UPI ID securely."
+          className="bg-gradient-to-br from-blue-400 to-indigo-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
+          variant="gradient"
+          footer={
+            <Button
+              onClick={() => handleNavigation("/sendmoney")}
+              disabled={loadingLink === "/sendmoney"}
+              className="bg-stone-700 hover:bg-emerald-600 text-stone-100"
+            >
+              {getButtonContent("/sendmoney")}
+            </Button>
+          }
+        />
+
+        <Card
+          title="💳 Add Money"
+          subtitle="Replenish your wallet securely using UPI, Card, or Netbanking options."
+          className="bg-gradient-to-br from-emerald-400 to-teal-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
+          variant="gradient"
+          footer={
+            <Button
+              onClick={() => handleNavigation("/addmoney")}
+              disabled={loadingLink === "/addmoney"}
+              className="bg-stone-700 hover:bg-emerald-600 text-stone-100"
+            >
+              {getButtonContent("/addmoney")}
+            </Button>
+          }
+        />
+
+        <Card
+          title="📈 Wallet & History"
+          subtitle="Access your current wallet balance and comprehensive transaction records easily."
+          className="bg-gradient-to-br from-purple-400 to-pink-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
+          variant="gradient"
+          footer={
+            <Button
+              onClick={() => handleNavigation("/transactions")}
+              disabled={loadingLink === "/transactions"}
+              className="bg-stone-700 hover:bg-emerald-600 text-stone-100"
+            >
+              {getButtonContent("/transactions")}
+            </Button>
+          }
+        />
+      </div>
+
+      {/* Essential Services */}
+      <section
+        ref={servicesRef}
+        className="w-full max-w-5xl mb-20 opacity-0 translate-y-8 transition-all duration-700 ease-out"
+      >
+        <h2 className="text-3xl font-extrabold text-stone-800 mb-8 border-b-2 border-stone-300 pb-2 text-center md:text-left">
+          Essential Services
+          <span className="text-sm text-red-500 ml-2 font-normal">(Coming Soon)</span>
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { name: "📱 Mobile Recharge", href: "/recharge" },
-            { name: "💡 Electricity Bill", href: "/electricity" },
-            { name: "🚰 Water Bill", href: "/water" },
-            { name: "🎟️ Movie Tickets", href: "/movies" },
-            { name: "✈️ Flight Booking", href: "/flights" },
-            { name: "🚖 Cab Booking", href: "/cabs" },
-            { name: "🍔 Food Order", href: "/food" },
-            { name: "📦 Shopping", href: "/shopping" },
-          ].map((service, idx) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+          {POPULAR_SERVICES.map((service, idx) => (
             <Card
               key={idx}
               title={service.name}
-              className="p-4 hover:shadow-lg hover:scale-105 transition-transform text-center"
+              className="p-6 bg-stone-200 border border-stone-300 rounded-xl text-center shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 text-stone-700"
               variant="outlined"
               footer={
-                <Link href={service.href} className="text-blue-600 text-sm">
-                  Explore →
+                <Link href={service.href}>
+                  <Button className="w-full bg-stone-700 hover:bg-emerald-600 text-stone-100">
+                    Explore →
+                  </Button>
                 </Link>
               }
             />
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Promotional Section */}
-      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Bottom Offers */}
+      <section
+        ref={bottomRef}
+        className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 opacity-0 translate-y-8 transition-all duration-700 ease-out"
+      >
         <Card
-          title="🏦 Personal Loan"
-          subtitle="Get instant loan approval up to ₹1,00,000 with 0% processing fee."
+          title="🏦 Personal Loan Solutions"
+          subtitle="Access instant loan approvals up to ₹1,00,000 with zero processing fees. Apply now!"
           variant="outlined"
+          className="bg-stone-200 border-l-4 border-indigo-400 shadow-md p-6 text-stone-700"
           footer={
-            <Button onClick={() => alert("Apply for Loan")}>Apply Now</Button>
+            <Button
+              className="w-full bg-stone-700 hover:bg-emerald-600 text-stone-100"
+              onClick={() => alert('Apply for Loan')}
+            >
+              Apply Now
+            </Button>
           }
         />
 
         <Card
-          title="🛡️ Insurance"
-          subtitle="Protect your family with health & life insurance plans."
+          title="🛡️ Comprehensive Insurance"
+          subtitle="Secure your future with tailored health, life, and travel insurance plans from leading providers."
           variant="outlined"
+          className="bg-stone-200 border-l-4 border-teal-400 shadow-md p-6 text-stone-700"
           footer={
-            <Button onClick={() => alert("Explore Insurance")}>
+            <Button
+              className="w-full bg-stone-700 hover:bg-emerald-600 text-stone-100"
+              onClick={() => alert('Explore Insurance')}
+            >
               Explore Plans
             </Button>
           }
         />
-      </div>
+      </section>
     </div>
   );
 }

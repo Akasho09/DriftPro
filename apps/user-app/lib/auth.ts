@@ -1,9 +1,9 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import type { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
-import {signin} from "./auth/signin"
-import {signup} from "./auth/signup"
+import type { NextAuthOptions } from "next-auth";
+import { signin } from "./auth/signin";
+import { signup } from "./auth/signup";
 import db from "@repo/db/client";
 
 interface Credentials {
@@ -11,7 +11,6 @@ interface Credentials {
   password: string;
   action?: "signin" | "signup";
 }
-
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -23,19 +22,12 @@ export const authOptions: NextAuthOptions = {
         action: { label: "Action", type: "text", placeholder: "signin or signup" },
       },
       async authorize(credentials) {
-        try {
-          if (!credentials) throw new Error("Missing credentials");
-          const { phone, password, action } = credentials as Credentials;
-          if (action === "signin") {
-            return await signin({ phone, password });
-          } else if (action === "signup") {
-            return await signup({ phone, password });
-          } else {
-            throw new Error("Invalid action");
-          }
-        } catch (e) {
-         throw new Error("Error: " + (e instanceof Error ? e.message : String(e)));
-        }
+        if (!credentials) throw new Error("Missing credentials");
+
+        const { phone, password, action } = credentials as Credentials;
+        if (action === "signin") return await signin({ phone, password });
+        if (action === "signup") return await signup({ phone, password });
+        throw new Error("Invalid action");
       },
     }),
 
@@ -53,28 +45,52 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.JWT_SECRET ?? "secret",
 
   callbacks: {
-    async signIn ({ user, account}) {
-    if (account?.provider === "google" || account?.provider === "github") {
-      const existingUser = await db.user.findFirst({ where: { mobile: String(user.email) } });
-      if(existingUser) user.id = existingUser?.id
-      else {
-        const newUser = await db.user.create({
-          data:{
-            mobile : String(user.email) , 
-            hashedPassword : String(user.email)
-          }
-        })
-        user.id = newUser?.id
+    async signIn({ user, account }) {
+      if (account?.provider === "google" || account?.provider === "github") {
+        const existingUser = await db.user.findFirst({
+          where: { providerAccountId: account.providerAccountId },
+        });
+
+        if (existingUser) {
+          user.id = existingUser.id;
+        
+        } else {
+          const newUser = await db.user.create({
+            data: {
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              name: user.name ?? "",
+              email: user.email ?? "",
+            },
+          });
+
+        await db.balance.create({
+          data: { amount: 100, userId: newUser.id, locked: 0 },
+        });
+          user.id = newUser.id;
+        }
       }
-    }
-      return true ;
-    }, 
+      return true;
+    },
+
+    async jwt({ token, user }) {
+      if (user?.id) token.sub = user.id;
+      return token;
+    },
 
     async session({ session, token }) {
-      if (token.sub){
-        session.user.id  = token.sub ;
+      if (token.sub) {
+        const userInDb = await db.user.findUnique({
+          where: { id: token.sub },
+          select: { id: true, email: true, name: true, mobile: true },
+        });
+
+        session.user.id = token.sub;
         session.user.email = token.email ?? undefined;
+        session.user.name = token.name ?? undefined;
+        if(userInDb) session.user.mobile = userInDb.mobile || ""; 
       }
+
       return session;
     },
   },
