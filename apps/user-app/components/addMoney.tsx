@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 const BANKS = [
-  { name: "HDFC Bank", id: "HDFC", redirectUrl: "https://bank-bre4.onrender.com" },
+  { name: "HDFC Bank", id: "HDFC", redirectUrl: "https://bank-bre4.onrender.com/hdfcwebhook" },
   { name: "Axis Bank", id: "AXIS", redirectUrl: "https://www.axisbank.com/" },
 ];
 
@@ -73,7 +73,7 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
       const transactionResult = await onRampTrans(amount, selectedProvider.name);
 
       if (transactionResult?.token) {
-        await axios.post("http://localhost:3004/hdfcwebhook", { token: transactionResult.token });
+        await axios.post("https://bank-bre4.onrender.com/hdfcwebhook", { token: transactionResult.token });
       }
 
       // Update balance after transaction
