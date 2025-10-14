@@ -3,7 +3,8 @@ import Redis from "ioredis";
 const redis = new Redis({
   host: process.env.REDIS_URL,
   password: process.env.REDIS_PASSWORD,
-  port: 11113 ,
+//   port: 11113 ,
+  port: 13364 ,
   maxRetriesPerRequest: 5,
   enableReadyCheck: true,
 });

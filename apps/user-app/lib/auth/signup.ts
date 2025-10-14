@@ -2,8 +2,6 @@ import db from "@repo/db/client";
 import bcrypt from "bcrypt";
 import { signupSchema } from "../zod";
 
-
-
 interface SignupParams {
   phone: string;
   password: string;
