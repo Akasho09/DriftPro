@@ -13,6 +13,7 @@ import { toast } from "react-hot-toast";
 
 const BANKS = [
   { name: "HDFC Bank", id: "HDFC", redirectUrl: "https://bank-bre4.onrender.com/hdfcwebhook" },
+  // { name: "HDFC Bank", id: "HDFC", redirectUrl: "http://localhost:3004/hdfcwebhook" },
   { name: "Axis Bank", id: "AXIS", redirectUrl: "https://www.axisbank.com/" },
 ];
 
@@ -139,8 +140,6 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
 
   return (
     <Card title="💰 Add Money" className="bg-white/90  w-full max-w-md p-10 backdrop-blur-xl rounded-3xl shadow-2xl border border-green-200">
-
-      {/* Current Balance */}
       <div className="mb-4 text-center  ">
         <p className="text-gray-700 font-medium">Current Balance:</p>
         <p className="text-2xl font-bold text-green-600">₹{balance?.toFixed(2) ?? ""}</p>

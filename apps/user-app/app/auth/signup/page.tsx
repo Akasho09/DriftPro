@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function SignUpPage() {
   const { data: session } = useSession();
@@ -12,7 +13,6 @@ export default function SignUpPage() {
 
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -23,7 +23,6 @@ export default function SignUpPage() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
     try {
@@ -35,13 +34,14 @@ export default function SignUpPage() {
       });
 
       if (res?.error) {
-        setError(res.error);
+        toast.error(res.error);
       } else {
+        toast.success("Account created successfully!");
         router.push("/dashboard");
       }
     } catch (err) {
       console.error("Signup error:", err);
-      setError("Something went wrong. Try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -53,12 +53,6 @@ export default function SignUpPage() {
         <h1 className="text-3xl font-extrabold text-center text-green-700 mb-6">
           Create an Account
         </h1>
-
-        {error && (
-          <div className="mb-4 p-3 text-sm text-pink-700 bg-pink-100 rounded-lg text-center">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -75,7 +69,6 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-green-700 font-medium mb-1">
               Password
@@ -93,7 +86,6 @@ export default function SignUpPage() {
             </p>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -107,16 +99,17 @@ export default function SignUpPage() {
           </button>
         </form>
 
-        {/* Divider */}
         <div className="my-6 flex items-center">
           <div className="flex-grow border-t border-green-200"></div>
           <span className="mx-3 text-green-400 text-sm">OR</span>
           <div className="flex-grow border-t border-green-200"></div>
         </div>
 
-        {/* Google */}
         <button
-          onClick={() => signIn("google", { callbackUrl: "/" })}
+          onClick={() => {
+            toast.loading("Redirecting to Google...");
+            signIn("google", { callbackUrl: "/" });
+          }}
           className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-green-300 rounded-xl hover:bg-green-50 transition"
         >
           <Image
@@ -129,22 +122,23 @@ export default function SignUpPage() {
           <span className="text-green-700">Continue with Google</span>
         </button>
 
-        {/* GitHub */}
         <button
-          onClick={() => signIn("github", { callbackUrl: "/" })}
+          onClick={() => {
+            toast.loading("Redirecting to GitHub...");
+            signIn("github", { callbackUrl: "/" });
+          }}
           className="w-full flex items-center justify-center gap-2 py-3 mt-3 bg-green-700 text-white rounded-xl hover:bg-pink-400 transition"
         >
           <Image
             src="https://www.svgrepo.com/show/475654/github-color.svg"
             alt="GitHub"
             className="w-5 h-5 bg-white rounded-full"
-                        width={400}
+            width={400}
             height={400}
           />
           <span>Continue with GitHub</span>
         </button>
 
-        {/* Already have account */}
         <p className="mt-6 text-sm text-center text-green-600">
           Already have an account?{" "}
           <Link

@@ -51,8 +51,7 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} bg-[#ebe6e6] min-h-screen`}
         >
           <AppbarClient />
-          <div><Toaster/></div>
-
+          <Toaster position="top-center" />
           <main className="max-w-6xl mx-auto pt-12 px-4 w-full">
             {children}
           </main>

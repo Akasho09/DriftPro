@@ -45,32 +45,43 @@ export default function ContactList() {
     setSelectedContact(null);
   }, []);
 
-  const handleSend = useCallback(async () => {
-    if (sending) return;
+const handleSend = useCallback(async () => {
+  if (sending) return;
 
-    const parsedAmount = Number(amount);
-    if (!selectedContact || !parsedAmount || parsedAmount < 1 || !/^\d+$/.test(amount)) {
-      toast.error("⚠️ Enter a valid whole amount (min ₹1).");
-      return;
-    }
+  const parsedAmount = Number(amount);
+  if (
+    !selectedContact ||
+    !parsedAmount ||
+    parsedAmount < 1 ||
+    !/^\d+$/.test(amount)
+  ) {
+    toast.error("⚠️ Enter a valid whole amount (min ₹1).");
+    return;
+  }
 
-    setSending(true);
-    const toastId = toast.loading(`Processing ₹${parsedAmount}...`);
+  setSending(true);
+  const toastId = toast.loading(`Processing ₹${parsedAmount}...`);
 
-    try {
-      const response = await SendMoney(selectedContact.mobile, parsedAmount * 100);
-      toast.success(`✅ ${response}`, { id: toastId });
+  try {
+    const response = await SendMoney(selectedContact.mobile, parsedAmount * 100);
+    
+    if (response.success) {
+      toast.success(`✅ ${response.message}`, { id: toastId });
       toast.success(`💸 Sent ₹${parsedAmount} to ${selectedContact.name || "User"}`);
       closeModal();
       router.refresh();
-    } catch (err: unknown) {
-      console.error("Transfer error:", err);
-      const message = err instanceof Error ? err.message : "Check your network.";
-      toast.error(`❌ Failed: ${message}`, { id: toastId });
-    } finally {
-      setSending(false);
+    } else {
+      toast.error(`❌ ${response.message}`, { id: toastId });
     }
-  }, [amount, selectedContact, router, sending, closeModal]);
+  } catch (err: unknown) {
+    console.error("Transfer error:", err);
+    const message = err instanceof Error ? err.message : "Check your network.";
+    toast.error(`❌ Failed: ${message}`, { id: toastId });
+  } finally {
+    setSending(false);
+  }
+}, [amount, selectedContact, router, sending, closeModal]);
+
 
   /* ---------- Fetch Contacts ---------- */
   useEffect(() => {

@@ -57,10 +57,14 @@ export function WalletClient() {
     const toastId = toast.loading("Processing your transaction...");
     try {
       const response = await SendMoneyAction(receiver, amt * 100);
-      toast.success(`✅ ${response || "Money sent successfully!"}`, { id: toastId });
-      setReceiver("");
-      setAmount("");
-    } catch (error: any) {
+      if (response.success) {
+        toast.success(`✅ ${response.message}`, { id: toastId });
+        setReceiver("");
+        setAmount("");
+      } else {
+        toast.error(`❌ ${response.message}`, { id: toastId });
+      }
+    } catch (error) {
       console.error("Send money failed:", error);
       toast.error("❌ Failed to send money. Please try again later.", { id: toastId });
     } finally {
@@ -77,7 +81,7 @@ export function WalletClient() {
           ref={headerRef}
           className="mb-16 text-center opacity-0 translate-y-8 transition-all duration-700 ease-out"
         >
-          <h1 className="mb-3 text-4xl font-extrabold bg-gradient-to-r from-black via-pink-400 to-green-600 bg-clip-text text-transparent drop-shadow-sm md:text-5xl">
+          <h1 className="mb-3 text-4xl font-extrabold bg-gradient-to-r from-green-60 via-pink-400 to-green-600 bg-clip-text text-transparent drop-shadow-sm md:text-5xl">
             Wallet Dashboard
           </h1>
           <p className="mx-auto max-w-2xl leading-relaxed text-lg text-slate-700">

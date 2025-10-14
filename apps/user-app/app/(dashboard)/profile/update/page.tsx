@@ -51,8 +51,8 @@ export default function UpdateProfilePage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-6">
-      <div className="w-full max-w-md bg-white/90 shadow-xl rounded-3xl p-10 border border-pink-100 backdrop-blur-sm transition-all duration-300 hover:shadow-pink-200/70">
+    <div className="min-h-screen w-full flex items-center justify-center p-6 ">
+      <div className="w-full max-w-md bg-white/90 shadow-2xl rounded-3xl p-10 border border-green-200 backdrop-blur-md transition-all duration-300 hover:shadow-pink-200/50">
         <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-green-500 via-pink-400 to-pink-500 text-transparent bg-clip-text mb-8">
           Update Profile
         </h1>
@@ -100,13 +100,15 @@ export default function UpdateProfilePage() {
           </button>
         </form>
 
+        {/* Info Note */}
         <p className="mt-6 text-center text-gray-500 text-sm">
-          💡 Make sure your mobile number is correct to receive verification codes.
+          💡 Ensure your mobile number is correct to receive verification codes.
         </p>
 
+        {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="block mt-6 text-center w-full py-2 rounded-xl text-pink-500 font-medium hover:underline"
+          className="block mt-6 w-full text-center py-2 rounded-xl text-pink-500 font-medium hover:underline"
         >
           ← Back to Profile
         </button>

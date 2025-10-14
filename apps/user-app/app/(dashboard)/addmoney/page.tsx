@@ -12,7 +12,9 @@ export default function AddMoneyPage() {
       
       {/* Page Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-extrabold text-green-600">🏦 Add Money to Wallet</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-black">
+        💸 Add <span className="text-emerald-600">Money</span>  to Wallet
+        </h1>
         <p className="text-gray-600 mt-2">
           Securely add funds using your preferred bank or provider.
         </p>

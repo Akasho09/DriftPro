@@ -1,25 +1,27 @@
 import { Card } from "@repo/ui/card";
-import ts from "../lib/p2ptrans";
+import redis from "../lib/redis";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
-import redis from "../lib/redis";
+import search from "../lib/recentTrans";
 import TransactionCard from "./TransactionCard";
 
-export default async function SendTransactions() {
+export default async function AddMoneyTransactions({ n }: { n: number }) {
   const session = await getServerSession(authOptions);
-  const CACHE_KEY = `${session?.user.id}sendMoney`;
+  const CACHE_KEY = `${session?.user.id}addMoney`;
 
   const cached = await redis.get(CACHE_KEY);
-  const data = cached ? JSON.parse(cached) : await ts();
+  const data = cached ? JSON.parse(cached) : await search();
+
+  const limit = n === 0 ? 4 : data?.length;
 
   return (
     <div className="w-full flex justify-center items-center px-4">
       <Card
         className="w-full max-w-xl p-6 shadow-md rounded-2xl bg-white/90 backdrop-blur-sm border border-green-200"
-        title="📑 Send/Receive Transactions"
+        title=" 💳 Add Money Transactions"
       >
         <p className="text-sm text-black/70 mb-4 text-center">
-          View your recent send & receive history.
+          Track your recent Add Money activity.
         </p>
 
         {!session?.user ? (
@@ -28,16 +30,14 @@ export default async function SendTransactions() {
           <p className="text-black/50 text-center p-4">No transactions found.</p>
         ) : (
           <div className="space-y-4">
-            {data.map((d: any) => (
+            {data.slice(0, limit).map((d: any, i: number) => (
               <TransactionCard
-                title=""
-                key={d.id}
+                key={i}
+                title={d.provider}
+                subtitle={d.provider}
                 amount={d.amount}
-                date={d.tTime}
-                isSent={d.senderId === session?.user?.id}
-                receiverOrSender={
-                  d.senderId === session?.user?.id ? d.recMobile : d.sendMobile
-                }
+                date={d.startTime}
+                status={d.status}
               />
             ))}
           </div>

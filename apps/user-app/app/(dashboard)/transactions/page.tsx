@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Balance from "../../../components/Balance";
-import AddMoneyTransactions from "../../../components/RecentTrans";
+import AddMoneyTransactions from "../../../components/AddMoneyTrans";
 import SendReceiveTransactions from "../../../components/sendTrans";
 
 export default function DashboardPage() {

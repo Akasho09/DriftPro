@@ -97,6 +97,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub;
         session.user.email = token.email ?? undefined;
         session.user.name = token.name ?? undefined;
+        session.user.picture = token.picture ?? undefined;
         if(userInDb) session.user.mobile = userInDb.mobile || ""; 
       }
 

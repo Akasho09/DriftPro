@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 export default function SignInForm() {
   const { data: session, status } = useSession();
@@ -12,10 +13,9 @@ export default function SignInForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-  const [phone, setPhone] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
@@ -23,10 +23,8 @@ export default function SignInForm() {
     }
   }, [session, status, router]);
 
-  // ✅ Handle form submit
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
     try {
@@ -39,16 +37,62 @@ export default function SignInForm() {
       });
 
       if (res?.error) {
-        setError(res.error);
+        toast.error(res.error, {
+          duration: 4000,
+          position: "top-center",
+          style: {
+            border: "1px solid #ef4444",
+            padding: "14px",
+            color: "#7f1d1d",
+            fontWeight: "bold",
+          },
+          icon: "🚫",
+        });
       } else {
+        toast.success("Sign-in successful! Redirecting...", {
+          duration: 3000,
+          position: "top-center",
+          style: {
+            border: "1px solid #4ade80",
+            padding: "14px",
+            color: "#166534",
+            fontWeight: "bold",
+          },
+          icon: "✅",
+        });
         router.push(callbackUrl);
       }
     } catch (err) {
       console.error("Sign-in error:", err);
-      setError("Something went wrong. Please try again later.");
+      toast.error("Something went wrong. Please try again later.", {
+        duration: 4000,
+        position: "top-center",
+        style: {
+          border: "1px solid #ef4444",
+          padding: "14px",
+          color: "#7f1d1d",
+          fontWeight: "bold",
+        },
+        icon: "⚠️",
+      });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOAuthSignIn = async (provider: "google" | "github") => {
+    toast.loading(`Redirecting to ${provider}...`, {
+      duration: 2000,
+      position: "top-center",
+      style: {
+        border: "1px solid #f59e0b",
+        padding: "12px",
+        color: "#78350f",
+        fontWeight: "bold",
+      },
+      icon: "🌐",
+    });
+    await signIn(provider, { callbackUrl });
   };
 
   return (
@@ -58,14 +102,7 @@ export default function SignInForm() {
           Sign In
         </h1>
 
-        {error && (
-          <div className="mb-4 p-3 text-sm text-pink-700 bg-pink-100 rounded-lg text-center">
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 📱 Phone Number */}
           <div>
             <label className="block text-green-700 font-medium mb-1">
               Phone Number
@@ -80,7 +117,6 @@ export default function SignInForm() {
             />
           </div>
 
-          {/* 🔑 Password */}
           <div>
             <label className="block text-green-700 font-medium mb-1">
               Password
@@ -95,7 +131,6 @@ export default function SignInForm() {
             />
           </div>
 
-          {/* 🔘 Sign In Button */}
           <button
             type="submit"
             disabled={loading}
@@ -109,38 +144,35 @@ export default function SignInForm() {
           </button>
         </form>
 
-        {/* Divider */}
         <div className="my-6 flex items-center">
           <div className="flex-grow border-t border-green-200"></div>
           <span className="mx-3 text-green-400 text-sm">OR</span>
           <div className="flex-grow border-t border-green-200"></div>
         </div>
 
-        {/* 🌐 Google Sign-In */}
         <button
-          onClick={() => signIn("google", { callbackUrl })}
+          onClick={() => handleOAuthSignIn("google")}
           className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-green-300 rounded-xl hover:bg-green-50 transition"
         >
           <Image
             src="https://www.svgrepo.com/show/355037/google.svg"
             alt="Google"
             className="w-5 h-5"
-                        width={400}
+            width={400}
             height={400}
           />
           <span className="text-green-700">Continue with Google</span>
         </button>
 
-        {/* 💻 GitHub Sign-In */}
         <button
-          onClick={() => signIn("github", { callbackUrl })}
+          onClick={() => handleOAuthSignIn("github")}
           className="w-full flex items-center justify-center gap-2 py-3 mt-3 bg-green-700 text-white rounded-xl hover:bg-pink-400 transition"
         >
           <Image
             src="https://www.svgrepo.com/show/475654/github-color.svg"
             alt="GitHub"
             className="w-5 h-5 bg-white rounded-full"
-                        width={400}
+            width={400}
             height={400}
           />
           <span>Continue with GitHub</span>

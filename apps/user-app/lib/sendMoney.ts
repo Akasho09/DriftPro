@@ -4,75 +4,86 @@ import { authOptions } from "./auth";
 import aksh from "@repo/db/client";
 import redis from "./redis";
 
+interface SendMoneyResult {
+  success: boolean;
+  message: string;
+}
+
 export default async function SendMoney(
   toNum: string,
   amountt: number
-): Promise<string> {
+): Promise<SendMoneyResult> {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    return "Invalid user";
+    return { success: false, message: "Invalid user" };
   }
 
   const receiver = await aksh.user.findFirst({
-    where: { mobile : toNum },
+    where: { mobile: toNum },
     select: { id: true },
   });
-    
+
   const sender = await aksh.user.findFirst({
-    where : {id : session.user.id } ,
+    where: { id: session.user.id },
     select: { id: true, mobile: true },
   });
-  
-  if(!sender) return "Login First";
 
-  if (!receiver) {
-    return "Invalid Mobile Number";
+  if (!sender) return { success: false, message: "Login First" };
+  if (!receiver) return { success: false, message: "Invalid Mobile Number" };
+  if (session.user.id === receiver.id)
+    return { success: false, message: "Cannot send money to yourself" };
+
+  try {
+    const result = await aksh.$transaction(async (tx: any): Promise<SendMoneyResult> => {
+      // Lock sender row
+      await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session.user.id} FOR UPDATE`;
+
+      const senderBalance = await tx.balance.findFirst({
+        where: { userId: session.user.id },
+        select: { amount: true },
+      });
+
+      if (!senderBalance || senderBalance.amount < amountt) {
+        return { success: false, message: "Transaction failed: Insufficient balance." };
+      }
+
+      // Deduct from sender
+      await tx.balance.updateMany({
+        where: { userId: session.user.id },
+        data: { amount: { decrement: amountt } },
+      });
+
+      // Add to receiver
+      await tx.balance.updateMany({
+        where: { userId: receiver.id },
+        data: { amount: { increment: amountt } },
+      });
+
+      // Log transaction
+      await tx.p2ptransactions.create({
+        data: {
+          senderId: sender.id,
+          receiverId: receiver.id,
+          recMobile: toNum,
+          sendMobile: sender?.mobile || "MOBILE_UNKNOWN",
+          amount: amountt,
+          tTime: new Date(),
+        },
+      });
+
+      // Clear cache
+      await redis.del(`${receiver.id}sendMoney`);
+      await redis.del(`${sender.id}sendMoney`);
+
+      return { success: true, message: "Successfully transferred" };
+    });
+
+    return result;
+  } catch (err) {
+    console.error("SendMoney error:", err);
+    return { success: false, message: "Transaction failed due to server error" };
   }
-
-  if (session.user.id === receiver.id) {
-    return "Cannot send money to yourself";
-  }
-
-  const result = await aksh.$transaction(async (tx : any): Promise<string> => {
-    // row-level lock on sender
-    await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${session.user.id} FOR UPDATE`;
-
-    const senderBalance = await tx.balance.findFirst({
-      where: { userId: session.user.id },
-      select: { amount: true },
-    });
-
-    if (!senderBalance || senderBalance.amount < amountt) return "Transaction failed: Insufficient balance.";
-
-    await tx.balance.updateMany({
-      where: { userId: session.user.id },
-      data: { amount: { decrement: amountt } },
-    });
-
-    await tx.balance.updateMany({
-      where: { userId: receiver.id },
-      data: { amount: { increment: amountt } },
-    });
-
-    await tx.p2ptransactions.create({
-      data: {
-        senderId : String(sender?.id),
-        receiverId: String(receiver.id),
-        recMobile :  toNum , 
-        sendMobile :  sender?.mobile || "MOBILE_UNKNOWN", 
-        amount: amountt,
-        tTime: new Date(),
-      },
-    });
-    const key1 = `${receiver.id}sendMoney`
-    const key2 = `${session.user.id}sendMoney`
-    await redis.del(key1)
-    await redis.del(key2)
-    return "Successfully transferred";
-  });
-
-  return result;
 }
 
 

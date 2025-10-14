@@ -57,8 +57,8 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
       <Link
         href="/dashboard"
         className="text-2xl font-extrabold tracking-wide cursor-pointer
-                   bg-gradient-to-r from-black via-pink-400 to-green-600
-                   text-transparent bg-clip-text hover:opacity-90 transition"
+                   bg-gradient-to-r from-black via-pink-400 to-green-600 bg-clip-text
+                   text-transparent  hover:opacity-90 transition"
       >
         DriftPro
       </Link>
