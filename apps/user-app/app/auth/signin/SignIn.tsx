@@ -17,7 +17,6 @@ export default function SignInForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // ✅ Redirect authenticated users
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
       router.push("/");
@@ -126,6 +125,8 @@ export default function SignInForm() {
             src="https://www.svgrepo.com/show/355037/google.svg"
             alt="Google"
             className="w-5 h-5"
+                        width={400}
+            height={400}
           />
           <span className="text-green-700">Continue with Google</span>
         </button>
@@ -139,6 +140,8 @@ export default function SignInForm() {
             src="https://www.svgrepo.com/show/475654/github-color.svg"
             alt="GitHub"
             className="w-5 h-5 bg-white rounded-full"
+                        width={400}
+            height={400}
           />
           <span>Continue with GitHub</span>
         </button>

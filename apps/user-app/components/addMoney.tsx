@@ -26,11 +26,7 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
   const [amount, setAmount] = useState<number | undefined>(prefillAmount);
   const [providerId, setProviderId] = useState(BANKS[0]?.id || "");
   const [isLoading, setIsLoading] = useState(false);
-
-  // Real-time balance state
   const [balance, setBalance] = useState<number | null>(null);
-
-  // Modal state
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successAmount, setSuccessAmount] = useState<number | undefined>(undefined);
   const [successProvider, setSuccessProvider] = useState<string | undefined>(undefined);
@@ -72,23 +68,36 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
     try {
       const transactionResult = await onRampTrans(amount, selectedProvider.name);
 
-      if (transactionResult?.token) {
-        await axios.post("https://bank-bre4.onrender.com/hdfcwebhook", { token: transactionResult.token });
+      if (transactionResult?.error) {
+        toast.error(transactionResult.error, {
+          duration: 2000,
+          position: "top-center",
+          style: {
+            border: "1px solid #ef4444",
+            padding: "14px",
+            color: "#7f1d1d",
+            fontWeight: "bold",
+          },
+          icon: "⚠️",
+        });
+        return;
       }
 
-      // Update balance after transaction
-      await fetchBalance();
+      if (!transactionResult?.token) {
+        toast.error("Transaction could not be initiated. Please try again later.");
+        return;
+      }
 
-      // Play success sound
+      await axios.post(selectedProvider.redirectUrl, { token: transactionResult.token });
+
+      await fetchBalance();
       const audio = new Audio("./success.mp3");
       audio.play();
 
-      // Modal info
       setSuccessAmount(amount);
       setSuccessProvider(selectedProvider.name);
       setShowSuccessModal(true);
 
-      // Toast notification
       toast.success(`Transfer of ₹${amount} via ${selectedProvider.name} initiated!`, {
         duration: 5000,
         position: "top-center",
@@ -103,19 +112,34 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
       });
 
       handleAmountChange(undefined);
-
       router.refresh();
-    } catch (error) {
+
+    } catch (error: any) {
       console.error("Add Money Transaction Failed:", error);
-      toast.error("Transaction failed. Please try again or check your bank details.");
+      toast.error(
+        error?.response?.data?.error ||
+        "Something went wrong while processing your request.",
+        {
+          duration: 5000,
+          position: "top-center",
+          style: {
+            border: "1px solid #ef4444",
+            padding: "16px",
+            color: "#7f1d1d",
+            fontWeight: "bold",
+          },
+          icon: "🚫",
+        }
+      );
     } finally {
       setIsLoading(false);
     }
+
   }, [amount, providerId, router, selectedProvider]);
 
   return (
     <Card title="💰 Add Money" className="bg-white/90  w-full max-w-md p-10 backdrop-blur-xl rounded-3xl shadow-2xl border border-green-200">
-      
+
       {/* Current Balance */}
       <div className="mb-4 text-center  ">
         <p className="text-gray-700 font-medium">Current Balance:</p>

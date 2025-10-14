@@ -48,12 +48,21 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider === "google" || account?.provider === "github") {
         const existingUser = await db.user.findFirst({
-          where: { providerAccountId: account.providerAccountId },
+        where: {
+          OR: [
+            {
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+            },
+            {
+              email: user.email,
+            },
+          ],
+        },
         });
 
         if (existingUser) {
           user.id = existingUser.id;
-        
         } else {
           const newUser = await db.user.create({
             data: {

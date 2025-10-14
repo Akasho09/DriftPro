@@ -34,8 +34,9 @@ export default async function search(): Promise<Transaction[] | null> {
 
   const upData: Transaction[] = data.map((d : Transaction) => ({
     ...d,
-    amount: d.amount / 100, // normalize
+    amount: d.amount / 100, 
   }));
   await redis.set(`${session.user.id}addMoney` , JSON.stringify(upData) , "EX" , 300)
+  
   return upData;
 }

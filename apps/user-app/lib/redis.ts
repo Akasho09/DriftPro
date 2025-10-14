@@ -1,9 +1,9 @@
 import Redis from "ioredis";
 
 const redis = new Redis({
-  host: "redis-13364.crce217.ap-south-1-1.ec2.redns.redis-cloud.com",
-  port: 13364,           // plain TCP port
+  host: process.env.REDIS_URL,
   password: process.env.REDIS_PASSWORD,
+  port: 11113 ,
   maxRetriesPerRequest: 5,
   enableReadyCheck: true,
 });
