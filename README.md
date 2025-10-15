@@ -1,43 +1,75 @@
-# DriftPro – Paytm for Desktop
+# 💸 DriftPro – Paytm for Desktop
 
-## ER Diagram
-![alt text](Archi.png)
+**A secure and modern desktop payment platform** designed for seamless digital transactions.  
+Built with **Next.js**, **Express.js**, **PostgreSQL**, **Redis**, and **Prisma ORM**, all organized in a scalable **Turborepo monorepo** architecture.  
 
-
-A secure desktop payment application designed to provide seamless transaction handling with a modern tech stack. DriftPro combines the reliability of PostgreSQL with Prisma ORM and the flexibility of Next.js in a monorepo architecture powered by Turborepo.
+DriftPro ensures high performance, strong data consistency (ACID compliance), and a clean user experience powered by a modern TypeScript stack.
 
 ---
-    
+
+## 🧩 ER Diagram
+![alt text](Archi.png)
+
+---
+
 ## 🚀 Features
-- 💳 **Secure Transactions** – ACID-compliant handling of financial data with PostgreSQL + Prisma ORM. 
-- 🔐 **OAuth Authentication** – Users can securely log in via Google or GitHub using NextAuth.js.
-    ### 1. Google OAuth
-    - Allows users to log in using their Google accounts.
-    ### 2. GitHub OAuth
-    - Allows users to log in using their GitHub accounts.
-- 💸 **Wallet System** –
-    - Add Money: Funds are credited after verification from a simulated/hard-coded bank webhook.
-    - Send Money: Users can pseudo-transfer money to other registered users within the system.
-- ⚡ **GitHub CI/CD** – Automatically builds, tests, and deploys the app on push or pull request:
-    - Runs linting, tests, and build checks.
-    - Deploys the Dockerized monorepo to your hosting environment (AWS).
-    - Ensures that only passing commits are deployed, keeping production safe.
-- ⚡ **Seamless Experience** – Built with Next.js for both frontend and backend logic.  
-- 🛠 **Auxiliary Backend** – Express.js microservice for specialized operations.  
-- 🏗 **Monorepo Architecture** – Turborepo for modular development and scalability.  
-- 🎨 **Intuitive UI** – Tailwind CSS for a clean and responsive interface.  
-- 🐳 **Dockerized** – Consistent deployment across environments.  
-- 📜 **Transaction Pipelines** – Authentication, validation, and logging workflows integrated. 
- 
+
+### 💳 Secure Transactions  
+- ACID-compliant database operations with **PostgreSQL** + **Prisma ORM**.  
+- Ensures transactional integrity during send/receive money operations.  
+
+### 🔐 OAuth Authentication  
+- Secure login through **NextAuth.js** with multiple providers:  
+  - **Google OAuth**
+  - **GitHub OAuth**
+
+### 💸 Wallet System  
+- **Add Money:** Funds are credited after verification from a simulated **bank webhook** (`bankHook` service).  
+- **Send Money:** Transfer virtual funds between registered users securely.  
+- **Transaction Logs:** All transactions are recorded and auditable.
+
+### ⚙️ Redis Integration  
+- **Caching Layer:** Accelerates data retrieval and reduces PostgreSQL load.  
+- **Session Management:** Stores active user sessions for faster authentication.  
+- **Data Access Control:** Implements role-based access and key-based data isolation for multi-user operations.
+
+### 🧱 Monorepo Architecture (Turborepo)  
+- Modular codebase for scalability and maintainability.  
+- Shared packages for UI, configs, and utilities across all apps.
+
+### 🛠 Auxiliary Backend  
+- **Express.js microservice (`bankHook`)** handles webhook verifications and specialized payment logic.
+
+### 🧰 CI/CD with GitHub Actions  
+- Lint, test, and build pipelines on every push or PR.  
+- Automated Docker-based deployment to production (e.g., AWS / Render / Vercel).  
+- Ensures only stable commits reach production.
+
+### 🖥 Seamless Experience  
+- Built with **Next.js** for unified frontend and backend logic.  
+- Responsive UI using **Tailwind CSS**.  
+- Optimized for **desktop use** with future cross-platform build plans.
+
+### 🐳 Dockerized for Consistency  
+- One-command deployment using Docker Compose.  
+- Identical environments across development, staging, and production.
+
 ---
 
 ## 🏗 Tech Stack
-- **Frameworks:** Next.js, Express.js  
-- **Architecture:** Turborepo (monorepo)  
-- **Database:** PostgreSQL + Prisma ORM  
-- **Languages:** TypeScript  
-- **UI:** Tailwind CSS  
-- **Deployment:** Docker  
+
+| Category | Technology |
+|-----------|-------------|
+| **Frontend/Backend** | Next.js (App Router) |
+| **Microservice** | Express.js (`bankHook`) |
+| **Database** | PostgreSQL |
+| **ORM** | Prisma |
+| **Cache / Access Control** | Redis |
+| **Language** | TypeScript |
+| **UI Framework** | Tailwind CSS |
+| **Architecture** | Turborepo |
+| **Auth** | NextAuth.js (Google, GitHub) |
+| **Deployment** | Docker + GitHub Actions |
 
 ---
 
@@ -60,14 +92,36 @@ driftpro/
 
 ## ⚙️ Installation & Setup
 ### Prerequisites
-- Node.js (>= 20)  
-- PostgreSQL (>= 14)  
-- Docker (optional but recommended)
+- **Node.js** ≥ 20  
+- **PostgreSQL** ≥ 14  
+- **Redis** ≥ 7  
+- **Docker** *(optional but recommended)*
 
 ### Clone Repository
 ```bash
 git clone https://github.com/Akasho09/DriftPro
 cd DriftPro
+```
+
+- Setup Environment
+1. Create .env in the user-app folder:
+- Path: DriftPro/apps/user-app/.env
+
+```bash
+clientId=your_google_oauth_client_id
+clientSecret=your_google_oauth_secret
+githubId="your_github_oauth_client_id"
+githubSecret="your_github_oauth_secret"
+REDIS_URL="redis://localhost:6379"
+REDIS_PASSWORD=redis_password
+REDIS_PORT=11113
+```
+
+2. Create .env in the db folder: 
+- Path: DriftPro/packages/db/.env
+
+```bash
+DATABASE_URL="postgresql://username:password@localhost:5432/driftpro"
 ```
 
 - Install Dependencies
@@ -80,7 +134,6 @@ npx prisma migrate dev
 npm run dev
 
 ### Run with Docker
-
 docker-compose up --build
 
 
@@ -103,17 +156,13 @@ docker-compose up --build
 
 
 ### 📈 Roadmap
-
+- Implement rate limiting and request throttling using Redis
+- Add Redis pub/sub for real-time balance updates and transaction streaming
 -  Add support for multiple payment gateways
-
--  Implement real-time notifications
-
--  Extend desktop support (Windows, macOS, Linux builds)
-
 -  Add analytics dashboard for transactions
-
-
-
+- Two-factor authentication (2FA)
+- Full CI/CD with GitHub Actions (lint → test → deploy → Docker)
+- Integrate monitoring via Prometheus + Grafana
 
 ## steps
 [text](steps.md)
