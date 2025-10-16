@@ -25,10 +25,9 @@ export async function PUT(req: NextRequest) {
     const parsed = updateSchema.safeParse(body);
 
     if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.flatten().fieldErrors },
-        { status: 400 }
-      );
+      const fieldErrors = parsed.error.flatten().fieldErrors;
+      const errorMessages = Object.values(fieldErrors).flat().join(", ");
+      return NextResponse.json({ error: errorMessages || "Invalid input" }, { status: 400 });
     }
 
     const { name, mobile } = parsed.data;

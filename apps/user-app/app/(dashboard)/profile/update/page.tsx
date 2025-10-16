@@ -107,10 +107,10 @@ export default function UpdateProfilePage() {
 
         {/* Back Button */}
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/")}
           className="block mt-6 w-full text-center py-2 rounded-xl text-pink-500 font-medium hover:underline"
         >
-          ← Back to Profile
+          ← Back to Dashboard
         </button>
       </div>
     </div>
