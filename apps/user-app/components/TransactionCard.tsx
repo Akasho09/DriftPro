@@ -38,7 +38,6 @@ export default function TransactionCard({
     bgClass = "bg-white/80 border-gray-200";
   }
 
-  // For Add Money page (status-based)
   let statusIcon;
   if (status === "Success") statusIcon = <FaCheckCircle className="text-green-600" />;
   else if (status === "Failure") statusIcon = <FaTimesCircle className="text-pink-500" />;

@@ -1,5 +1,4 @@
 "use client";
-
 import { Card } from "@repo/ui/card";
 import { InputCompo } from "@repo/ui/input-compo";
 import { DropDown } from "@repo/ui/drop-down";
@@ -8,7 +7,6 @@ import onRampTrans from "../lib/onRampTransaction";
 import getBal from "../lib/getBal";
 import { useState, useCallback, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 const BANKS = [
@@ -23,37 +21,68 @@ interface AddMoneyProps {
 }
 
 export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProps) {
-  const router = useRouter();
   const [amount, setAmount] = useState<number | undefined>(prefillAmount);
   const [providerId, setProviderId] = useState(BANKS[0]?.id || "");
   const [isLoading, setIsLoading] = useState(false);
   const [balance, setBalance] = useState<number | null>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successAmount, setSuccessAmount] = useState<number | undefined>(undefined);
-  const [successProvider, setSuccessProvider] = useState<string | undefined>(undefined);
+
   const projectedBalance = balance !== null && amount ? balance + amount : balance;
-
-  useEffect(() => {
-    if (prefillAmount) setAmount(prefillAmount);
-    fetchBalance();
-  }, [prefillAmount]);
-
   const selectedProvider = BANKS.find(bank => bank.id === providerId);
 
-  const handleAmountChange = (value: number | undefined) => {
-    setAmount(value);
-    onAmountChange && value && onAmountChange(value);
-  };
-
+  // Fetch balance
   const fetchBalance = async () => {
     try {
       const data = await getBal();
-      if (data) setBalance(data.amount / 100); // assuming amount is in paise
+      if (data) setBalance(data.amount / 100);
     } catch (err) {
       console.error("Failed to fetch balance:", err);
     }
   };
 
+  // Handle amount input changes
+  const handleAmountChange = (value: number | undefined) => {
+    setAmount(value);
+    onAmountChange && value && onAmountChange(value);
+  };
+
+  // Polling transaction status
+ const checkStatus = async (token: string, toastId?: string) => {
+    try {
+      toast.dismiss(toastId)
+      const { data } = await axios.get(`/api/transaction-status?token=${token}`);
+      if(!data) return
+      if (data.status === "Success") {
+        toast.dismiss(toastId);
+        localStorage.removeItem("pendingTransaction");
+        await fetchBalance();
+        return;
+      } else if (data.status === "Failure") {
+        toast.dismiss(toastId); // remove loading toast
+        toast.error("Transaction failed!");
+        localStorage.removeItem("pendingTransaction");
+        return;
+      } else if (data.status === "Processing"){
+        const toastId = toast.loading(`Transaction still processing...`, {
+          style: {
+            border: "1px solid #facc15", // yellow border
+            padding: "16px",
+            color: "#b45309", // amber text
+            fontWeight: "bold",
+            borderRadius: "12px",
+            fontSize: "14px",
+          },
+          icon: "⏳",
+        });
+         setTimeout(() => checkStatus(token , toastId), 5000);
+      }
+    } catch (error) {
+      console.error("Status check error:", error);
+      toast.error("Backend Error!");
+      localStorage.removeItem("pendingTransaction");
+    }
+  };
+
+  // Handle Add Money
   const handleAddMoney = useCallback(async () => {
     if (!amount || amount <= 0) {
       toast.error("Please enter a valid amount greater than ₹0.");
@@ -73,12 +102,7 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
         toast.error(transactionResult.error, {
           duration: 2000,
           position: "top-center",
-          style: {
-            border: "1px solid #ef4444",
-            padding: "14px",
-            color: "#7f1d1d",
-            fontWeight: "bold",
-          },
+          style: { border: "1px solid #ef4444", padding: "14px", color: "#7f1d1d", fontWeight: "bold" },
           icon: "⚠️",
         });
         return;
@@ -89,58 +113,45 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
         return;
       }
 
+      // Store token in localStorage for polling
+      localStorage.setItem("pendingTransaction", JSON.stringify({
+        token: transactionResult.token,
+        amount,
+        provider: selectedProvider.name,
+        timestamp: Date.now(),
+      }));
+
+      checkStatus(transactionResult.token);
       await axios.post(selectedProvider.redirectUrl, { token: transactionResult.token });
 
-      await fetchBalance();
-      const audio = new Audio("./success.mp3");
-      audio.play();
+      handleAmountChange(undefined);
 
-      setSuccessAmount(amount);
-      setSuccessProvider(selectedProvider.name);
-      setShowSuccessModal(true);
-
-      toast.success(`Transfer of ₹${amount} via ${selectedProvider.name} initiated!`, {
+      toast.dismiss()
+      toast.success(`Transfer of ₹${amount} via ${selectedProvider.name} Sucesses!`, {
         duration: 5000,
         position: "top-center",
-        style: {
-          border: "1px solid #4ade80",
-          padding: "16px",
-          color: "#166534",
-          fontWeight: "bold",
-          fontSize: "16px",
-        },
+        style: { border: "1px solid #4ade80", padding: "16px", color: "#166534", fontWeight: "bold", fontSize: "16px" },
         icon: "💸",
       });
-
-      handleAmountChange(undefined);
-      router.refresh();
-
     } catch (error: any) {
-      console.error("Add Money Transaction Failed:", error);
       toast.error(
-        error?.response?.data?.error ||
-        "Something went wrong while processing your request.",
-        {
-          duration: 5000,
-          position: "top-center",
-          style: {
-            border: "1px solid #ef4444",
-            padding: "16px",
-            color: "#7f1d1d",
-            fontWeight: "bold",
-          },
-          icon: "🚫",
-        }
+        error?.response?.data?.error || "Something went wrong while processing your request.",
+        { duration: 5000, position: "top-center", style: { border: "1px solid #ef4444", padding: "16px", color: "#7f1d1d", fontWeight: "bold" }, icon: "🚫" }
       );
     } finally {
       setIsLoading(false);
     }
+  }, [amount, providerId, selectedProvider]);
 
-  }, [amount, providerId, router, selectedProvider]);
+  // On mount, fetch balance and check pending transaction
+  useEffect(() => {
+    if (prefillAmount) setAmount(prefillAmount);
+    fetchBalance();
+  }, [prefillAmount]);
 
   return (
-    <Card title="💰 Add Money" className="bg-white/90  w-full max-w-md p-10 backdrop-blur-xl rounded-3xl shadow-2xl border border-green-200">
-      <div className="mb-4 text-center  ">
+    <Card title="💰 Add Money" className="bg-white/90 w-full max-w-md p-10 backdrop-blur-xl rounded-3xl shadow-2xl border border-green-200">
+      <div className="mb-4 text-center">
         <p className="text-gray-700 font-medium">Current Balance:</p>
         <p className="text-2xl font-bold text-green-600">₹{balance?.toFixed(2) ?? ""}</p>
         {amount && amount > 0 && (
@@ -151,7 +162,7 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
       </div>
 
       {/* Quick Amount Buttons */}
-      <div className="flex gap-2 mb-4 justify-center ">
+      <div className="flex gap-2 mb-4 justify-center">
         {[100, 500, 1000, 2000].map((val) => (
           <Button
             key={val}
@@ -197,20 +208,6 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
       <p className="mt-4 text-center text-green-700 text-sm">
         💡 Transfers are instant for supported bank accounts. Please verify your bank details.
       </p>
-
-      {/* Success Modal */}
-      {showSuccessModal && successAmount && successProvider && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-2xl shadow-2xl text-center w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-green-600 mb-2">✅ Transfer Successful!</h2>
-            <p className="mb-2">₹{successAmount} has been initiated via {successProvider}.</p>
-            <p className="text-green-700 font-semibold">
-              New Balance: ₹{balance?.toFixed(2)}
-            </p>
-            <Button onClick={() => setShowSuccessModal(false)} className="mt-4">Close</Button>
-          </div>
-        </div>
-      )}
     </Card>
   );
 }

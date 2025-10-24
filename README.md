@@ -12,6 +12,11 @@ DriftPro ensures high performance, strong data consistency (ACID compliance), an
 
 ---
 
+## Demo user : 
+- username : 9103597809
+- password : Aakash@9103597809
+---
+
 ## 🚀 Features
 
 ### 💳 Secure Transactions  
