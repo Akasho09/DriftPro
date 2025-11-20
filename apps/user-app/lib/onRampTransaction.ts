@@ -4,6 +4,7 @@ import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import redis from "./redis";
+import { rateLimiter } from "./upStashRateLimit";
 
 export default async function onRampTrans(amount: number, provider: string) {
   const s = await getServerSession(authOptions);
@@ -11,7 +12,11 @@ export default async function onRampTrans(amount: number, provider: string) {
   if (!s?.user?.id) {
     return { error: "Please login to initiate a transaction." };
   }
-
+  
+  const { success } = await rateLimiter.limit(`onRampTrans${s.user.id}`);
+    if (!success) {
+    return { error: "Too many Add Money Requests. Please wait a minute."};
+  }
   if (!amount || amount < 1) {
     return { error: "Invalid amount. Please enter a value greater or equal to ₹1." };
   }

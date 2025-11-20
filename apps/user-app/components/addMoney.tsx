@@ -45,103 +45,47 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
     onAmountChange && value && onAmountChange(value);
   };
 
-  // Polling transaction status
- const checkStatus = async (token: string, toastId?: string) => {
-    try {
-      toast.dismiss(toastId)
-      const { data } = await axios.get(`/api/transaction-status?token=${token}`);
-      if(!data) return
-      if (data.status === "Success") {
-        toast.dismiss(toastId);
-        localStorage.removeItem("pendingTransaction");
-        await fetchBalance();
-        return;
-      } else if (data.status === "Failure") {
-        toast.dismiss(toastId); // remove loading toast
-        toast.error("Transaction failed!");
-        localStorage.removeItem("pendingTransaction");
-        return;
-      } else if (data.status === "Processing"){
-        const toastId = toast.loading(`Transaction still processing...`, {
-          style: {
-            border: "1px solid #facc15", // yellow border
-            padding: "16px",
-            color: "#b45309", // amber text
-            fontWeight: "bold",
-            borderRadius: "12px",
-            fontSize: "14px",
-          },
-          icon: "⏳",
-        });
-         setTimeout(() => checkStatus(token , toastId), 5000);
-      }
-    } catch (error) {
-      console.error("Status check error:", error);
-      toast.error("Backend Error!");
-      localStorage.removeItem("pendingTransaction");
-    }
-  };
-
-  // Handle Add Money
   const handleAddMoney = useCallback(async () => {
-    if (!amount || amount <= 0) {
-      toast.error("Please enter a valid amount greater than ₹0.");
+  const tId = toast.loading("Transaction Initiated .")
+  
+  if (!amount || amount <= 0) {
+    return toast.error("Please enter a valid amount.");
+  }
+
+  if (!providerId || !selectedProvider) {
+    return toast.error("Please select a bank provider.");
+  }
+
+  setIsLoading(true);
+
+  try {
+    const transactionResult = await onRampTrans(amount, providerId);
+
+    if (transactionResult?.error) {
+      toast.dismiss(tId)
+      toast.error(transactionResult.error);
       return;
     }
 
-    if (!providerId || !selectedProvider) {
-      toast.error("Please select a bank provider.");
+    if (!transactionResult?.token) {
+      toast.dismiss(tId)
+      toast.error("Failed to initiate transaction.");
       return;
     }
 
-    setIsLoading(true);
-    try {
-      const transactionResult = await onRampTrans(amount, selectedProvider.name);
+    const token = transactionResult.token;
 
-      if (transactionResult?.error) {
-        toast.error(transactionResult.error, {
-          duration: 2000,
-          position: "top-center",
-          style: { border: "1px solid #ef4444", padding: "14px", color: "#7f1d1d", fontWeight: "bold" },
-          icon: "⚠️",
-        });
-        return;
-      }
+    await axios.post(selectedProvider.redirectUrl, { token });
+    toast.success("Money added!", { id: tId });
+    handleAmountChange(undefined);
+  } catch (error: any) {
+    toast.dismiss(tId)
+    toast.error(error?.response?.data?.error || "Something went wrong.");
+  } finally {
+    setIsLoading(false);
+  }
+}, [amount, providerId, selectedProvider]);
 
-      if (!transactionResult?.token) {
-        toast.error("Transaction could not be initiated. Please try again later.");
-        return;
-      }
-
-      // Store token in localStorage for polling
-      localStorage.setItem("pendingTransaction", JSON.stringify({
-        token: transactionResult.token,
-        amount,
-        provider: selectedProvider.name,
-        timestamp: Date.now(),
-      }));
-
-      checkStatus(transactionResult.token);
-      await axios.post(selectedProvider.redirectUrl, { token: transactionResult.token });
-
-      handleAmountChange(undefined);
-
-      toast.dismiss()
-      toast.success(`Transfer of ₹${amount} via ${selectedProvider.name} Sucesses!`, {
-        duration: 5000,
-        position: "top-center",
-        style: { border: "1px solid #4ade80", padding: "16px", color: "#166534", fontWeight: "bold", fontSize: "16px" },
-        icon: "💸",
-      });
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.error || "Something went wrong while processing your request.",
-        { duration: 5000, position: "top-center", style: { border: "1px solid #ef4444", padding: "16px", color: "#7f1d1d", fontWeight: "bold" }, icon: "🚫" }
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [amount, providerId, selectedProvider]);
 
   // On mount, fetch balance and check pending transaction
   useEffect(() => {
@@ -150,7 +94,7 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
   }, [prefillAmount]);
 
   return (
-    <Card title="💰 Add Money" className="bg-white/90 w-full max-w-md p-10 backdrop-blur-xl rounded-3xl shadow-2xl border border-green-200">
+    <Card title="" className="max-w-4xl bg-white/90 w-full p-10 backdrop-blur-xl rounded-3xl shadow-2xl border border-green-200">
       <div className="mb-4 text-center">
         <p className="text-gray-700 font-medium">Current Balance:</p>
         <p className="text-2xl font-bold text-green-600">₹{balance?.toFixed(2) ?? ""}</p>

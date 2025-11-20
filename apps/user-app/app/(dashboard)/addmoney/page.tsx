@@ -10,7 +10,7 @@ export default function AddMoneyPage() {
   return (
     <div className="min-h-screen w-full pt-28 px-4 flex flex-col items-center ">
       
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 ">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-black">
         💸 Add <span className="text-emerald-600">Money</span>  to Wallet
         </h1>
@@ -19,7 +19,7 @@ export default function AddMoneyPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl shadow-xl hover:shadow-2xl transition duration-300 w-full max-w-md ">
+      <div className="flex items-center justify-center max-w-5xl w-full">
         <AddMoney 
           prefillAmount={amount} 
           onAmountChange={setAmount} 

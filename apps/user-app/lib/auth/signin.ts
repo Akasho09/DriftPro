@@ -7,6 +7,7 @@ interface SigninParams {
 }
 
 export async function signin({ phone, password }: SigninParams) {
+
   const user = await db.user.findFirst({ where: { mobile: phone } });
   if (!user) {
     throw new Error("User not found");

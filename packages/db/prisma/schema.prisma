@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,46 +6,32 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum OnRampStatus {
-  Success
-  Failure
-  Processing
-}
-
-enum Provider {
-  local 
-  google
-  github
-}
-
 
 model User {
   id                String              @id @default(uuid())
   email             String?             @unique
   name              String?
   mobile            String?             @unique
-  isMobileVerified Boolean @default(false)
   hashedPassword    String?
   provider          Provider?
-  providerAccountId String?            
-
+  providerAccountId String?
+  isMobileVerified  Boolean             @default(false)
+  Balance           Balance?
   OnRampTransaction OnRampTransaction[]
-  Balance Balance[]
-  sentTranactions p2ptransactions[] @relation(name: "sentTranactions")
-
-  toTranactions p2ptransactions[] @relation(name: "toTranactions")
+  toTranactions     p2ptransactions[]   @relation("toTranactions")
+  sentTranactions   p2ptransactions[]   @relation("sentTranactions")
 }
 
 model p2ptransactions {
-  id Int @id @default(autoincrement())
-  senderId   String
+  id         Int       @id @default(autoincrement())
+  tTime      DateTime? @default(now())
+  amount     Int
   receiverId String
-  recMobile String?
+  senderId   String
+  recMobile  String?
   sendMobile String?
-  tTime DateTime? @default(now())
-  amount Int 
-  from User @relation(name : "sentTranactions" ,fields: [senderId] , references: [id]) 
-  to User @relation(name : "toTranactions" ,fields: [receiverId] , references: [id])
+  to         User      @relation("toTranactions", fields: [receiverId], references: [id])
+  from       User      @relation("sentTranactions", fields: [senderId], references: [id])
 }
 
 model OnRampTransaction {
@@ -66,9 +46,21 @@ model OnRampTransaction {
 }
 
 model Balance {
-  id     Int  @id @default(autoincrement())
-  userId String  @unique
+  id     Int    @id @default(autoincrement())
+  userId String @unique
   amount Int
   locked Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+enum OnRampStatus {
+  Success
+  Failure
+  Processing
+}
+
+enum Provider {
+  local
+  google
+  github
 }

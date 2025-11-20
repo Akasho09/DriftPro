@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import aksh from "@repo/db/client";
 import redis from "./redis";
+import { rateLimiter } from "./upStashRateLimit";
 
 interface SendMoneyResult {
   success: boolean;
@@ -12,20 +13,28 @@ interface SendMoneyResult {
 export default async function SendMoney(
   toNum: string,
   amountt: number
-): Promise<SendMoneyResult> {
+): Promise<SendMoneyResult>{
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    return { success: false, message: "Invalid user" };
+    return { success: false, message: "Invalid User."};
   }
 
+  const userId = session.user.id;
+  const { success } = await rateLimiter.limit(`sendmoney_${userId}`);
+  if (!success) {
+    return {
+      success: false,
+      message: "Too many transfers. Please wait a minute."
+    };
+  }
   const receiver = await aksh.user.findFirst({
-    where: { mobile: toNum },
+    where:  { mobile: toNum },
     select: { id: true },
   });
 
   const sender = await aksh.user.findFirst({
-    where: { id: session.user.id },
+    where:  { id: session.user.id },
     select: { id: true, mobile: true },
   });
 

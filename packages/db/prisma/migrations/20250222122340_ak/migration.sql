@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "user" ALTER COLUMN "mobile" SET DATA TYPE TEXT;

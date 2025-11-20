@@ -8,9 +8,15 @@ import TransactionCard from "./TransactionCard";
 export default async function SendTransactions() {
   const session = await getServerSession(authOptions);
   const CACHE_KEY = `${session?.user.id}sendMoney`;
+  let data: any[] = [];
 
-  const cached = await redis.get(CACHE_KEY);
-  const data = cached ? JSON.parse(cached) : await ts();
+  try {
+    const cached = await redis.get(CACHE_KEY);
+    data = cached ? JSON.parse(cached) : await ts();
+  } catch (e) {
+    console.log(e)
+    data = [];
+  }
 
   return (
     <div className="w-full flex justify-center items-center px-4">

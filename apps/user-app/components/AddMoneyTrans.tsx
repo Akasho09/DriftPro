@@ -8,11 +8,19 @@ import TransactionCard from "./TransactionCard";
 export default async function AddMoneyTransactions({ n }: { n: number }) {
   const session = await getServerSession(authOptions);
   const CACHE_KEY = `${session?.user.id}addMoney`;
+  let data: any[] = [];
+  let limit = 4;
 
-  const cached = await redis.get(CACHE_KEY);
-  const data = cached ? JSON.parse(cached) : await search();
+  try {
+    const cached = await redis.get(CACHE_KEY);
+    data = cached ? JSON.parse(cached) : await search();
 
-  const limit = n === 0 ? 4 : data?.length;
+    limit = n === 0 ? 4 : data.length;
+  } catch (e) {
+    console.error("AddMoneyTransactions error:", e);
+    data = [];
+  }
+
 
   return (
     <div className="w-full flex justify-center items-center px-4">

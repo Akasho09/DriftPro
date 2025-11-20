@@ -10,7 +10,7 @@ export default async function getBal() {
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session?.user.id) return null;
-
+  
   const data = await aksh.balance.findFirst({
     where: {
       userId: session.user.id,

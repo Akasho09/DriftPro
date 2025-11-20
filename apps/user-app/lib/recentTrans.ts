@@ -1,10 +1,10 @@
 "use server";
-
 import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import type { Session } from "next-auth";
 import redis from "./redis";
+import { rateLimiter } from "./upStashRateLimit";
 
 type Transaction = {
   amount: number;
@@ -13,18 +13,21 @@ type Transaction = {
   status: "Success" | "Failure" | "Processing";
 };
 
-export default async function search(): Promise<Transaction[] | null> {
+export default async function search(): Promise<Transaction[] | null>{
   const session: Session | null = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
+  
+  const { success } = await rateLimiter.limit(`recentTrans${session.user.id}`);
+  if (!success) return null ; 
 
   const data = await aksh.onRampTransaction.findMany({
-    orderBy: {
+    orderBy:{
       startTime: "desc",
     },
-    where: {
+    where:{
       userId: session.user.id,
     },
-    select: {
+    select:{
       provider: true,
       amount: true,
       startTime: true,

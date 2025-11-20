@@ -6,8 +6,8 @@ import { Loader } from "@repo/ui/loader";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// Hook for fade-up reveal
-function useReveal(delay = 0) {
+function useReveal(delay = 0){
+
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,12 +50,14 @@ export default function Dashboard() {
   const [loadingLink, setLoadingLink] = useState<string | null>(null);
   const router = useRouter();
 
+  // Animated section refs
   const headerRef = useReveal();
   const offerRef = useReveal(100);
   const coreRef = useReveal(200);
   const servicesRef = useReveal(300);
   const bottomRef = useReveal(400);
 
+  // Navigation handler with loading animation
   const handleNavigation = useCallback(
     (href: string) => {
       setLoadingLink(href);
@@ -69,8 +71,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-start pt-24 pb-16 px-4 sm:px-8">
-      
-      {/* Header */}
+
+      {/* HEADER */}
       <header
         ref={headerRef}
         className="text-center mb-12 opacity-0 translate-y-8 transition-all duration-700 ease-out"
@@ -83,7 +85,7 @@ export default function Dashboard() {
         </p>
       </header>
 
-      {/* Offer Banner */}
+      {/* OFFER SECTION */}
       <div
         ref={offerRef}
         className="relative w-full max-w-5xl mb-16 opacity-0 translate-y-8 transition-all duration-700 ease-out"
@@ -104,14 +106,15 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Core Actions */}
+      {/* CORE ACTIONS */}
       <div
         ref={coreRef}
         className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mb-20 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
+        {/* SEND MONEY */}
         <Card
           title="💸 Send Money"
-          subtitle="Send funds instantly to anyone using their phone number or UPI ID securely."
+          subtitle="Send funds instantly using phone number or UPI ID."
           className="bg-gradient-to-br from-blue-400 to-indigo-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
           variant="gradient"
           footer={
@@ -125,9 +128,10 @@ export default function Dashboard() {
           }
         />
 
+        {/* ADD MONEY */}
         <Card
           title="💳 Add Money"
-          subtitle="Replenish your wallet securely using UPI, Card, or Netbanking options."
+          subtitle="Add funds securely with UPI, card, or netbanking."
           className="bg-gradient-to-br from-emerald-400 to-teal-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
           variant="gradient"
           footer={
@@ -141,9 +145,10 @@ export default function Dashboard() {
           }
         />
 
+        {/* TRANSACTIONS */}
         <Card
           title="📈 Wallet & History"
-          subtitle="Access your current wallet balance and comprehensive transaction records easily."
+          subtitle="Check wallet balance and transaction logs."
           className="bg-gradient-to-br from-purple-400 to-pink-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
           variant="gradient"
           footer={
@@ -158,15 +163,18 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Essential Services */}
+      {/* SERVICES SECTION */}
       <section
         ref={servicesRef}
         className="w-full max-w-5xl mb-20 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
         <h2 className="text-3xl font-extrabold text-stone-800 mb-8 border-b-2 border-stone-300 pb-2 text-center md:text-left">
           Essential Services
-          <span className="text-sm text-red-500 ml-2 font-normal">(Coming Soon)</span>
+          <span className="text-sm text-red-500 ml-2 font-normal">
+            (Coming Soon)
+          </span>
         </h2>
+
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
           {POPULAR_SERVICES.map((service, idx) => (
             <Card
@@ -186,20 +194,20 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Bottom Offers */}
+      {/* BOTTOM OFFERS */}
       <section
         ref={bottomRef}
         className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
         <Card
           title="🏦 Personal Loan Solutions"
-          subtitle="Access instant loan approvals up to ₹1,00,000 with zero processing fees. Apply now!"
+          subtitle="Get instant loan approvals up to ₹1,00,000 with zero processing fees."
           variant="outlined"
           className="bg-stone-200 border-l-4 border-indigo-400 shadow-md p-6 text-stone-700"
           footer={
             <Button
               className="w-full bg-stone-700 hover:bg-emerald-600 text-stone-100"
-              onClick={() => alert('Apply for Loan')}
+              onClick={() => alert("Apply for Loan")}
             >
               Apply Now
             </Button>
@@ -208,13 +216,13 @@ export default function Dashboard() {
 
         <Card
           title="🛡️ Comprehensive Insurance"
-          subtitle="Secure your future with tailored health, life, and travel insurance plans from leading providers."
+          subtitle="Find the best health, life, and travel insurance plans."
           variant="outlined"
           className="bg-stone-200 border-l-4 border-teal-400 shadow-md p-6 text-stone-700"
           footer={
             <Button
               className="w-full bg-stone-700 hover:bg-emerald-600 text-stone-100"
-              onClick={() => alert('Explore Insurance')}
+              onClick={() => alert("Explore Insurance")}
             >
               Explore Plans
             </Button>

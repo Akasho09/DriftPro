@@ -1,9 +1,38 @@
 # 💸 DriftPro – Paytm for Desktop
 
-**A secure and modern desktop payment platform** designed for seamless digital transactions.  
-Built with **Next.js**, **Express.js**, **PostgreSQL**, **Redis**, and **Prisma ORM**, all organized in a scalable **Turborepo monorepo** architecture.  
+![DriftPro Architecture Banner](Archi.png)
 
-DriftPro ensures high performance, strong data consistency (ACID compliance), and a clean user experience powered by a modern TypeScript stack.
+[![Build](https://img.shields.io/github/actions/workflow/status/Akasho09/DriftPro/ci.yml?branch=main&logo=github)](https://github.com/)
+[![Docker](https://img.shields.io/docker/cloud/build/yourorg/driftpro)](#)
+[![Next.js](https://img.shields.io/badge/Next.js-13-black?logo=next.js)](https://nextjs.org/)
+[![Postgres](https://img.shields.io/badge/Postgres-13-316192?logo=postgresql)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-6-DC382D?logo=redis)](https://redis.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)](https://www.prisma.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.x-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Vercel](https://img.shields.io/badge/Vercel-deploy-black?logo=vercel)](https://vercel.com/)
+[![Render](https://img.shields.io/badge/Render-deploy-4AB3F4?logo=render)](https://render.com/)
+
+> A secure desktop-first digital wallet platform. Modern, modular and production-ready.
+
+---
+
+## Table of Contents
+1. [Demo User](#demo-user)  
+2. [Features](#features)  
+3. [Tech Stack](#tech-stack)  
+4. [Monorepo Structure](#monorepo-structure)  
+5. [Installation & Setup](#installation--setup)  
+6. [Running with Docker](#running-with-docker)  
+7. [Security](#security)  
+8. [Wallet Flow](#wallet-flow)  
+9. [Roadmap](#roadmap)  
+10. [Architecture](#architecture)  
+11. [Contributing & License](#contributing--license)
+
+---
+
+## 👤 Demo User
+
 
 ---
 
@@ -11,7 +40,6 @@ DriftPro ensures high performance, strong data consistency (ACID compliance), an
 ![alt text](Archi.png)
 
 ---
-
 ## Demo user : 
 - username : 9103597809
 - password : Aakash@9103597809
@@ -20,8 +48,9 @@ DriftPro ensures high performance, strong data consistency (ACID compliance), an
 ## 🚀 Features
 
 ### 💳 Secure Transactions  
-- ACID-compliant database operations with **PostgreSQL** + **Prisma ORM**.  
-- Ensures transactional integrity during send/receive money operations.  
+- ACID-safe money operations using PostgreSQL + Prisma
+- Reliable handling of Add Money & Send Money
+- Full transaction audit logs
 
 ### 🔐 OAuth Authentication  
 - Secure login through **NextAuth.js** with multiple providers:  
@@ -36,7 +65,9 @@ DriftPro ensures high performance, strong data consistency (ACID compliance), an
 ### ⚙️ Redis Integration  
 - **Caching Layer:** Accelerates data retrieval and reduces PostgreSQL load.  
 - **Session Management:** Stores active user sessions for faster authentication.  
-- **Data Access Control:** Implements role-based access and key-based data isolation for multi-user operations.
+
+### 🛡️ Rate Limiting
+- IP-based Rate Limiting using Upstash. 
 
 ### 🧱 Monorepo Architecture (Turborepo)  
 - Modular codebase for scalability and maintainability.  
@@ -63,36 +94,36 @@ DriftPro ensures high performance, strong data consistency (ACID compliance), an
 
 ## 🏗 Tech Stack
 
-| Category | Technology |
-|-----------|-------------|
-| **Frontend/Backend** | Next.js (App Router) |
-| **Microservice** | Express.js (`bankHook`) |
-| **Database** | PostgreSQL |
-| **ORM** | Prisma |
-| **Cache / Access Control** | Redis |
-| **Language** | TypeScript |
-| **UI Framework** | Tailwind CSS |
-| **Architecture** | Turborepo |
-| **Auth** | NextAuth.js (Google, GitHub) |
-| **Deployment** | Docker + GitHub Actions |
+<table> <tr><th>Category</th><th>Technology</th></tr> <tr> <td><b>Full-Stack Framework</b></td> <td> <img src="https://skillicons.dev/icons?i=nextjs" width="26"/> Next.js (App Router) </td> </tr> <tr> <td><b>Microservice</b></td> <td> <img src="https://skillicons.dev/icons?i=express" width="26"/> Express.js (Bank Webhook Service) </td> </tr> <tr> <td><b>Database</b></td> <td> <img src="https://skillicons.dev/icons?i=postgres" width="26"/> PostgreSQL </td> </tr> <tr> <td><b>ORM</b></td> <td> <img src="https://skillicons.dev/icons?i=prisma" width="26"/> Prisma ORM </td> </tr> <tr> <td><b>Caching / Rate Limiting</b></td> <td> <img src="https://skillicons.dev/icons?i=redis" width="26"/> Redis (IoRedis + Upstash) </td> </tr> <tr> <td><b>Validation</b></td> <td> <img src="https://raw.githubusercontent.com/colinhacks/zod/master/logo.svg" width="26"/> Zod </td> </tr> <tr> <td><b>UI / Icons</b></td> <td> <img src="https://skillicons.dev/icons?i=react" width="26"/> React Icons </td> </tr> <tr> <td><b>Notifications</b></td> <td> 🔥 React Hot Toast </td> </tr> <tr> <td><b>Language</b></td> <td> <img src="https://skillicons.dev/icons?i=ts" width="26"/> TypeScript </td> </tr> <tr> <td><b>Styling</b></td> <td> <img src="https://skillicons.dev/icons?i=tailwind" width="26"/> Tailwind CSS </td> </tr> <tr> <td><b>Monorepo Architecture</b></td> <td> <img src="https://skillicons.dev/icons?i=turbo" width="26"/> Turborepo </td> </tr> <tr> <td><b>Authentication</b></td> <td> <img src="https://skillicons.dev/icons?i=google" width="26"/> OAuth (Google) &nbsp; + &nbsp; <img src="https://skillicons.dev/icons?i=github" width="26"/> GitHub OAuth </td> </tr> <tr> <td><b>Deployment</b></td> <td> <img src="https://skillicons.dev/icons?i=vercel" width="26"/> Vercel (Frontend + API) <br/> <img src="https://skillicons.dev/icons?i=render" width="26"/> Render (BankHook Microservice) </td> </tr> <tr> <td><b>Containerization</b></td> <td> <img src="https://skillicons.dev/icons?i=docker" width="26"/> Docker </td> </tr> <tr> <td><b>CI/CD</b></td> <td> <img src="https://skillicons.dev/icons?i=githubactions" width="26"/> GitHub Actions </td> </tr> </table>
 
 ---
 
 ## 📂 Monorepo Structure
 ```yml
-driftpro/
-├── apps/
-│   ├── user-app/        # Next.js frontend + backend logic
-│   └── bankHook/    # Auxiliary backend service
-├── packages/
-│   ├── ui/                 # Shared UI components
-│   ├── utils/              # Shared utilities
-│   └── config/             # Shared configs (e.g., DB, linting)
-├── prisma/                 # Prisma schema & migrations
-├── docker/                 # Docker setup & orchestration
-└── turbo.json              # Turborepo configuration
+Drift2/
+│
+├─ apps/                       # All runnable applications
+│   ├─ web/                    # Next.js App Router (Main app)
+│   └─ bankhook/               # Express.js Bank Webhook Microservice
+│
+├─ packages/                   # Shared libraries for the monorepo
+│   ├─ ui/                     # Reusable UI components (Buttons, Inputs, Cards)
+│   ├─ db/                     # All db logic and prisma
+│
+├─ docker/                     # Docker configs (per-service)
+│
+├─ .vercel/                    # Vercel deployment metadata (auto-generated)
+├─ .github/                    # GitHub Actions workflow files
+│
+├─ readme.md                   # Project documentation
+│
+├─ .env                        # Environment variables (root)
+│
+├─ Dockerfile                  # Root Dockerfile (for Next.js app)
+├─ docker-compose.yml          # Local dev composition (web + bankhook + postgres)
+│
+└─ wait-for-postgres.sh        # Script to ensure Postgres is ready before services run
 ```
-
 ---
 
 ## ⚙️ Installation & Setup
@@ -139,7 +170,7 @@ npx prisma migrate dev
 npm run dev
 
 ### Run with Docker
-docker-compose up --build
+docker compose up --build
 
 
 ### 🔐 Security
@@ -151,6 +182,13 @@ docker-compose up --build
 
 - Prisma ensures safe and validated database queries.
 
+- 🛡️ 1. IP-Based Rate Limiting (Upstash Ratelimit)
+   - Implemented at the middleware level using Upstash Redis
+   - Prevents excessive requests from a single IP
+   - Redirects users to a cooldown page (/rate-limit?retry=10)
+- 📱 2. Mobile Number Rate Limiting (ioredis)
+   - Limit Login attempts
+
 ### 💸 Wallet Transactions
 
 - Add Money – Funds are added to the wallet after verification from the bankHook service, simulating a bank webhook verification.
@@ -161,13 +199,19 @@ docker-compose up --build
 
 
 ### 📈 Roadmap
-- Implement rate limiting and request throttling using Redis
 - Add Redis pub/sub for real-time balance updates and transaction streaming
--  Add support for multiple payment gateways
--  Add analytics dashboard for transactions
-- Two-factor authentication (2FA)
-- Full CI/CD with GitHub Actions (lint → test → deploy → Docker)
+- Add WebSockets for live transaction status
+- Add notifications (email / SMS)
+- Integrate Razorpay / Stripe test mode
 - Integrate monitoring via Prometheus + Grafana
+
+### 🧾 Architecture
+See ARCHITECTURE.md
+ for complete architecture diagrams, sequence flows and deployment notes.
+
+### 🤝 Contributing
+- Fork → Branch → PR
+- Run npm run lint, add tests and maintainers will review.
 
 ## steps
 [text](steps.md)

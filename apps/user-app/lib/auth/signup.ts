@@ -8,6 +8,7 @@ interface SignupParams {
 }
 
 export async function signup({ phone, password }: SignupParams) {
+
   const parsed = signupSchema.safeParse({ phone, password });
   if (!parsed.success) {
     const errorMessage =

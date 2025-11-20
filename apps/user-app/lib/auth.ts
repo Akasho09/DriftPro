@@ -5,6 +5,7 @@ import type { NextAuthOptions } from "next-auth";
 import { signin } from "./auth/signin";
 import { signup } from "./auth/signup";
 import db from "@repo/db/client";
+import { authLimiter } from "./upStashRateLimit";
 
 interface Credentials {
   phone: string;
@@ -21,9 +22,14 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
         action: { label: "Action", type: "text", placeholder: "signin or signup" },
       },
-      async authorize(credentials) {
+      async authorize(credentials , req) {
         if (!credentials) throw new Error("Missing credentials");
 
+        const ip = req?.headers?.["x-forwarded-for"] || req?.headers?.["x-real-ip"] || "unknown";
+        const { success } = await authLimiter.limit(ip.toString());
+        if (!success) {
+          throw new Error("Too many attempts. Try again in a minute.");
+        }
         const { phone, password, action } = credentials as Credentials;
         if (action === "signin") return await signin({ phone, password });
         if (action === "signup") return await signup({ phone, password });
@@ -100,7 +106,6 @@ export const authOptions: NextAuthOptions = {
         session.user.picture = token.picture ?? undefined;
         if(userInDb) session.user.mobile = userInDb.mobile || ""; 
       }
-
       return session;
     },
   },
