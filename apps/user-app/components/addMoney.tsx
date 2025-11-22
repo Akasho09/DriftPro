@@ -11,7 +11,6 @@ import { toast } from "react-hot-toast";
 
 const BANKS = [
   { name: "HDFC Bank", id: "HDFC", redirectUrl: "https://bank-bre4.onrender.com/hdfcwebhook" },
-  // { name: "HDFC Bank", id: "HDFC", redirectUrl: "http://localhost:3004/hdfcwebhook" },
   { name: "Axis Bank", id: "AXIS", redirectUrl: "https://www.axisbank.com/" },
 ];
 

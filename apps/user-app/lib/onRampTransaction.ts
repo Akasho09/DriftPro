@@ -14,16 +14,10 @@ export default async function onRampTrans(amount: number, provider: string) {
   }
   
   const { success } = await rateLimiter.limit(`onRampTrans${s.user.id}`);
-    if (!success) {
-    return { error: "Too many Add Money Requests. Please wait a minute."};
-  }
-  if (!amount || amount < 1) {
-    return { error: "Invalid amount. Please enter a value greater or equal to ₹1." };
-  }
 
-  if (!provider) {
-    return { error: "Invalid bank provider. Please select a valid provider." };
-  }
+  if (!success) return { error: "Too many Add Money Requests. Please wait a minute."};
+  if (!amount || amount < 1) return { error: "Invalid amount. Please enter a value greater or equal to ₹1." };
+  if (!provider) return { error: "Invalid bank provider. Please select a valid provider." };
 
   const userId = s.user.id;
   const token = Math.random().toString();

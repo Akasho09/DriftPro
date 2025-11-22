@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { Providers } from "./provider";
 import "./globals.css";
 import { AppbarClient } from "../components/appbar";
 import { Toaster } from "react-hot-toast";
+import { Inter, Geist_Mono } from "next/font/google";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
+const geistSans = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-inter", 
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],   
+  weight: ["400"], 
   variable: "--font-geist-mono",
 });
 

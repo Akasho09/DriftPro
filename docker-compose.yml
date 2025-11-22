@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:16-alpine
@@ -10,15 +8,10 @@ services:
       POSTGRES_USER: driftpro
       POSTGRES_PASSWORD: driftpro
       POSTGRES_DB: driftprodb
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U driftpro"]
-      interval: 3s
-      timeout: 5s
-      retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  user-app:
+  web:
     build:
       context: .
       dockerfile: Dockerfile
@@ -28,23 +21,19 @@ services:
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
-    command: ["/usr/local/bin/wait-for-postgres.sh", "db", "npm", "run", "start:user"]
+      - db
 
-  bankhook:
+  bank-webhook:
     build:
       context: .
       dockerfile: Dockerfile
-      target: bankhook
+      target: bank-webhook
     ports:
-      - "4000:4000"
+      - "3004:3004"
     env_file:
       - .env
     depends_on:
-      db:
-        condition: service_healthy
-    command: ["/usr/local/bin/wait-for-postgres.sh", "db", "npm", "run", "start:bankhook"]
+      - db
 
 volumes:
   pgdata:

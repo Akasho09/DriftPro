@@ -127,6 +127,8 @@ Drift2/
 ---
 
 ## ⚙️ Installation & Setup
+
+## Manual Installation
 ### Prerequisites
 - **Node.js** ≥ 20  
 - **PostgreSQL** ≥ 14  
@@ -169,8 +171,23 @@ npx prisma migrate dev
 - Run Development Server
 npm run dev
 
-### Run with Docker
-docker compose up --build
+## Run with Docker
+1. 
+```bash
+   docker compose build
+```
+2. 
+```bash
+   docker compose up -d 
+```
+3. 
+```bash
+   docker exec -it  drift2-web-1 sh
+```
+4. 
+```bash
+   npm run db:migrate
+```
 
 
 ### 🔐 Security
