@@ -4,23 +4,22 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
 import search from "../lib/recentTrans";
 import TransactionCard from "./TransactionCard";
+import { Transaction } from "../lib/recentTrans";
 
 export default async function AddMoneyTransactions({ n }: { n: number }) {
   const session = await getServerSession(authOptions);
   const CACHE_KEY = `${session?.user.id}addMoney`;
-  let data: any[] = [];
+  let data: Transaction[] = [];
   let limit = 4;
 
   try {
     const cached = await redis.get(CACHE_KEY);
     data = cached ? JSON.parse(cached) : await search();
-
     limit = n === 0 ? 4 : data.length;
   } catch (e) {
     console.error("AddMoneyTransactions error:", e);
     data = [];
   }
-
 
   return (
     <div className="w-full flex justify-center items-center px-4">
@@ -38,7 +37,7 @@ export default async function AddMoneyTransactions({ n }: { n: number }) {
           <p className="text-black/50 text-center p-4">No transactions found.</p>
         ) : (
           <div className="space-y-4">
-            {data.slice(0, limit).map((d: any, i: number) => (
+            {data.slice(0, limit).map((d: Transaction , i: number) => (
               <TransactionCard
                 key={i}
                 title={d.provider}

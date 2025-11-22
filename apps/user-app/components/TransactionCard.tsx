@@ -6,10 +6,10 @@ interface TransactionCardProps {
   title: string;
   subtitle?: string;
   amount: number;
-  date: string | Date;
+  date: null | Date;
   status?: "Success" | "Failure" | "Processing";
   isSent?: boolean;
-  receiverOrSender?: string;
+  receiverOrSender?: string | null;
 }
 
 export default function TransactionCard({
@@ -22,7 +22,7 @@ export default function TransactionCard({
   receiverOrSender,
 }: TransactionCardProps) {
   const formattedDate =
-    typeof date === "string" ? new Date(date).toLocaleString("en-IN") : date.toLocaleString("en-IN");
+    typeof date === "string" ? new Date(date).toLocaleString("en-IN") : date?.toLocaleString("en-IN");
 
   // Choose color scheme based on type
   const isMoneyFlow = typeof isSent === "boolean";

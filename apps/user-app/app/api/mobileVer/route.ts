@@ -4,6 +4,7 @@ import { z } from "zod";
 import db from "@repo/db/client";
 import { authOptions } from "../../../lib/auth";
 
+
 const updateSchema = z.object({
   name: z.string().trim().min(1, "Name cannot be empty").optional(),
   mobile: z
@@ -13,32 +14,46 @@ const updateSchema = z.object({
     .optional(),
 });
 
+type UpdateProfileInput = z.infer<typeof updateSchema>;
+
 export async function PUT(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
   try {
-    const body = await req.json();
+    const body: unknown = await req.json();
     const parsed = updateSchema.safeParse(body);
 
     if (!parsed.success) {
       const fieldErrors = parsed.error.flatten().fieldErrors;
-      const errorMessages = Object.values(fieldErrors).flat().join(", ");
-      return NextResponse.json({ error: errorMessages || "Invalid input" }, { status: 400 });
+      const errorMessages = Object.values(fieldErrors)
+        .flat()
+        .join(", ");
+
+      return NextResponse.json(
+        { error: errorMessages || "Invalid input" },
+        { status: 400 }
+      );
     }
 
-    const { name, mobile } = parsed.data;
-    const updateData: Record<string, any> = {};
+    const data: UpdateProfileInput = parsed.data;
 
-    if (name) updateData.name = name;
+    const updateData: Partial<UpdateProfileInput> & {
+      isMobileVerified?: boolean;
+    } = {};
 
-    if (mobile) {
+    if (data.name) updateData.name = data.name;
+
+    if (data.mobile) {
       const existingUser = await db.user.findFirst({
         where: {
-          mobile,
+          mobile: data.mobile,
           NOT: { id: session.user.id },
         },
       });
@@ -50,7 +65,7 @@ export async function PUT(req: NextRequest) {
         );
       }
 
-      updateData.mobile = mobile;
+      updateData.mobile = data.mobile;
       updateData.isMobileVerified = true;
     }
 
@@ -66,7 +81,10 @@ export async function PUT(req: NextRequest) {
       data: updateData,
     });
 
-    return NextResponse.json({ success: true, updatedFields: updateData });
+    return NextResponse.json({
+      success: true,
+      updatedFields: updateData,
+    });
   } catch (error) {
     console.error("❌ Update Profile Error:", error);
     return NextResponse.json(

@@ -38,13 +38,13 @@ export const authOptions: NextAuthOptions = {
     }),
 
     GoogleProvider({
-      clientId: process.env.clientId ?? "",
-      clientSecret: process.env.clientSecret ?? "",
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
 
     GitHubProvider({
-      clientId: process.env.githubId ?? "",
-      clientSecret: process.env.githubSecret ?? "",
+      clientId: process.env.GITHUB_ID ?? "",
+      clientSecret: process.env.GITHUB_SECRET ?? "",
     }),
   ],
 

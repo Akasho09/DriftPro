@@ -6,10 +6,10 @@ import type { Session } from "next-auth";
 import redis from "./redis";
 import { rateLimiter } from "./upStashRateLimit";
 
-type Transaction = {
+export type Transaction = {
   amount: number;
   provider: string;
-  startTime: string | Date;
+  startTime: null | Date;
   status: "Success" | "Failure" | "Processing";
 };
 

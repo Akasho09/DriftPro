@@ -4,11 +4,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
 import redis from "../lib/redis";
 import TransactionCard from "./TransactionCard";
+import { Transaction } from "../lib/p2ptrans";
 
 export default async function SendTransactions() {
   const session = await getServerSession(authOptions);
   const CACHE_KEY = `${session?.user.id}sendMoney`;
-  let data: any[] = [];
+  let data: Transaction[] = [];
 
   try {
     const cached = await redis.get(CACHE_KEY);
@@ -17,6 +18,7 @@ export default async function SendTransactions() {
     console.log(e)
     data = [];
   }
+
 
   return (
     <div className="w-full flex justify-center items-center px-4">
@@ -34,7 +36,7 @@ export default async function SendTransactions() {
           <p className="text-black/50 text-center p-4">No transactions found.</p>
         ) : (
           <div className="space-y-4">
-            {data.map((d: any) => (
+            {data.map((d: Transaction) => (
               <TransactionCard
                 title=""
                 key={d.id}

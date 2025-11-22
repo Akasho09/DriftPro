@@ -9,11 +9,14 @@
       "env": [
         "REDIS_URL",
         "REDIS_PASSWORD",
-        "clientId",
-        "clientSecret",
-        "githubId",
-        "githubSecret",
-        "JWT_SECRET"
+        "JWT_SECRET",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "GITHUB_ID",
+        "GITHUB_SECRET",
+        "NEXTAUTH_SECRET",
+        "UPSTASH_REDIS_REST_URL",
+        "UPSTASH_REDIS_REST_TOKEN"
       ]
     },
     "lint": {
@@ -28,11 +31,14 @@
       "env": [
         "REDIS_URL",
         "REDIS_PASSWORD",
-        "clientId",
-        "clientSecret",
-        "githubId",
-        "githubSecret",
-        "JWT_SECRET"
+        "JWT_SECRET",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "GITHUB_ID",
+        "GITHUB_SECRET",
+        "NEXTAUTH_SECRET",
+        "UPSTASH_REDIS_REST_URL",
+        "UPSTASH_REDIS_REST_TOKEN"
       ]
     }
   }

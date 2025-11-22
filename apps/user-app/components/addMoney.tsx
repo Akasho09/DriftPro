@@ -58,7 +58,11 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
   setIsLoading(true);
 
   try {
-    const transactionResult = await onRampTrans(amount, providerId);
+    const transactionResult : {
+      message? : string ,
+      token? : string ,
+      error? : string
+    } = await onRampTrans(amount, providerId);
 
     if (transactionResult?.error) {
       toast.dismiss(tId)
@@ -77,9 +81,12 @@ export default function AddMoney({ prefillAmount, onAmountChange }: AddMoneyProp
     await axios.post(selectedProvider.redirectUrl, { token });
     toast.success("Money added!", { id: tId });
     handleAmountChange(undefined);
-  } catch (error: any) {
+  } catch (error) {
     toast.dismiss(tId)
-    toast.error(error?.response?.data?.error || "Something went wrong.");
+    const err = error as import("axios").AxiosError<{ error?: string }>;
+    toast.error(err.response?.data?.error || "Something went wrong.", {
+      id: tId,
+    });
   } finally {
     setIsLoading(false);
   }

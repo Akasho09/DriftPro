@@ -5,48 +5,78 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import redis from "./redis";
 import { rateLimiter } from "./upStashRateLimit";
+import type { Prisma } from "@prisma/client";
 
-export default async function onRampTrans(amount: number, provider: string) {
-  const s = await getServerSession(authOptions);
+export type OnRampResponse =
+  | { error: string }
+  | { message: string; token: string };
 
-  if (!s?.user?.id) {
+export default async function onRampTrans(
+  amount: number,
+  provider: string
+): Promise<OnRampResponse> {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
     return { error: "Please login to initiate a transaction." };
   }
-  
-  const { success } = await rateLimiter.limit(`onRampTrans${s.user.id}`);
 
-  if (!success) return { error: "Too many Add Money Requests. Please wait a minute."};
-  if (!amount || amount < 1) return { error: "Invalid amount. Please enter a value greater or equal to ₹1." };
-  if (!provider) return { error: "Invalid bank provider. Please select a valid provider." };
+  const userId = session.user.id;
 
-  const userId = s.user.id;
+  // Rate limit
+  const { success } = await rateLimiter.limit(`onRampTrans:${userId}`);
+  if (!success)
+    return {
+      error: "Too many Add Money Requests. Please wait a minute.",
+    };
+
+  // Validations
+  if (!amount || amount < 1)
+    return {
+      error: "Invalid amount. Please enter a value greater or equal to ₹1.",
+    };
+
+  if (!provider)
+    return {
+      error: "Invalid bank provider. Please select a valid provider.",
+    };
+
+  // Create token
   const token = Math.random().toString();
 
   try {
+    // Prisma transaction creation
     await aksh.onRampTransaction.create({
       data: {
         status: "Processing",
         provider,
-        amount: Number(amount) * 100,
+        amount: amount * 100,
         startTime: new Date(),
         userId,
         token,
       },
     });
 
-    await redis.del(`${userId}addMoney`);
-    return { message: "Transaction initiated successfully!", token };
-  } catch (e: any) {
-    console.error("Server error in onRampTrans:", e);
+    // Delete Redis cached balance
+    await redis.del(`${userId}:addMoney`);
 
-    if (e.code === "P2002") {
+    return {
+      message: "Transaction initiated successfully!",
+      token,
+    };
+  } catch (error) {
+    const err = error as Prisma.PrismaClientKnownRequestError;
+
+    if (err.code === "P2002") {
       return { error: "Duplicate transaction. Please try again later." };
     }
 
-    if (e.code === "P2025") {
+    if (err.code === "P2025") {
       return { error: "User not found or invalid data." };
     }
 
-    return { error: "Unexpected server error while initiating transaction." };
+    return {
+      error: "Unexpected server error while initiating transaction.",
+    };
   }
 }
