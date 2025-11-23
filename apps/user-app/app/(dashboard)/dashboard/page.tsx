@@ -70,15 +70,15 @@ export default function Dashboard() {
     loadingLink === href ? <Loader size="sm" /> : "Go →";
 
   return (
-    <div className="font-kodeMono min-h-screen w-full flex flex-col items-center justify-start pt-24 pb-16 px-4 sm:px-8">
+    <div className="min-h-screen w-full flex flex-col items-center justify-start pt-24 pb-16 px-4 sm:px-8">
 
       {/* HEADER */}
       <header
         ref={headerRef}
         className="text-center mb-12 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
-        <h1 className="font-jetB text-5xl font-extrabold text-stone-800 mb-4 tracking-tight">
-          Your <span className="text-yellow-600 font-kodeMono">Unified</span> Dashboard
+        <h1 className="f text-5xl font-extrabold text-stone-800 mb-4 tracking-tight">
+          Your <span className="text-yellow-600 ">Unified</span> Dashboard
         </h1>
         <p className="text-xl text-stone-500">
           Manage your essential services with clarity.

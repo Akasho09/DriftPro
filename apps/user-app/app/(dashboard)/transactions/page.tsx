@@ -11,12 +11,12 @@ export default function DashboardPage() {
       </section>
 
       <section className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 items-start">
-        <Suspense fallback={<div className="p-6 text-gray-500">Loading Add Money Transactions...</div>}>
-          <AddMoneyTransactions n={4} />
-        </Suspense>
-
         <Suspense fallback={<div className="p-6 text-gray-500">Loading Send/Receive Transactions...</div>}>
           <SendReceiveTransactions />
+        </Suspense>
+
+        <Suspense fallback={<div className="p-6 text-gray-500">Loading Add Money Transactions...</div>}>
+          <AddMoneyTransactions n={4} />
         </Suspense>
       </section>
     </div>

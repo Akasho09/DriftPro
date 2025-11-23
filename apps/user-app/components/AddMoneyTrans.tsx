@@ -40,7 +40,6 @@ export default async function AddMoneyTransactions({ n }: { n: number }) {
               <TransactionCard
                 key={i}
                 title={d.provider}
-                subtitle={d.provider}
                 amount={d.amount}
                 date={d.startTime}
                 status={d.status}

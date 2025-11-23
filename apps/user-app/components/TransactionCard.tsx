@@ -35,7 +35,6 @@ export default function TransactionCard({
     : "bg-white/70 border-gray-200 backdrop-blur-xl";
 
   const amountColor = isSent ? "text-red-600" : "text-green-700";
-
   const amountSign = isSent ? "-" : "+";
 
   const statusIcon =
@@ -50,54 +49,58 @@ export default function TransactionCard({
   return (
     <div
       className={`
-        p-5 border rounded-2xl
+        p-5 border rounded-2xl w-full
         shadow-sm hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)]
-        hover:-translate-y-0.5
         transition-all duration-300
-        flex justify-between items-center
         ${bgClass}
       `}
     >
-      {/* Left */}
-      <div className="flex flex-col gap-1">
-        <div className="font-semibold text-black">
-          {isMoneyFlow ? (
-            isSent ? (
-              <>Sent To: <span className="text-pink-700">{receiverOrSender ?? "Unknown"}</span></>
+      <div className="flex items-center justify-between gap-4 w-full">
+        
+        {/* LEFT SIDE (fixed width) */}
+        <div className="flex flex-col gap-1 w-[65%]">
+          <div className="font-semibold text-black break-words">
+            {isMoneyFlow ? (
+              isSent ? (
+                <>Sent To: <span className="text-pink-700">{receiverOrSender ?? "Unknown"}</span></>
+              ) : (
+                <>Received From: <span className="text-green-700">{receiverOrSender ?? "Unknown"}</span></>
+              )
             ) : (
-              <>Received From: <span className="text-green-700">{receiverOrSender ?? "Unknown"}</span></>
-            )
-          ) : (
-            <>₹{amount.toFixed(2)} via <span className="text-pink-500">{title}</span></>
+              <>₹{amount.toFixed(2)} via <span className="text-pink-500">{title}</span></>
+            )}
+          </div>
+
+          <div className="text-xs text-black/50">{formattedDate}</div>
+
+          {!isMoneyFlow && subtitle && (
+            <div className="text-sm text-black/70">{subtitle}</div>
           )}
         </div>
 
-        <div className="text-xs text-black/50">{formattedDate}</div>
-
-        {!isMoneyFlow && subtitle && (
-          <div className="text-sm text-black/70">{subtitle}</div>
-        )}
-      </div>
-
-      {/* Right */}
-      {isMoneyFlow ? (
-        <div className={`text-lg font-bold ${amountColor}`}>
-          {amountSign} ₹{amount.toFixed(2)}
+        {/* RIGHT SIDE (fixed width) */}
+        <div className="w-[35%] flex justify-end">
+          {isMoneyFlow ? (
+            <div className={`text-lg font-bold ${amountColor} text-right`}>
+              {amountSign} ₹{amount.toFixed(2)}
+            </div>
+          ) : (
+            status && (
+              <div
+                className="
+                flex items-center gap-2 px-3 py-1 rounded-full
+                text-sm font-medium text-black border border-gray-200
+                backdrop-blur-md shadow-sm
+              "
+              >
+                {statusIcon}
+                {status}
+              </div>
+            )
+          )}
         </div>
-      ) : (
-        status && (
-          <div
-            className="
-            flex items-center gap-2 px-3 py-1 rounded-full
-            text-sm font-medium text-black border border-gray-200
-            backdrop-blur-md shadow-sm
-          "
-          >
-            {statusIcon}
-            {status}
-          </div>
-        )
-      )}
+
+      </div>
     </div>
   );
 }
