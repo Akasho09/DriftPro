@@ -56,9 +56,7 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
       {/* Logo */}
       <Link
         href="/dashboard"
-        className="text-2xl font-extrabold tracking-wide cursor-pointer
-                   bg-gradient-to-r from-black via-pink-400 to-green-600 bg-clip-text
-                   text-transparent  hover:opacity-90 transition"
+        className="text-3xl font-extrabold cursor-pointer bg-yellow-900 bg-clip-text text-transparent  hover:opacity-90 transition"
       >
         DriftPro
       </Link>
@@ -70,7 +68,7 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
           aria-haspopup="true"
           aria-expanded={open}
           onClick={() => setOpen((prev) => !prev)}
-          className="w-10 h-10 border-2 border-pink-200 rounded-full flex items-center justify-center overflow-hidden
+          className="w-10 h-10 border-2 rounded-full flex items-center justify-center overflow-hidden
                      bg-green-100 hover:scale-105 transition-transform"
         >
           {!user?.image ? (
@@ -132,7 +130,7 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
         <div className="hidden sm:block">
           <h4 className="text-sm text-gray-700">
             Hello,{" "}
-            <span className="font-semibold text-gray-900 truncate max-w-[120px]">
+            <span className="font-semibold bg-gradient-to-r from-black via-zinc-800 to-yellow-500 bg-clip-text text-transparent  truncate max-w-[120px]">
               {greeting}
             </span>
           </h4>

@@ -66,7 +66,7 @@ const handleSend = useCallback(async () => {
     const response = await SendMoney(selectedContact.mobile, parsedAmount * 100);
     
     if (response.success) {
-      toast.success(`✅ ${response.message}`, { id: toastId });
+      toast.success(`${response.message}`, { id: toastId });
       toast.success(`💸 Sent ₹${parsedAmount} to ${selectedContact.name || "User"}`);
       closeModal();
       router.refresh();
@@ -135,8 +135,8 @@ const handleSend = useCallback(async () => {
             >
               {/* Left Side */}
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-100 border border-green-200">
-                  <FiUser className="text-green-700 text-lg" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-black border border-green-200">
+                  <FiUser className="text-white text-lg" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-black">
@@ -152,7 +152,7 @@ const handleSend = useCallback(async () => {
                   setSelectedContact(user);
                   setIsOpen(true);
                 }}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-green-500 text-white hover:bg-green-600 text-xs font-medium transition"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-gradient-to-r from-black via-zinc-800 to-yellow-500 hover:bg-gradient-to-r hover:from-yellow-500 hover:to-black text-white text-xs font-medium transition"
               >
                 <FiSend className="h-3 w-3" />
                 Pay
@@ -175,9 +175,9 @@ const handleSend = useCallback(async () => {
             </button>
 
             {/* Contact Info */}
-            <div className="flex flex-col items-center gap-2 mb-6 p-4 bg-green-50 rounded-xl border border-green-200">
-              <FiUser className="text-green-700 text-4xl" />
-              <p className="font-bold text-lg text-black">{selectedContact.name || "User"}</p>
+            <div className="flex flex-col items-center gap-2 mb-6 p-4 text-black rounded-xl border border-green-200">
+              <FiUser className="text-4xl" />
+              <p className="font-bold text-lg ">{selectedContact.name || "User"}</p>
               <p className="text-green-700 text-sm font-mono">{selectedContact.mobile}</p>
             </div>
 
@@ -191,7 +191,7 @@ const handleSend = useCallback(async () => {
                 placeholder="Minimum ₹1"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full border border-green-200 bg-green-50 rounded-lg px-4 py-3 text-lg text-black focus:ring-2 focus:ring-green-400 outline-none transition"
+                className="w-full border border-green-200 rounded-lg px-4 py-3 text-lg text-black focus:ring-2 focus:ring-green-400 outline-none transition"
                 min={1}
                 required
               />
@@ -201,7 +201,7 @@ const handleSend = useCallback(async () => {
             <button
               onClick={handleSend}
               disabled={sending}
-              className="w-full py-3 rounded-xl bg-green-500 hover:bg-green-600 text-white font-semibold text-lg transition disabled:bg-gray-400 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-black via-zinc-800 to-yellow-500 hover:bg-gradient-to-r hover:from-yellow-500 hover:to-black text-white font-semibold text-lg transition disabled:bg-gray-400 flex items-center justify-center gap-2"
             >
               {sending ? (
                 <>

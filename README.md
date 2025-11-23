@@ -1,6 +1,5 @@
 # 💸 DriftPro – Paytm for Desktop
-
-![DriftPro Architecture Banner](Archi.png)
+![DriftPro Architecture Banner](arch2.png)
 
 [![Build](https://img.shields.io/github/actions/workflow/status/Akasho09/DriftPro/ci.yml?branch=main&logo=github)](https://github.com/)
 [![Docker](https://img.shields.io/docker/cloud/build/yourorg/driftpro)](#)
@@ -37,6 +36,7 @@
 ---
 
 ## 🧩 ER Diagram
+![alt text](arch2.png)
 ![alt text](Archi.png)
 
 ---

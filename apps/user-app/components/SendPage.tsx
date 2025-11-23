@@ -58,7 +58,7 @@ export function WalletClient() {
     try {
       const response = await SendMoneyAction(receiver, amt * 100);
       if (response.success) {
-        toast.success(`✅ ${response.message}`, { id: toastId });
+        toast.success(`${response.message}`, { id: toastId });
         setReceiver("");
         setAmount("");
       } else {
@@ -74,14 +74,14 @@ export function WalletClient() {
 
   return (
     <div className="min-h-screen w-full pb-40">
-      <div className="mx-auto w-full max-w-5xl px-4 pt-24 md:px-8 lg:px-12">
+      <div className="mx-auto w-full max-w-5xl px-4 pt-24 md:px-8 lg:px-12 ">
 
         {/* Header */}
         <header
           ref={headerRef}
           className="mb-16 text-center opacity-0 translate-y-8 transition-all duration-700 ease-out"
         >
-          <h1 className="mb-3 text-4xl font-extrabold bg-gradient-to-r from-green-60 via-pink-400 to-green-600 bg-clip-text text-transparent drop-shadow-sm md:text-5xl">
+          <h1 className="mb-3 text-4xl font-extrabold bg-gradient-to-r from-black via-zinc-800 to-yellow-500 bg-clip-text text-transparent drop-shadow-sm md:text-5xl">
             Wallet Dashboard
           </h1>
           <p className="mx-auto max-w-2xl leading-relaxed text-lg text-slate-700">
@@ -134,7 +134,7 @@ export function WalletClient() {
                 <button
                   onClick={handleSend}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-green-500 hover:bg-green-600 text-white font-semibold text-lg transition disabled:bg-gray-400"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-black via-zinc-800 to-yellow-500 hover:bg-gradient-to-r hover:from-yellow-500 hover:to-black text-white font-semibold text-lg transition disabled:bg-gray-400"
                 >
                   {loading ? (
                     <>

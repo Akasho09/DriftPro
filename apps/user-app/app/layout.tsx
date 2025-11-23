@@ -3,19 +3,15 @@ import { Providers } from "./provider";
 import "./globals.css";
 import { AppbarClient } from "../components/appbar";
 import { Toaster } from "react-hot-toast";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Lato } from "next/font/google";
 
-const geistSans = Inter({
+const jetB = Lato({
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-inter", 
+  weight: ["100", "400", "700"],
+  variable: "--font-lato",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  subsets: ["latin"],   
-  weight: ["400"], 
-  variable: "--font-geist-mono",
-});
 
 export const metadata: Metadata = {
   title: "D Coins",
@@ -51,11 +47,11 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} bg-[#ebe6e6] min-h-screen`}
+          className={`${jetB.className} bg-[#ebe6e6] min-h-screen`}
         >
           <AppbarClient />
           <Toaster position="top-center" />
-          <main className="max-w-6xl mx-auto pt-12 px-4 w-full">
+          <main className="font-jetB max-w-6xl mx-auto pt-12 px-4 w-full">
             {children}
           </main>
         </body>

@@ -7,9 +7,7 @@ import redis from "./redis";
 import { rateLimiter } from "./upStashRateLimit";
 import type { Prisma } from "@prisma/client";
 
-export type OnRampResponse =
-  | { error: string }
-  | { message: string; token: string };
+export type OnRampResponse = { message?: string; token?: string ; error?: string };
 
 export default async function onRampTrans(
   amount: number,

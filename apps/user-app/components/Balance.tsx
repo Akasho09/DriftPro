@@ -59,7 +59,7 @@ export default async function Balance(): Promise<React.ReactElement> {
       value: total,
       icon: <FaCoins />,
       variant: "default",
-      iconColor: "text-black",
+      iconColor: "text-white",
       description: "Your total balance including unlocked and locked funds",
     },
   ];
@@ -73,10 +73,8 @@ export default async function Balance(): Promise<React.ReactElement> {
             title={item.label}
             icon={<span className={clsx("text-xl", item.iconColor)}>{item.icon}</span>}
             subtitle={`₹${item.value.toFixed(2)}`}
-            variant={item.variant as CardVariant}
-            className="w-full cursor-pointer transform transition-all duration-300 hover:scale-[1.03] bg-white/90 border border-green-200"
           >
-            <p className="mt-2 text-sm text-black/70">{item.description}</p>
+            <p className="mt-2 text-xs text-grey-300">{item.description}</p>
           </Card>
         ))}
       </div>

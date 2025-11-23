@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Card } from "@repo/ui/card";
+import { Card , Card2 } from "@repo/ui/card";
 import { Button } from "@repo/ui/button";
 import { Loader } from "@repo/ui/loader";
 import { useState, useCallback, useRef, useEffect } from "react";
@@ -70,21 +70,20 @@ export default function Dashboard() {
     loadingLink === href ? <Loader size="sm" /> : "Go →";
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-start pt-24 pb-16 px-4 sm:px-8">
+    <div className="font-kodeMono min-h-screen w-full flex flex-col items-center justify-start pt-24 pb-16 px-4 sm:px-8">
 
       {/* HEADER */}
       <header
         ref={headerRef}
         className="text-center mb-12 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
-        <h1 className="text-5xl font-extrabold text-stone-800 mb-4 tracking-tight">
-          Your <span className="text-emerald-600">Unified</span> Dashboard
+        <h1 className="font-jetB text-5xl font-extrabold text-stone-800 mb-4 tracking-tight">
+          Your <span className="text-yellow-600 font-kodeMono">Unified</span> Dashboard
         </h1>
         <p className="text-xl text-stone-500">
           Manage your essential services with clarity.
         </p>
       </header>
-
       {/* OFFER SECTION */}
       <div
         ref={offerRef}
@@ -93,8 +92,6 @@ export default function Dashboard() {
         <Card
           title="🎉 Special Offer: Enjoy 10% Cashback!"
           subtitle="Get 10% cashback on your first UPI transaction this month (up to ₹500). Limited time only."
-          className="bg-gradient-to-br from-emerald-500 to-indigo-500 text-white shadow-lg rounded-2xl p-8"
-          variant="gradient"
           footer={
             <Link
               href="/offers"
@@ -115,13 +112,10 @@ export default function Dashboard() {
         <Card
           title="💸 Send Money"
           subtitle="Send funds instantly using phone number or UPI ID."
-          className="bg-gradient-to-br from-blue-400 to-indigo-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
-          variant="gradient"
           footer={
             <Button
               onClick={() => handleNavigation("/sendmoney")}
               disabled={loadingLink === "/sendmoney"}
-              className="bg-stone-700 hover:bg-emerald-600 text-stone-100"
             >
               {getButtonContent("/sendmoney")}
             </Button>
@@ -132,13 +126,10 @@ export default function Dashboard() {
         <Card
           title="💳 Add Money"
           subtitle="Add funds securely with UPI, card, or netbanking."
-          className="bg-gradient-to-br from-emerald-400 to-teal-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
-          variant="gradient"
           footer={
             <Button
               onClick={() => handleNavigation("/addmoney")}
               disabled={loadingLink === "/addmoney"}
-              className="bg-stone-700 hover:bg-emerald-600 text-stone-100"
             >
               {getButtonContent("/addmoney")}
             </Button>
@@ -149,13 +140,10 @@ export default function Dashboard() {
         <Card
           title="📈 Wallet & History"
           subtitle="Check wallet balance and transaction logs."
-          className="bg-gradient-to-br from-purple-400 to-pink-400 text-stone-800 shadow-md hover:shadow-lg transition duration-300 rounded-xl"
-          variant="gradient"
           footer={
             <Button
               onClick={() => handleNavigation("/transactions")}
               disabled={loadingLink === "/transactions"}
-              className="bg-stone-700 hover:bg-emerald-600 text-stone-100"
             >
               {getButtonContent("/transactions")}
             </Button>
@@ -177,14 +165,12 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
           {POPULAR_SERVICES.map((service, idx) => (
-            <Card
+            <Card2
               key={idx}
               title={service.name}
-              className="p-6 bg-stone-200 border border-stone-300 rounded-xl text-center shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 text-stone-700"
-              variant="outlined"
               footer={
                 <Link href={service.href}>
-                  <Button className="w-full bg-stone-700 hover:bg-emerald-600 text-stone-100">
+                  <Button >
                     Explore →
                   </Button>
                 </Link>
@@ -199,14 +185,11 @@ export default function Dashboard() {
         ref={bottomRef}
         className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 opacity-0 translate-y-8 transition-all duration-700 ease-out"
       >
-        <Card
+        <Card2
           title="🏦 Personal Loan Solutions"
           subtitle="Get instant loan approvals up to ₹1,00,000 with zero processing fees."
-          variant="outlined"
-          className="bg-stone-200 border-l-4 border-indigo-400 shadow-md p-6 text-stone-700"
           footer={
             <Button
-              className="w-full bg-stone-700 hover:bg-emerald-600 text-stone-100"
               onClick={() => alert("Apply for Loan")}
             >
               Apply Now
@@ -214,14 +197,11 @@ export default function Dashboard() {
           }
         />
 
-        <Card
+        <Card2
           title="🛡️ Comprehensive Insurance"
           subtitle="Find the best health, life, and travel insurance plans."
-          variant="outlined"
-          className="bg-stone-200 border-l-4 border-teal-400 shadow-md p-6 text-stone-700"
           footer={
             <Button
-              className="w-full bg-stone-700 hover:bg-emerald-600 text-stone-100"
               onClick={() => alert("Explore Insurance")}
             >
               Explore Plans

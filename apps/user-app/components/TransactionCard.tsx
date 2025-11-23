@@ -6,7 +6,7 @@ interface TransactionCardProps {
   title: string;
   subtitle?: string;
   amount: number;
-  date: null | Date;
+  date: null | Date | string;
   status?: "Success" | "Failure" | "Processing";
   isSent?: boolean;
   receiverOrSender?: string | null;
@@ -22,52 +22,77 @@ export default function TransactionCard({
   receiverOrSender,
 }: TransactionCardProps) {
   const formattedDate =
-    typeof date === "string" ? new Date(date).toLocaleString("en-IN") : date?.toLocaleString("en-IN");
+    typeof date === "string"
+      ? new Date(date).toLocaleString("en-IN")
+      : date?.toLocaleString("en-IN");
 
-  // Choose color scheme based on type
   const isMoneyFlow = typeof isSent === "boolean";
-  let bgClass = "";
-  let textColor = "";
-  let amountSign = "";
 
-  if (isMoneyFlow) {
-    bgClass = isSent ? "bg-green-50 border-green-200" : "bg-pink-50 border-pink-200";
-    textColor = isSent ? "text-green-700" : "text-pink-700";
-    amountSign = isSent ? "-" : "+";
-  } else {
-    bgClass = "bg-white/80 border-gray-200";
-  }
+  const bgClass = isMoneyFlow
+    ? isSent
+      ? "bg-gradient-to-br from-green-50 to-white border-green-200"
+      : "bg-gradient-to-br from-pink-50 to-white border-pink-200"
+    : "bg-white/70 border-gray-200 backdrop-blur-xl";
 
-  let statusIcon;
-  if (status === "Success") statusIcon = <FaCheckCircle className="text-green-600" />;
-  else if (status === "Failure") statusIcon = <FaTimesCircle className="text-pink-500" />;
-  else if (status === "Processing") statusIcon = <FaClock className="text-black" />;
+  const amountColor = isSent ? "text-red-600" : "text-green-700";
+
+  const amountSign = isSent ? "-" : "+";
+
+  const statusIcon =
+    status === "Success" ? (
+      <FaCheckCircle className="text-green-600 text-lg" />
+    ) : status === "Failure" ? (
+      <FaTimesCircle className="text-pink-500 text-lg" />
+    ) : status === "Processing" ? (
+      <FaClock className="text-amber-600 text-lg animate-pulse" />
+    ) : null;
 
   return (
     <div
-      className={`p-5 border rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex justify-between items-center ${bgClass}`}
+      className={`
+        p-5 border rounded-2xl
+        shadow-sm hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)]
+        hover:-translate-y-0.5
+        transition-all duration-300
+        flex justify-between items-center
+        ${bgClass}
+      `}
     >
-      {/* Left Section */}
-      <div>
+      {/* Left */}
+      <div className="flex flex-col gap-1">
         <div className="font-semibold text-black">
-          {isMoneyFlow
-            ? isSent
-              ? `Sent To: ${receiverOrSender ?? "Unknown"}`
-              : `Received From: ${receiverOrSender ?? "Unknown"}`
-            : `₹${amount.toFixed(2)} via ${title}`}
+          {isMoneyFlow ? (
+            isSent ? (
+              <>Sent To: <span className="text-pink-700">{receiverOrSender ?? "Unknown"}</span></>
+            ) : (
+              <>Received From: <span className="text-green-700">{receiverOrSender ?? "Unknown"}</span></>
+            )
+          ) : (
+            <>₹{amount.toFixed(2)} via <span className="text-pink-500">{title}</span></>
+          )}
         </div>
+
         <div className="text-xs text-black/50">{formattedDate}</div>
-        {!isMoneyFlow && <div className="text-sm text-black/70">{subtitle}</div>}
+
+        {!isMoneyFlow && subtitle && (
+          <div className="text-sm text-black/70">{subtitle}</div>
+        )}
       </div>
 
-      {/* Right Section */}
+      {/* Right */}
       {isMoneyFlow ? (
-        <div className={`text-lg font-bold ${textColor}`}>
+        <div className={`text-lg font-bold ${amountColor}`}>
           {amountSign} ₹{amount.toFixed(2)}
         </div>
       ) : (
         status && (
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-white/60 border border-gray-200">
+          <div
+            className="
+            flex items-center gap-2 px-3 py-1 rounded-full
+            text-sm font-medium text-black border border-gray-200
+            backdrop-blur-md shadow-sm
+          "
+          >
             {statusIcon}
             {status}
           </div>

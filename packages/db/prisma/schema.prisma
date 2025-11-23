@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -20,6 +19,8 @@ model User {
   OnRampTransaction OnRampTransaction[]
   toTranactions     p2ptransactions[]   @relation("toTranactions")
   sentTranactions   p2ptransactions[]   @relation("sentTranactions")
+  toReq             Requests[]  @relation("toId")
+  fromReq           Requests[] @relation("fromId")
 }
 
 model p2ptransactions {
@@ -51,6 +52,16 @@ model Balance {
   amount Int
   locked Int
   user   User   @relation(fields: [userId], references: [id])
+}
+
+model Requests {
+  id        Int @id @default(autoincrement())
+  receiverId String
+  senderId   String
+  recMobile  String?
+  sendMobile String?
+  from      User @relation("fromId" , fields: [senderId] , references: [id])
+  to        User @relation("toId" , fields: [receiverId] ,references: [id])
 }
 
 enum OnRampStatus {

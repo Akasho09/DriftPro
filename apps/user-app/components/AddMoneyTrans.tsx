@@ -24,17 +24,16 @@ export default async function AddMoneyTransactions({ n }: { n: number }) {
   return (
     <div className="w-full flex justify-center items-center px-4">
       <Card
-        className="w-full max-w-xl p-6 shadow-md rounded-2xl bg-white/90 backdrop-blur-sm border border-green-200"
         title=" 💳 Add Money Transactions"
       >
-        <p className="text-sm text-black/70 mb-4 text-center">
+        <p className="text-sm text-grey-300 mb-4 text-center">
           Track your recent Add Money activity.
         </p>
 
         {!session?.user ? (
           <p className="text-red-500 font-semibold text-center p-4">⚠️ Login First</p>
         ) : !data || data.length === 0 ? (
-          <p className="text-black/50 text-center p-4">No transactions found.</p>
+          <p className="text-red-500 text-center p-4">No transactions found.</p>
         ) : (
           <div className="space-y-4">
             {data.slice(0, limit).map((d: Transaction , i: number) => (

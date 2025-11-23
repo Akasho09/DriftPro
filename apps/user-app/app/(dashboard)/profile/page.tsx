@@ -33,8 +33,8 @@ export default async function ProfilePage() {
     : "U";
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-6 bg-gradient-to-tr ">
-      <div className="w-full max-w-lg bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-green-200 hover:shadow-pink-200/40 transition-all duration-300 p-10">
+    <div className="w-full flex items-center justify-center pt-20 bg-gradient-to-tr">
+      <div className="w-full max-w-2xl bg-gradient-to-br from-green-50 via-white to-pink-50 backdrop-blur-md rounded-3xl shadow-2xl border border-green-200 hover:shadow-pink-200/40 transition-all duration-300 p-10">
         {/* Header */}
 
         <div className="flex flex-col items-center mb-8">
@@ -44,7 +44,7 @@ export default async function ProfilePage() {
               alt="Profile picture"
               width={96}
               height={96}
-              className="rounded-full mb-4 border-4 border-green-200 shadow-md"
+              className="rounded-full mb-4 border-4 shadow-md"
             />
           ) : (
             <div className="w-24 h-24 rounded-full bg-green-200 flex items-center justify-center text-3xl font-bold text-white mb-4">
@@ -52,7 +52,9 @@ export default async function ProfilePage() {
             </div>
           )}
 
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-black via-pink-400 to-green-600 text-transparent bg-clip-text">
+          <h1 className="text-4xl font-bold
+           bg-gradient-to-r from-black via-zinc-800 to-yellow-500
+           text-transparent bg-clip-text">
             Profile
           </h1>
         </div>
@@ -91,7 +93,7 @@ export default async function ProfilePage() {
         {/* Update Button */}
         <Link
           href="/profile/update"
-          className="mt-10 w-full block text-center py-3 rounded-2xl bg-gradient-to-r from-green-400 via-pink-400 to-pink-500 text-white font-semibold text-lg shadow-md hover:scale-[1.03] hover:shadow-lg transition-all duration-300"
+          className="mt-10 w-full block text-center py-3 rounded-2xl bg-gradient-to-r from-black via-zinc-800 to-yellow-500 text-white font-semibold text-lg shadow-md hover:scale-[1.03] hover:shadow-lg transition-all duration-300"
         >
           ✏️ Update Profile
         </Link>
