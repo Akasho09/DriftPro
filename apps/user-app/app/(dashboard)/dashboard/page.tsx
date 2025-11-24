@@ -151,7 +151,7 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* SERVICES SECTION */}
+      {/* SERVICES SECTION */} 
       <section
         ref={servicesRef}
         className="w-full max-w-5xl mb-20 opacity-0 translate-y-8 transition-all duration-700 ease-out"
@@ -170,8 +170,8 @@ export default function Dashboard() {
               title={service.name}
               footer={
                 <Link href={service.href}>
-                  <Button >
-                    Explore →
+                  <Button disabled>
+                      Coming Soon →
                   </Button>
                 </Link>
               }
@@ -191,8 +191,9 @@ export default function Dashboard() {
           footer={
             <Button
               onClick={() => alert("Apply for Loan")}
+              disabled
             >
-              Apply Now
+              Soon →
             </Button>
           }
         />
@@ -203,8 +204,9 @@ export default function Dashboard() {
           footer={
             <Button
               onClick={() => alert("Explore Insurance")}
+              disabled
             >
-              Explore Plans
+              Soon →
             </Button>
           }
         />

@@ -5,7 +5,7 @@ import { DropDown } from "@repo/ui/drop-down";
 import { Button } from "@repo/ui/button";
 import onRampTrans from "../lib/onRampTransaction";
 import getBal from "../lib/getBal";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 import { FiLoader, FiPlusCircle } from "react-icons/fi";
 import { useRouter } from "next/navigation";
@@ -41,7 +41,8 @@ function useReveal(delay = 0) {
 }
 
 const BANKS = [
-  { name: "HDFC Bank", id: "HDFC", redirectUrl: "https://bank-bre4.onrender.com/hdfcwebhook" },
+  { name: "Drift Bank", id: "Drift", redirectUrl: "https://bank-bre4.onrender.com/hdfcwebhook" },
+  { name: "HDFC Bank", id: "HDFC", redirectUrl: "http://localhost:3004/hdfcwebhook" },
   { name: "Axis Bank", id: "AXIS", redirectUrl: "https://www.axisbank.com/" },
 ];
 
@@ -96,7 +97,7 @@ export default function AddMoney() {
       setAmount(undefined);
       fetchBalance();
     } catch (error) {
-      const axiosError = error as AxiosError<{ error: string }>;
+      const axiosError = error as any;
       toast.error(axiosError?.response?.data?.error || "Something went wrong.", { id: toastId });
     } finally {
       setIsLoading(false);
@@ -160,8 +161,8 @@ export default function AddMoney() {
                     className={`
                       px-2 md:px-4 py-2 text-xs md:text-sm rounded-lg font-medium transition-all
                       ${amount === val
-                        ? "bg-gradient-to-r from-pink-500 to-fuchsia-600 text-white shadow-md scale-105"
-                        : "bg-green-200 text-black hover:bg-green-300"}
+                        ? "bg-gradient-to-r from-black via-zinc-800 to-yellow-500 text-white shadow-md scale-105"
+                        : "border text-black hover:bg-gradient-to-r hover:from-black hover:via-zinc-400 hover:to-yellow-400"}
                     `}
                   >
                     ₹{val}

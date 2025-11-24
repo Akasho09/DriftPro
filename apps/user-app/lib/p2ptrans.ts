@@ -4,7 +4,7 @@ import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import type { Session } from "next-auth";
-import redis from "./redis";
+import {redis} from "./upStashRateLimit";
 
 export interface Transaction {
   amount: number;
@@ -37,6 +37,12 @@ export default async function ts(): Promise<Transaction[] | null> {
     ...txn,
     amount: txn.amount / 100, 
   }));
-  await redis.set(`${session.user.id}sendMoney` , JSON.stringify(updatedData) , "EX" , 300)
+
+      
+  try{
+  await redis.set(`${session.user.id}sendMoney` , JSON.stringify(updatedData) , {ex : 300})
+  }catch(error){}
+
+  // await redis.set(`${session.user.id}sendMoney` , JSON.stringify(updatedData) , "EX" , 300)
   return updatedData;
 }

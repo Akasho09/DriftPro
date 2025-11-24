@@ -3,15 +3,14 @@ import { Providers } from "./provider";
 import "./globals.css";
 import { AppbarClient } from "../components/appbar";
 import { Toaster } from "react-hot-toast";
-import { Lato } from "next/font/google";
+import { Outfit,} from "next/font/google";
 
-const jetB = Lato({
+const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["100", "400", "700"],
-  variable: "--font-lato",
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-outfit",
   display: "swap",
 });
-
 
 export const metadata: Metadata = {
   title: "D Coins",
@@ -47,11 +46,11 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <body
-          className={`${jetB.className} bg-[#ebe6e6] min-h-screen`}
+          className={`${outfit.className} ${outfit.variable} -[#ebe6e6] min-h-screen`}
         >
           <AppbarClient />
           <Toaster position="top-center" />
-          <main className="font-jetB max-w-6xl mx-auto pt-12 px-4 w-full">
+          <main className="font-outfit max-w-6xl mx-auto pt-12 px-4 w-full">
             {children}
           </main>
         </body>

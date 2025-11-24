@@ -1,5 +1,4 @@
 "use server";
-
 import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";

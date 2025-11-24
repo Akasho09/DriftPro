@@ -3,8 +3,7 @@
 import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
-import redis from "./redis";
-import { rateLimiter } from "./upStashRateLimit";
+import { rateLimiter, redis } from "./upStashRateLimit";
 import type { Prisma } from "@prisma/client";
 
 export type OnRampResponse = { message?: string; token?: string ; error?: string };
@@ -56,7 +55,9 @@ export default async function onRampTrans(
     });
 
     // Delete Redis cached balance
-    await redis.del(`${userId}:addMoney`);
+      redis.del(`${userId}:addMoney`).catch((err) => {
+        console.error("Redis deletion failed:", err);
+      });
 
     return {
       message: "Transaction initiated successfully!",

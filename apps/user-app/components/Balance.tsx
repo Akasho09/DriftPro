@@ -11,7 +11,6 @@ interface BalanceData {
   locked: number;
 }
 
-type CardVariant = "default" | "outlined" | "gradient" | "fancy";
 
 export default async function Balance(): Promise<React.ReactElement> {
   const session = await getServerSession(authOptions);

@@ -17,7 +17,7 @@ export function Card({
 }: CardProps) {
 
   return (
-    <div className="bg-gradient-to-r from-black via-zinc-800 to-yellow-500 text-white rounded-2xl p-6 shadow-md relative overflow-hidden">
+    <div className="w-full bg-gradient-to-r from-black via-zinc-800 to-yellow-500 text-white rounded-2xl p-6 shadow-md relative overflow-hidden">
       <div className="mb-4 flex items-center gap-3">
         {icon && <div>{icon}</div>}
         <div>
@@ -45,7 +45,7 @@ export function Card2({
 }: CardProps) {
 
   return (
-    <div className="bg-gradient-to-l from-black via-zinc-800 to-yellow-500 text-white rounded-2xl p-6 shadow-md relative overflow-hidden">
+    <div className="w-full bg-gradient-to-l from-black via-zinc-800 to-yellow-500 text-white rounded-2xl p-6 shadow-md relative overflow-hidden">
       <div className="mb-4 flex items-center gap-3">
         {icon && <div>{icon}</div>}
         <div>

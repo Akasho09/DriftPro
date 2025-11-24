@@ -3,8 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import aksh from "@repo/db/client";
-import redis from "./redis";
-import { rateLimiter } from "./upStashRateLimit";
+import { rateLimiter , redis } from "./upStashRateLimit";
 import type { Prisma } from "@prisma/client";
 
 interface SendMoneyResult {
@@ -95,8 +94,12 @@ export default async function SendMoney(
         });
 
         // Clear cached balances
-        await redis.del(`${receiver.id}:sendMoney`);
-        await redis.del(`${sender.id}:sendMoney`);
+    redis.del(`${receiver.id}:sendMoney`).catch((err) => {
+      console.error("Redis deletion failed:", err);
+    });
+    redis.del(`${sender.id}:sendMoney`).catch((err) => {
+      console.error("Redis deletion failed:", err);
+    });
 
         return { success: true, message: "Successfully transferred" };
       }
