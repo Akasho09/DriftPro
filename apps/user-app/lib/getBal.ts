@@ -31,7 +31,9 @@ export async function getContacts () {
       select: {
         id: true,
         name: true,
-        mobile: true
+        mobile: true,
+        email : true,
+        Image : true
       },
       where: {
         NOT: {

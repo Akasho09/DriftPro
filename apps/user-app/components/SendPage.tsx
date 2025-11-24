@@ -160,7 +160,7 @@ export function WalletClient() {
             </div>
 
             {/* Right: Pay Contacts */}
-            <div className="lg:w-1/3 border-l border-slate-200 bg-white/90 flex flex-col">
+            <div className="lg:w-1/2 border-l border-slate-200 bg-white/90 flex flex-col">
               <div className="p-6 sm:p-8 bg-gradient-to-b from-white to-pink-50">
                 <h2 className="text-2xl font-semibold text-black">👥 Pay Contacts</h2>
                 <p className="mt-1 text-sm text-slate-600">

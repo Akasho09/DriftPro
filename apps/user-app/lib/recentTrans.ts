@@ -3,8 +3,7 @@ import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import type { Session } from "next-auth";
-import {redis} from "./upStashRateLimit";
-import { rateLimiter } from "./upStashRateLimit";
+import { rateLimiter , redis} from "./upStashRateLimit";
 
 export type Transaction = {
   amount: number;
@@ -41,7 +40,7 @@ export default async function search(): Promise<Transaction[] | null>{
   }));
     
   try{
-  await redis.set(`${session.user.id}addMoney` , JSON.stringify(upData) , {ex : 300 })
+  await redis.set(`${session.user.id}:addMoney` , JSON.stringify(upData) , {ex : 300 })
   }catch(error){
       console.error("Failed to cache addMoney:", error);
   }

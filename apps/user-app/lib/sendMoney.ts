@@ -94,10 +94,10 @@ export default async function SendMoney(
         });
 
         // Clear cached balances
-    redis.del(`${receiver.id}:sendMoney`).catch((err) => {
+    await redis.del(`${receiver.id}:sendMoney`).catch((err) => {
       console.error("Redis deletion failed:", err);
     });
-    redis.del(`${sender.id}:sendMoney`).catch((err) => {
+    await redis.del(`${sender.id}:sendMoney`).catch((err) => {
       console.error("Redis deletion failed:", err);
     });
 

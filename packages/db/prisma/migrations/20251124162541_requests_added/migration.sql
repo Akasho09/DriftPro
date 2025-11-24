@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Requests" ALTER COLUMN "fromNum" DROP NOT NULL,
+ALTER COLUMN "toNum" DROP NOT NULL;

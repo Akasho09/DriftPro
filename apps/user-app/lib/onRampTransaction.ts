@@ -55,7 +55,7 @@ export default async function onRampTrans(
     });
 
     // Delete Redis cached balance
-      redis.del(`${userId}:addMoney`).catch((err) => {
+      await redis.del(`${userId}:addMoney`).catch((err) => {
         console.error("Redis deletion failed:", err);
       });
 

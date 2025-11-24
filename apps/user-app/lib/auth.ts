@@ -76,6 +76,7 @@ export const authOptions: NextAuthOptions = {
               providerAccountId: account.providerAccountId,
               name: user.name ?? "",
               email: user.email ?? "",
+              Image : user.image ?? ""
             },
           });
 

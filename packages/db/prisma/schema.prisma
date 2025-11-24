@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id                String              @id @default(uuid())
   email             String?             @unique
@@ -15,14 +14,15 @@ model User {
   mobile            String?             @unique
   hashedPassword    String?
   provider          Provider?
+  Image             String?
   providerAccountId String?
   isMobileVerified  Boolean             @default(false)
   Balance           Balance?
   OnRampTransaction OnRampTransaction[]
   toTranactions     p2ptransactions[]   @relation("toTranactions")
   sentTranactions   p2ptransactions[]   @relation("sentTranactions")
-  toReq             Requests[]  @relation("toId")
-  fromReq           Requests[] @relation("fromId")
+  Received_Requets Requests[] @relation("Received_Requets")
+  Sent_Requests    Requests[] @relation("Sent_Requests")
 }
 
 model p2ptransactions {
@@ -57,13 +57,17 @@ model Balance {
 }
 
 model Requests {
-  id        Int @id @default(autoincrement())
-  receiverId String
-  senderId   String
-  recMobile  String?
-  sendMobile String?
-  from      User @relation("fromId" , fields: [senderId] , references: [id])
-  to        User @relation("toId" , fields: [receiverId] ,references: [id])
+  id Int @id @default(autoincrement())
+  fromNum String
+  toNum String
+  fromId String
+  toId String
+  fromMsg String?
+  toMsg String?
+  amount Int
+  status OnRampStatus
+  user1 User @relation("Received_Requets",fields: [fromId],references: [id]) 
+  user2 User @relation("Sent_Requests",fields: [toId] , references: [id])
 }
 
 enum OnRampStatus {
@@ -77,3 +81,4 @@ enum Provider {
   google
   github
 }
+

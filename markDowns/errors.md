@@ -97,3 +97,10 @@ redirect to http://localhost:3000/api/auth/callback/credentials
 
 ## can we use vercels domain in reverse p[roxy of ec2 server weeee 
 
+
+
+
+## added Requets n others !
+
+- npx prisma migrate dev --create-only
+  - This creates a SQL file only.

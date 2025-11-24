@@ -40,9 +40,8 @@ export default async function ts(): Promise<Transaction[] | null> {
 
       
   try{
-  await redis.set(`${session.user.id}sendMoney` , JSON.stringify(updatedData) , {ex : 300})
+  await redis.set(`${session.user.id}:sendMoney` , JSON.stringify(updatedData) , {ex : 300})
   }catch(error){}
 
-  // await redis.set(`${session.user.id}sendMoney` , JSON.stringify(updatedData) , "EX" , 300)
   return updatedData;
 }

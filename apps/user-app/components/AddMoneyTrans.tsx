@@ -8,7 +8,7 @@ import {redis} from "../lib/upStashRateLimit";
 
 export default async function AddMoneyTransactions() {
   const session = await getServerSession(authOptions);
-  const CACHE_KEY = `${session?.user.id}addMoney`;
+  const CACHE_KEY = `${session?.user.id}:addMoney`;
   let data: Transaction[] | null = [];
 
   try {

@@ -1,34 +1,24 @@
+/*
+  Warnings:
+
+  - You are about to drop the `user` table. If the table is not empty, all the data it contains will be lost.
+
+*/
 -- CreateEnum
 CREATE TYPE "OnRampStatus" AS ENUM ('Success', 'Failure', 'Processing');
 
--- CreateEnum
-CREATE TYPE "Provider" AS ENUM ('local', 'google', 'github');
+-- DropTable
+DROP TABLE "user";
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "email" TEXT,
     "name" TEXT,
-    "mobile" TEXT,
-    "hashedPassword" TEXT,
-    "provider" "Provider",
-    "providerAccountId" TEXT,
-    "isMobileVerified" BOOLEAN NOT NULL DEFAULT false,
+    "mobile" TEXT NOT NULL,
+    "hashedPassword" TEXT NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "p2ptransactions" (
-    "id" SERIAL NOT NULL,
-    "tTime" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "amount" INTEGER NOT NULL,
-    "receiverId" TEXT NOT NULL,
-    "senderId" TEXT NOT NULL,
-    "recMobile" TEXT,
-    "sendMobile" TEXT,
-
-    CONSTRAINT "p2ptransactions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -39,7 +29,7 @@ CREATE TABLE "OnRampTransaction" (
     "provider" TEXT NOT NULL,
     "amount" INTEGER NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
 
     CONSTRAINT "OnRampTransaction_pkey" PRIMARY KEY ("id")
 );
@@ -47,7 +37,7 @@ CREATE TABLE "OnRampTransaction" (
 -- CreateTable
 CREATE TABLE "Balance" (
     "id" SERIAL NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "amount" INTEGER NOT NULL,
     "locked" INTEGER NOT NULL,
 
@@ -65,12 +55,6 @@ CREATE UNIQUE INDEX "OnRampTransaction_token_key" ON "OnRampTransaction"("token"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Balance_userId_key" ON "Balance"("userId");
-
--- AddForeignKey
-ALTER TABLE "p2ptransactions" ADD CONSTRAINT "p2ptransactions_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "p2ptransactions" ADD CONSTRAINT "p2ptransactions_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OnRampTransaction" ADD CONSTRAINT "OnRampTransaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

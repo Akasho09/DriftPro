@@ -9,7 +9,7 @@ import { Transaction } from "../lib/p2ptrans";
 
 export default async function SendTransactions() {
   const session = await getServerSession(authOptions);
-  const CACHE_KEY = `${session?.user.id}sendMoney`;
+  const CACHE_KEY = `${session?.user.id}:sendMoney`;
   let data: Transaction[] | null = [];
 
   try {
