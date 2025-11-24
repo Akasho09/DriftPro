@@ -17,11 +17,12 @@ export default async function approveRequest(requestId: number) {
     select:{
         toId : true ,
         fromNum : true,
-        amount : true
+        amount : true,
+        status : true
     }
   });
 
-  if (!req) return { success: false, message: "Request not found." };
+  if (!req || req.status!=="Processing") return { success: false, message: "Request not found." };
 
   // Only receiver can approve
   if (req.toId !== userId) {

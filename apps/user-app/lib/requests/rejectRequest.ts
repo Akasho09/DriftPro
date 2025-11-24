@@ -14,7 +14,7 @@ export default async function rejectRequest(requestId: number) {
     where: { id: requestId },
   });
 
-  if (!req) return { success: false, message: "Request not found." };
+  if (!req || req.status!=="Processing") return { success: false, message: "Request not found." };
 
   // Only receiver can reject
   if (req.toId !== userId) {
