@@ -4,7 +4,7 @@ import { authOptions } from "../lib/auth";
 import search from "../lib/recentTrans";
 import {AddCard} from "./TransactionCard";
 import { Transaction } from "../lib/recentTrans";
-import {redis} from "../lib/upStashRateLimit";
+import {redis} from "@repo/db/redis";
 
 export default async function AddMoneyTransactions() {
   const session = await getServerSession(authOptions);

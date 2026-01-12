@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { rateLimiter } from "./lib/upStashRateLimit";
+import { rateLimiter } from "@repo/db/redis";
 
 export async function middleware(req: Request) {
   const url = new URL(req.url);

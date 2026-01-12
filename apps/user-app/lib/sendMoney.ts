@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import aksh from "@repo/db/client";
-import { rateLimiter , redis } from "./upStashRateLimit";
+import { rateLimiter ,redis } from "@repo/db/redis";
 import type { Prisma } from "@prisma/client";
 
 interface SendMoneyResult {

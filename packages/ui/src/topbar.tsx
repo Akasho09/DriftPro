@@ -19,9 +19,26 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [loadingAction, setLoadingAction] = useState(false);
   const [show , setshow] =useState(true)
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifCount, setNotifCount] = useState(0);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+    if (!user) return;
+
+    const fetchNotifications = async () => {
+      const res = await fetch("/api/notifications");
+      const data = await res.json();
+
+      setNotifications(data.notifications);
+      setNotifCount(data.count);
+      setshow(data.count > 0); // badge visibility
+    };
+
+    fetchNotifications();
+  }, [user]);
 
   // Auto-close on outside click
   useEffect(() => {
@@ -41,11 +58,6 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
     () => user?.name || user?.email || user?.mobile || "Login First",
     [user]
   );
-
-
-  const notifications = [
-    { id: 1, title: "Money Requests Page", time: "1 min ago", type: "success" },
-  ];
 
   // Menu Items
   const menuItems = user
@@ -86,14 +98,14 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
           >
             <span className="text-xl">🔔</span>
 
-            {show && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white 
-                text-xs font-bold w-5 h-5 flex items-center justify-center 
-                rounded-full animate-pulse"
-              >
-                {1}
-              </span>
-            )}
+        {notifCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white 
+            text-xs font-bold w-5 h-5 flex items-center justify-center 
+            rounded-full animate-pulse"
+          >
+            {notifCount}
+          </span>
+        )}
           </button>
 
           <div
@@ -108,31 +120,36 @@ export const Topbar = ({ user, onSignin, onSignout }: AppbarProps) => {
             <div className="px-4 py-2 border-b text-sm font-semibold text-gray-700">
               Notifications
             </div>
-
             {notifications.length === 0 ? (
-              <div className="text-center p-6 text-gray-500 text-sm">No notifications yet ✨</div>
+              <div className="text-center p-6 text-gray-500 text-sm">
+                No notifications yet ✨
+              </div>
             ) : (
               notifications.map((n) => (
                 <Link
                   key={n.id}
-                  href={"/requests"}
-                  className="px-4 py-3 flex flex-col gap-1 hover:bg-gray-100/80 cursor-pointer transition rounded-md"
+                  href="/requests"
+                  className="px-4 py-3 flex flex-col gap-1 hover:bg-gray-100/80 transition rounded-md"
                 >
-                  <p className="font-medium text-gray-800">{n.title}</p>
-                  <span className="text-xs text-gray-500">{n.time}</span>
+                  <p className="font-medium text-gray-800">
+                    💰 Money request of ₹{n.amount}
+                  </p>
 
-                  <span
-                    className={`
-                      h-2 w-2 rounded-full
-                      ${n.type === "success" ? "bg-green-500" : n.type === "info" ? "bg-blue-500" : "bg-gray-400"}
-                    `}
-                  ></span>
+                  {n.fromMsg && (
+                    <span className="text-xs text-gray-600 italic">
+                      “{n.fromMsg}”
+                    </span>
+                  )}
+
+                  <span className="text-xs text-gray-500">
+                    Just now
+                  </span>
                 </Link>
               ))
             )}
+
           </div>
         </div>
-
         <div ref={dropdownRef} className="relative">
           <button
             aria-haspopup="true"

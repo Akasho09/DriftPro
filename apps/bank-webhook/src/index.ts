@@ -16,10 +16,10 @@ interface PaymentInfo {
 }
 
 app.get("/hdfcwebhook" ,async (req,res)=>{
-  res.send("HDFC PAGE Auto Verifiing payment is Upppp!!!")
+  res.send("DriftPro Auto Verifiing payment is Upppp!!!")
 })
 
-app.post("/hdfcwebhook", async (req, res) => {
+app.post("/driftpro", async (req, res) => {
   try {
     const paymentInfo: PaymentInfo = {
       token: req.body.token,

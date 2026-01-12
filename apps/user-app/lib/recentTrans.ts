@@ -3,7 +3,7 @@ import aksh from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 import type { Session } from "next-auth";
-import { rateLimiter , redis} from "./upStashRateLimit";
+import { rateLimiter ,redis } from "@repo/db/redis";
 
 export type Transaction = {
   amount: number;

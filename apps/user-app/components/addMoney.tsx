@@ -41,8 +41,8 @@ function useReveal(delay = 0) {
 }
 
 const BANKS = [
-  { name: "Drift Bank", id: "Drift", redirectUrl: "https://bank-bre4.onrender.com/hdfcwebhook" },
-  { name: "HDFC Bank", id: "HDFC", redirectUrl: "http://localhost:3004/hdfcwebhook" },
+  { name: "Drift Bank", id: "Drift", redirectUrl: "https://bank-bre4.onrender.com/driftpro" },
+  { name: "HDFC Bank", id: "HDFC", redirectUrl: "http://localhost:3004/driftpro" },
   { name: "Axis Bank", id: "AXIS", redirectUrl: "https://www.axisbank.com/" },
 ];
 

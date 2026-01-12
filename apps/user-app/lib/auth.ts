@@ -5,7 +5,7 @@ import type { NextAuthOptions } from "next-auth";
 import { signin } from "./auth/signin";
 import { signup } from "./auth/signup";
 import db from "@repo/db/client";
-import { authLimiter } from "./upStashRateLimit";
+import { authLimiter } from "@repo/db/redis";
 
 interface Credentials {
   phone: string;

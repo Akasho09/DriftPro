@@ -2,7 +2,7 @@ import { Card2 } from "@repo/ui/card";
 import ts from "../lib/p2ptrans";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../lib/auth";
-import {redis} from "../lib/upStashRateLimit";
+import {redis} from "@repo/db/redis";
 import {SendCard} from "./TransactionCard";
 import { Transaction } from "../lib/p2ptrans";
 

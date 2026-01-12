@@ -1,9 +1,8 @@
 "use server";
-
 import aksh from "@repo/db/client";
+import {rateLimiter, redis} from "@repo/db/redis";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
-import { rateLimiter, redis } from "./upStashRateLimit";
 import type { Prisma } from "@prisma/client";
 
 export type OnRampResponse = { message?: string; token?: string ; error?: string };

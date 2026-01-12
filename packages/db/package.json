@@ -10,7 +10,8 @@
   "license": "ISC",
   "description": "",
   "exports": {
-    "./client": "./index.ts"
+    "./client": "./index.ts",
+    "./redis": "./upStashRateLimit.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
