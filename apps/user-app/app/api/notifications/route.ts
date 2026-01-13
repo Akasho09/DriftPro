@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@repo/db/client";
+import { authOptions } from "../../../lib/auth";
 
 export async function GET() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     return NextResponse.json({ count: 0, notifications: [] });
@@ -20,7 +21,8 @@ export async function GET() {
       fromMsg: true,
     }
   });
-
+  
+  console.log("akash")
   return NextResponse.json({
     count: requests.length,
     notifications: requests,
