@@ -1,6 +1,7 @@
 import express from 'express';
 import aksh from "@repo/db/client";
 import cors from 'cors' 
+import {redis} from "@repo/db/redis"
 
 const app = express();
 app.use(express.json());
@@ -78,6 +79,10 @@ app.post("/driftpro", async (req, res) => {
             increment: transaction.amount,
           },
         },
+      });
+      
+      await redis.del(`${transaction.userId}:addMoney`).catch((err) => {
+        console.error("Redis deletion failed:", err);
       });
 
       return { success: true, message: "Captured" };
