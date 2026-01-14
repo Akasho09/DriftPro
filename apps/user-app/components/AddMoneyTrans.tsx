@@ -15,7 +15,6 @@ export default async function AddMoneyTransactions() {
     const cached = await redis.get(CACHE_KEY);
     data = cached ? (cached as Transaction[]) : await search();
   } catch (e) {
-    console.error("AddMoneyTransactions error:", e);
     data = [];
   }
 

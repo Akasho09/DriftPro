@@ -13,16 +13,16 @@ export default function RequestsList({
   userId: string;
 }) {
   async function handleApprove(id: number) {
-    toast.loading("Approving...");
+    const a = toast.loading("Approving...");
     const res = await approveRequest(id);
-    toast.dismiss();
+    toast.dismiss(a);
     res.success ? toast.success(res.message) : toast.error(res.message);
   }
 
   async function handleReject(id: number) {
-    toast.loading("Rejecting...");
+    const a = toast.loading("Rejecting...");
     const res = await rejectRequest(id);
-    toast.dismiss();
+    toast.dismiss(a);
     res.success ? toast.success(res.message) : toast.error(res.message);
   }
 

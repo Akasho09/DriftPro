@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, FormEvent } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
