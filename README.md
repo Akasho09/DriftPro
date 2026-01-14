@@ -1,4 +1,4 @@
-# 💸 DriftPro – Paytm for Desktop
+# 💸 DriftPro 
 ![DriftPro Architecture Banner](arch2.png)
 
 [![Build](https://img.shields.io/github/actions/workflow/status/Akasho09/DriftPro/ci.yml?branch=main&logo=github)](https://github.com/)
@@ -11,7 +11,7 @@
 [![Vercel](https://img.shields.io/badge/Vercel-deploy-black?logo=vercel)](https://vercel.com/)
 [![Render](https://img.shields.io/badge/Render-deploy-4AB3F4?logo=render)](https://render.com/)
 
-> A secure desktop-first digital wallet platform. Modern, modular and production-ready.
+> A secure digital wallet platform. Modern, modular and production-ready.
 
 ---
 
@@ -31,7 +31,8 @@
 ---
 
 ## 👤 Demo User
-
+- username : 9103597816
+- password : Aakash@9103597809
 
 ---
 
@@ -39,10 +40,6 @@
 ![alt text](arch2.png)
 ![alt text](Archi.png)
 
----
-## Demo user : 
-- username : 9103597816
-- password : Aakash@9103597809
 ---
 
 ## 🚀 Features
